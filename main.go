@@ -1,7 +1,7 @@
 package main
 
 import (
-	_ "go-cms/beeapi/routers"
+	_ "go-cms/routers"
 
 	"github.com/astaxie/beego"
 )
