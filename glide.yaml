@@ -1,0 +1,12 @@
+package: go-cms
+import:
+- package: github.com/astaxie/beego
+  version: ~1.12.0
+- package: go-cms/controllers
+- package: go-cms/models
+- package: go-cms/routers
+testImport:
+- package: github.com/smartystreets/goconvey
+  version: ~1.6.3
+  subpackages:
+  - convey
