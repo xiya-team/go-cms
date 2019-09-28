@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"go-cms/models"
 	"encoding/json"
+	"go-cms/models"
 
 	"github.com/astaxie/beego"
 )
@@ -101,7 +101,8 @@ func (u *UserController) Login() {
 	username := u.GetString("username")
 	password := u.GetString("password")
 	if models.Login(username, password) {
-		u.Data["json"] = "login success"
+		// u.Data["json"] = "login success"
+		u.SetSession("user_id", username)
 	} else {
 		u.Data["json"] = "user not exist"
 	}
@@ -113,7 +114,7 @@ func (u *UserController) Login() {
 // @Success 200 {string} logout success
 // @router /logout [get]
 func (u *UserController) Logout() {
+	// u.DelSession("user_id")
 	u.Data["json"] = "logout success"
 	u.ServeJSON()
 }
-
