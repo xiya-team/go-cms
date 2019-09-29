@@ -1,4 +1,4 @@
-package fc
+package generate
 
 import (
 	"flag"
@@ -27,12 +27,12 @@ func Run() {
 	viewPath := flag.String("v", "", "视图地址")
 	flag.Parse()
 	if *tableName != "" {
-		Fc(*tableName, *modelPath, *controllerPath, *viewPath)
+		Generate(*tableName, *modelPath, *controllerPath, *viewPath)
 		return
 	}
 }
 
-func Fc(tableName, modelPath, controllerPath, viewPath string) {
+func Generate(tableName, modelPath, controllerPath, viewPath string) {
 	tablePrefix := beego.AppConfig.String("tablePrefix")
 	var tableAttr []TabelAttr
 	models.Db.Raw("desc " + tablePrefix + tableName).Scan(&tableAttr)
