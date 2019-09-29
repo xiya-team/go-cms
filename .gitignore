@@ -15,3 +15,4 @@ go-cms
 *.tmp
 routers/*controllers.go
 conf/app.conf
+project.log
