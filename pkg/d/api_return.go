@@ -1,5 +1,7 @@
 package d
 
+import "go-cms/pkg/e"
+
 //普通json格式
 func ReturnJson(code int, msg string, data interface{}) (jsonData map[string]interface{}) {
 	jsonData = make(map[string]interface{}, 3)
@@ -9,6 +11,16 @@ func ReturnJson(code int, msg string, data interface{}) (jsonData map[string]int
 		jsonData["data"] = data
 	}
 	return
+}
+
+func ReturnSuccessJson(data interface{}) (map[string]interface{}) {
+	return ReturnJson(e.SUCCESS, e.ResponseMap[e.SUCCESS], data)
+}
+func ReturnServerErrJson(data interface{}) (map[string]interface{}) {
+	return ReturnJson(e.ERROR, e.ResponseMap[e.ERROR], data)
+}
+func ReturnParamErrJson(data interface{}) (map[string]interface{}) {
+	return ReturnJson(e.INVALID_PARAMS, e.ResponseMap[e.INVALID_PARAMS], data)
 }
 
 //layui 后台返回需要的json格式
