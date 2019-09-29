@@ -1,86 +1,83 @@
 package models
 
-import (
-	"errors"
-	"strconv"
-	"time"
-)
-
-var (
-	UserList map[string]*User
-)
-
-func init() {
-	UserList = make(map[string]*User)
-	u := User{"user_11111", "astaxie", "11111", Profile{"male", 20, "Singapore", "astaxie@gmail.com"}}
-	UserList["user_11111"] = &u
-}
+import "errors"
 
 type User struct {
-	Id       string
-	Username string
-	Password string
-	Profile  Profile
+	Model
+	UserId     int        `json:"user_id"    form:"user_id"    gorm:"default:''"`
+	DeptId     int        `json:"dept_id"    form:"dept_id"    gorm:"default:''"`
+	LoginName  string     `json:"login_name" form:"login_name" gorm:"default:''"`
+	UserName   string     `json:"user_name"  form:"user_name"  gorm:"default:''"`
+	UserType   string     `json:"user_type"  form:"user_type"  gorm:"default:'00'"`
+	Email      string     `json:"email"      form:"email"      gorm:"default:''"`
+	Phonenumber string     `json:"phonenumber"form:"phonenumber"gorm:"default:''"`
+	Sex        string     `json:"sex"        form:"sex"        gorm:"default:'0'"`
+	Avatar     string     `json:"avatar"     form:"avatar"     gorm:"default:''"`
+	Password   string     `json:"password"   form:"password"   gorm:"default:''"`
+	Salt       string     `json:"salt"       form:"salt"       gorm:"default:''"`
+	Status     string     `json:"status"     form:"status"     gorm:"default:'0'"`
+	DelFlag    string     `json:"del_flag"   form:"del_flag"   gorm:"default:'0'"`
+	LoginIp    string     `json:"login_ip"   form:"login_ip"   gorm:"default:''"`
+	LoginDate  int        `json:"login_date" form:"login_date" gorm:"default:''"`
+	CreateBy   string     `json:"create_by"  form:"create_by"  gorm:"default:''"`
+	CreatedAt  int        `json:"created_at" form:"created_at" gorm:"default:''"`
+	UpdateBy   string     `json:"update_by"  form:"update_by"  gorm:"default:''"`
+	UpdatedAt  int        `json:"updated_at" form:"updated_at" gorm:"default:''"`
+	Remark     string     `json:"remark"     form:"remark"     gorm:"default:''"`
+	
 }
 
-type Profile struct {
-	Gender  string
-	Age     int
-	Address string
-	Email   string
+
+func NewUser() (user *User) {
+	return &User{}
 }
 
-func AddUser(u User) string {
-	u.Id = "user_" + strconv.FormatInt(time.Now().UnixNano(), 10)
-	UserList[u.Id] = &u
-	return u.Id
-}
-
-func GetUser(uid string) (u *User, err error) {
-	if u, ok := UserList[uid]; ok {
-		return u, nil
+func (m *User) Pagination(offset, limit int, key string) (res []User, count int) {
+	query := Db
+	if key != "" {
+		query = query.Where("name like ?", "%"+key+"%")
 	}
-	return nil, errors.New("User not exists")
+	query.Offset(offset).Limit(limit).Order("id desc").Find(&res)
+	query.Model(User{}).Count(&count)
+	return
 }
 
-func GetAllUsers() map[string]*User {
-	return UserList
+func (m *User) Create() (newAttr User, err error) {
+	err = Db.Create(m).Error
+	newAttr = *m
+	return
 }
 
-func UpdateUser(uid string, uu *User) (a *User, err error) {
-	if u, ok := UserList[uid]; ok {
-		if uu.Username != "" {
-			u.Username = uu.Username
-		}
-		if uu.Password != "" {
-			u.Password = uu.Password
-		}
-		if uu.Profile.Age != 0 {
-			u.Profile.Age = uu.Profile.Age
-		}
-		if uu.Profile.Address != "" {
-			u.Profile.Address = uu.Profile.Address
-		}
-		if uu.Profile.Gender != "" {
-			u.Profile.Gender = uu.Profile.Gender
-		}
-		if uu.Profile.Email != "" {
-			u.Profile.Email = uu.Profile.Email
-		}
-		return u, nil
+func (m *User) Update() (newAttr User, err error) {
+	if m.Id > 0 {
+		err = Db.Where("id=?", m.Id).Save(m).Error
+	} else {
+		err = errors.New("id参数错误")
 	}
-	return nil, errors.New("User Not Exist")
+	newAttr = *m
+	return
 }
 
-func Login(username, password string) bool {
-	for _, u := range UserList {
-		if u.Username == username && u.Password == password {
-			return true
-		}
+func (m *User) Delete() (err error) {
+	if m.Id > 0 {
+		err = Db.Delete(m).Error
+	} else {
+		err = errors.New("id参数错误")
 	}
-	return false
+	return
 }
 
-func DeleteUser(uid string) {
-	delete(UserList, uid)
+func (m *User) DelBatch(ids []int) (err error) {
+	if len(ids) > 0 {
+		err = Db.Where("id in (?)", ids).Delete(m).Error
+	} else {
+		err = errors.New("id参数错误")
+	}
+	return
 }
+
+func (m *User) FindById(id int) (user User, err error) {
+	err = Db.Where("id=?", id).First(&user).Error
+	return
+}
+
