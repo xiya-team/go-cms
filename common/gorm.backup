@@ -1,0 +1,239 @@
+//package admin
+//
+//type GormController struct {
+//	BaseController
+//}
+
+//func (g *GormController)Find()  {
+	//创建
+	//c1 := models.C1{Username:"yyq2",Password:"123"}
+	//models.Db.Create(&c1)//创建时写入地址，会返回创建成功id和默认字段字段
+	//models.Db.NewRecord(c1) //主键为空为true,创建成功主键id不为空，返回false,表插入成功返回false
+	//models.Db.Set("gorm:insert_option", "ON CONFLICT").Create(&c1)//不知何用
+	//fmt.Println(c1,models.Db.NewRecord(c1))
+
+	//查询
+	//findC1:=models.C1{}
+	//findC1s:= make([]models.C1,0)
+	//models.Db.First(&findC1)//查询第一条记录，第二个参数可使用主键作为条件
+	//models.Db.Last(&findC1) //查询最后一条记录，排序方式为id asc
+	//models.Db.Find(&findC1s) //查询所有记录
+
+	//where条件
+	//Where("name = ?", "jinzhu")
+	//Where("name <> ?", "jinzhu")
+	//Where("name in (?)", []string{"jinzhu", "jinzhu 2"})
+	//Where("name LIKE ?", "%jin%")
+	//Where("name = ? AND age >= ?", "jinzhu", "22")
+	//Where("updated_at > ?", lastWeek)
+	//Where("created_at BETWEEN ? AND ?", lastWeek, today)
+	//db.Where(&User{Name: "jinzhu", Age: 20}).First(&user)//参数可使用结构体
+	//db.Where(map[string]interface{}{"name": "jinzhu", "age": 20}).Find(&users)//条件可使用map
+	//db.Where([]int64{20, 21, 22}).Find(&users)//条件可使用slice
+
+	//not
+	//db.Not("name", "jinzhu").First(&user)
+	//// SELECT * FROM users WHERE name <> "jinzhu" LIMIT 1;
+	// Not In
+	//db.Not("name", []string{"jinzhu", "jinzhu 2"}).Find(&users)
+	//// SELECT * FROM users WHERE name NOT IN ("jinzhu", "jinzhu 2");
+	// Not In slice of primary keys
+	//db.Not([]int64{1,2,3}).First(&user)
+	//// SELECT * FROM users WHERE id NOT IN (1,2,3);
+	//db.Not([]int64{}).First(&user)
+	//// SELECT * FROM users;
+	// Plain SQL
+	//db.Not("name = ?", "jinzhu").First(&user)
+	//// SELECT * FROM users WHERE NOT(name = "jinzhu");
+	// Struct
+	//db.Not(User{Name: "jinzhu"}).First(&user)
+	//// SELECT * FROM users WHERE name <> "jinzhu";
+
+	//内联查询
+	// 按主键获取
+	//db.First(&user, 23)
+	//// SELECT * FROM users WHERE id = 23 LIMIT 1;
+	// 简单SQL
+	//db.Find(&user, "name = ?", "jinzhu")
+	//// SELECT * FROM users WHERE name = "jinzhu";
+	//db.Find(&users, "name <> ? AND age > ?", "jinzhu", 20)
+	//// SELECT * FROM users WHERE name <> "jinzhu" AND age > 20;
+	// Struct
+	//db.Find(&users, User{Age: 20})
+	//// SELECT * FROM users WHERE age = 20;
+	// Map
+	//db.Find(&users, map[string]interface{}{"age": 20})
+	//// SELECT * FROM users WHERE age = 20;
+
+	//or查询
+
+	//FirstOrInit
+	//models.Db.FirstOrInit(&findC1,models.C1{Username:"abcd"})//第二个参数为条件，查询第一条记录,没有查询到时会使用条件进行赋值
+	//models.Db.Where("username=?","abc").Attrs(models.C1{Model:models.Model{CreatedAt:time.Now().Second()}}).FirstOrInit(&findC1)//没有查询到的时候使用参数赋值，查询到有值无变化
+	//models.Db.Assign(models.C1{Username:"kkk"}).FirstOrInit(&findC1)//不管有没有查询到值，会使用参数进行赋值,where条件上的条件也会一起赋值
+
+	//FirstOrCreate
+	//models.Db.FirstOrCreate(&findC1,models.C1{Username:"qq"})//获取第一个匹配的值，如果查询不到就使用条件创建
+	//db.Where(User{Name: "Jinzhu"}).FirstOrCreate(&user)//where条件上的条件也会一起赋值
+	//与Attrs和Assign配合会增加一步，修改数据后会插入到数据库
+
+	//Select 指定要检索的字段
+	//db.Select("name, age").Find(&users)
+	//// SELECT name, age FROM users;
+	//db.Select([]string{"name", "age"}).Find(&users)
+	//// SELECT name, age FROM users;
+	//db.Table("users").Select("COALESCE(age,?)", 42).Rows()
+	//// SELECT COALESCE(age,'42') FROM users;
+
+	//Order
+	//db.Order("age desc, name").Find(&users)
+	//// SELECT * FROM users ORDER BY age desc, name;
+	// Multiple orders
+	//db.Order("age desc").Order("name").Find(&users)
+	//// SELECT * FROM users ORDER BY age desc, name;
+	// ReOrder
+	//db.Order("age desc").Find(&users1).Order("age", true).Find(&users2)
+	//// SELECT * FROM users ORDER BY age desc; (users1)
+	//// SELECT * FROM users ORDER BY age; (users2)
+
+	//Limit
+	//db.Limit(3).Find(&users)
+	//// SELECT * FROM users LIMIT 3;
+	// Cancel limit condition with -1
+	//db.Limit(10).Find(&users1).Limit(-1).Find(&users2)
+	//// SELECT * FROM users LIMIT 10; (users1)
+	//// SELECT * FROM users; (users2)
+
+	//Offset
+	//db.Offset(3).Find(&users)
+	//// SELECT * FROM users OFFSET 3;
+	// Cancel offset condition with -1
+	//db.Offset(10).Find(&users1).Offset(-1).Find(&users2)
+	//// SELECT * FROM users OFFSET 10; (users1)
+	//// SELECT * FROM users; (users2)
+
+	//Count
+	//db.Where("name = ?", "jinzhu").Or("name = ?", "jinzhu 2").Find(&users).Count(&count)
+	//// SELECT * from USERS WHERE name = 'jinzhu' OR name = 'jinzhu 2'; (users)
+	//// SELECT count(*) FROM users WHERE name = 'jinzhu' OR name = 'jinzhu 2'; (count)
+	//db.Model(&User{}).Where("name = ?", "jinzhu").Count(&count)
+	//// SELECT count(*) FROM users WHERE name = 'jinzhu'; (count)
+	//db.Table("deleted_users").Count(&count)
+	//// SELECT count(*) FROM deleted_users;
+
+	//group Having
+
+	//Join
+
+	//Pluck  Scan //不知道何用
+	//var username []string
+	//models.Db.Select("username,password").Find(&findC1).Pluck("username",&username)
+
+	//Scopes 构建自己的sql链式查询快捷方式
+	//func AmountGreaterThan1000(db *gorm.DB) *gorm.DB {
+	//	return db.Where("amount > ?", 1000)
+	//}
+	//func PaidWithCreditCard(db *gorm.DB) *gorm.DB {
+	//	return db.Where("pay_mode_sign = ?", "C")
+	//}
+	//func PaidWithCod(db *gorm.DB) *gorm.DB {
+	//	return db.Where("pay_mode_sign = ?", "C")
+	//}
+	//func OrderStatus(status []string) func (db *gorm.DB) *gorm.DB {
+	//	return func (db *gorm.DB) *gorm.DB {
+	//		return db.Scopes(AmountGreaterThan1000).Where("status in (?)", status)
+	//	}
+	//}
+	//db.Scopes(AmountGreaterThan1000, PaidWithCreditCard).Find(&orders)
+	// 查找所有信用卡订单和金额大于1000
+	//db.Scopes(AmountGreaterThan1000, PaidWithCod).Find(&orders)
+	// 查找所有COD订单和金额大于1000
+	//db.Scopes(OrderStatus([]string{"paid", "shipped"})).Find(&orders)
+	// 查找所有付费，发货订单
+
+	//Table 指定表名
+
+	//预加载
+	//var findC1 []models.C1
+	//models.Db.Preload("More").Find(&findC1)
+
+	//g.Data["json"] = findC1
+	//g.ServeJSON()
+	//fmt.Println(findC1)
+
+	//自定义预加载，为预加载添加限制条件
+	//db.Preload("Orders", func(db *gorm.DB) *gorm.DB {
+	//	return db.Order("orders.amount DESC")
+	//}).Find(&users)
+	//// SELECT * FROM users;
+	//// SELECT * FROM orders WHERE user_id IN (1,2,3,4) order by orders.amount DESC;
+
+	//嵌套预加载
+
+	//更新，查询在更新，会更新所有字段即使没有更改,update 只会更改非空的值
+	// db.First(&user)
+	//
+	//user.Name = "jinzhu 2"
+	//user.Age = 100
+	//db.Save(&user)
+
+	// 更新单个属性（如果更改）
+	//db.Model(&user).Update("name", "hello")
+	//// UPDATE users SET name='hello', updated_at='2013-11-17 21:34:10' WHERE id=111;
+	// 使用组合条件更新单个属性
+	//db.Model(&user).Where("active = ?", true).Update("name", "hello")
+	//// UPDATE users SET name='hello', updated_at='2013-11-17 21:34:10' WHERE id=111 AND active=true;
+	// 使用`map`更新多个属性，只会更新这些更改的字段
+	//db.Model(&user).Updates(map[string]interface{}{"name": "hello", "age": 18, "actived": false})
+	//// UPDATE users SET name='hello', age=18, actived=false, updated_at='2013-11-17 21:34:10' WHERE id=111;
+	// 使用`struct`更新多个属性，只会更新这些更改的和非空白字段
+	//db.Model(&user).Updates(User{Name: "hello", Age: 18})
+	//// UPDATE users SET name='hello', age=18, updated_at = '2013-11-17 21:34:10' WHERE id = 111;
+	// 警告:当使用struct更新时，FORM将仅更新具有非空值的字段
+	// 对于下面的更新，什么都不会更新为""，0，false是其类型的空白值
+	//db.Model(&user).Updates(User{Name: "", Age: 0, Actived: false})
+	// 使用`RowsAffected`获取更新记录计数
+	//db.Model(User{}).Updates(User{Name: "hello", Age: 18}).RowsAffected
+	//如果您只想在更新时更新或忽略某些字段，可以使用Select, Omit
+
+	//与update,updates类似，不会触发回调
+	// 更新单个属性，类似于`Update`
+	//db.Model(&user).UpdateColumn("name", "hello")
+	//// UPDATE users SET name='hello' WHERE id = 111;
+	// 更新多个属性，与“更新”类似
+	//db.Model(&user).UpdateColumns(User{Name: "hello", Age: 18})
+	//// UPDATE users SET name='hello', age=18 WHERE id = 111;
+
+	//删除记录
+	// 删除存在的记录
+	//db.Delete(&email)
+
+	//软删除，如果数据库中有delete_at字段，delete将自动获取软删除功能
+	// 软删除的记录将在查询时被忽略
+	//db.Where("age = 20").Find(&user)
+	//// SELECT * FROM users WHERE age = 20 AND deleted_at IS NULL;
+	// 使用Unscoped查找软删除的记录
+	//db.Unscoped().Where("age = 20").Find(&users)
+	//// SELECT * FROM users WHERE age = 20;
+	// 使用Unscoped永久删除记录
+	//db.Unscoped().Delete(&order)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	//g.TplName = "admin/gorm/index.html"
+//}
