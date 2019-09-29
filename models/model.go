@@ -9,6 +9,7 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"log"
 	"time"
+	"sync"
 )
 
 var Db *gorm.DB
@@ -24,6 +25,7 @@ func init() {
 	var (
 		err                                               error
 		dbType, dbName, user, password, host, tablePrefix string
+		OnceMutex sync.Once
 	)
 
 	dbType = beego.AppConfig.String("dbType")
@@ -32,32 +34,34 @@ func init() {
 	password = beego.AppConfig.String("password")
 	host = beego.AppConfig.String("host")
 	tablePrefix = beego.AppConfig.String("tablePrefix")
-
-	Db, err = gorm.Open(dbType, fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=True&loc=Local",
-		user,
-		password,
-		host,
-		dbName))
-
-	if err != nil {
-		log.Println(err)
-	}
-
-	gorm.DefaultTableNameHandler = func(db *gorm.DB, defaultTableName string) string {
-		return tablePrefix + defaultTableName
-	}
-
-	//Db.LogMode(true)
-
-	Db.SingularTable(true)
-	Db.DB().SetMaxIdleConns(10)
-	Db.DB().SetMaxOpenConns(100)
-
-	Db.Callback().Create().Register("create_admin_log", CreateAdminLogCallback)
-	Db.Callback().Update().Register("update_admin_log", UpdateAdminLogCallback)
-	//Db.Callback().Update().Remove("gorm:xxx")
-	Db.Callback().Delete().Register("delete_admin_log", DeleteAdminLogCallback)
-
+	
+	//只执行一次
+	OnceMutex.Do(func() {
+		Db, err = gorm.Open(dbType, fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=True&loc=Local",
+			user,
+			password,
+			host,
+			dbName))
+		
+		if err != nil {
+			log.Println(err)
+		}
+		
+		gorm.DefaultTableNameHandler = func(db *gorm.DB, defaultTableName string) string {
+			return tablePrefix + defaultTableName
+		}
+		
+		//Db.LogMode(true)
+		Db.SingularTable(true)
+		Db.DB().SetMaxIdleConns(10)
+		Db.DB().SetMaxOpenConns(100)
+		
+		Db.Callback().Create().Register("create_admin_log", CreateAdminLogCallback)
+		Db.Callback().Update().Register("update_admin_log", UpdateAdminLogCallback)
+		//Db.Callback().Update().Remove("gorm:xxx")
+		Db.Callback().Delete().Register("delete_admin_log", DeleteAdminLogCallback)
+	})
+	
 }
 
 func CloseDB() {
