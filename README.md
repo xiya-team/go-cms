@@ -123,7 +123,7 @@ go get github.com/go-sql-driver/mysql
 
 * 修改Nginx配置文件
 
-> 后台管理 blogCMS.conf
+> 后台管理 
 
 ``` conf
 server {
