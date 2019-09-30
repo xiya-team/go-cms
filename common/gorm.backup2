@@ -1,0 +1,26 @@
+//package models
+
+//type C1 struct {
+//	gorm.Model
+//	Username string `gorm:"default:'default'"`//不填写，插入时不会加载，和不会填充数据库中设置的默认值
+//	Password string
+//	More C2 `gorm:"ForeignKey:Uid;AssociationForeignKey:ID"`
+//	More []C2 `gorm:"ForeignKey:Uid;AssociationForeignKey:ID"`
+//	More []C2 `gorm:"ForeignKey:Uid;AssociationForeignKey:ID;"` //[]Language `gorm:"many2many:user_languages;"`  只有多对多比较特殊需要中间表需要指定关联表
+//}
+//func (user *C1) BeforeCreate(scope *gorm.Scope) error { //创建之前会执行此函数
+//	scope.SetColumn("Password", "1112")//设置字段值
+//	return nil
+//}
+
+//func (user *User) BeforeSave(scope *gorm.Scope) (err error) {
+//	if pw, err := bcrypt.GenerateFromPassword(user.Password, 0); err == nil {
+//		scope.SetColumn("EncryptedPassword", pw)
+//	}
+//	return
+//}
+//type C2 struct {
+//	Model
+//	ClassName string
+//	Uid int
+//}
