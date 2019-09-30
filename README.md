@@ -43,7 +43,7 @@ sudo apt install mysql-server mysql-common mysql-client
 	mysql -u root -p
 	// 进入mysql后创建数据库
 	
-	create database myblog;
+	create database go_cms;
 	
 	//创建完成后退出
 	
