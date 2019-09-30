@@ -1,4 +1,4 @@
-## go-cms 一站式个人博客解决方案
+## go-cms 一站式解决方案
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/sinksmell/LanBlog)](https://goreportcard.com/report/github.com/sinksmell/LanBlog)
 [![GoDoc](https://godoc.org/github.com/sinksmell/LanBlog?status.svg)](https://godoc.org/github.com/sinksmell/LanBlog)
