@@ -118,6 +118,7 @@ func (c *UserController) Login() {
 		user_name := c.GetString("user_name")
 		password := c.GetString("password")
 		
+		//数据校验
 		loginData := backend.UserLoginValidation{}
 		loginData.UserName = user_name
 		loginData.Password = password
