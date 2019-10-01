@@ -15,6 +15,7 @@ func init() {
 	//)
 	//beego.AddNamespace(ns)
 	
-	beego.Router("/api/user/login", &sys.UserController{}, "*:Login")
+	beego.Router("/api/user/login", &sys.UserController{}, "post:Login")
+	beego.Router("/api/user/create", &sys.UserController{}, "post:Create")
 	//beego.Router("/api/user/check", &sys.UserController{}, "*:DoCheck")
 }

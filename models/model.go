@@ -125,12 +125,12 @@ func GetMysqlMsg() (mysqlMsg map[string]string) {
 func CreateAdminLogCallback(scope *gorm.Scope) {
 	if scope.TableName() != "cms_admin_log" {
 		fmt.Println(scope)
-		Db.Create(&AdminLog{Route: common.Fc.Request.URL.String(),
-			UserId:      common.UserId,
-			Ip:          int(str.Ip2long(common.Fc.Input.IP())),
-			Method:      common.Fc.Request.Method,
-			Description: fmt.Sprintf("%s添加了表%s 的%s", common.UserId, scope.TableName(), fmt.Sprintf("%+v", scope.Value)),
-		})
+		//Db.Create(&AdminLog{Route: common.Fc.Request.URL.String(),
+		//	UserId:      common.UserId,
+		//	Ip:          int(str.Ip2long(common.Fc.Input.IP())),
+		//	Method:      common.Fc.Request.Method,
+		//	Description: fmt.Sprintf("%s添加了表%s 的%s", common.UserId, scope.TableName(), fmt.Sprintf("%+v", scope.Value)),
+		//})
 	}
 	return
 }

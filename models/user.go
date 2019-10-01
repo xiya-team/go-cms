@@ -20,10 +20,10 @@ type User struct {
 	LoginIp    string     `json:"login_ip"   form:"login_ip"   gorm:"default:''"`
 	LoginDate  int        `json:"login_date" form:"login_date" gorm:"default:''"`
 	CreateBy   string     `json:"create_by"  form:"create_by"  gorm:"default:''"`
-	CreatedAt  int        `json:"created_at" form:"created_at" gorm:"default:''"`
+	CreatedAt  int64      `json:"created_at" form:"created_at" gorm:"default:''"`
 	UpdateBy   string     `json:"update_by"  form:"update_by"  gorm:"default:''"`
-	UpdatedAt  int        `json:"updated_at" form:"updated_at" gorm:"default:''"`
-	DeletedAt  int        `json:"deleted_at" form:"deleted_at" gorm:"default:''"`
+	UpdatedAt  int64      `json:"updated_at" form:"updated_at" gorm:"default:''"`
+	DeletedAt  int64      `json:"deleted_at" form:"deleted_at" gorm:"default:''"`
 	Remark     string     `json:"remark"     form:"remark"     gorm:"default:''"`
 	
 }
