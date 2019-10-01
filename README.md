@@ -170,6 +170,5 @@ bee run
 * 需要进微信群 
 
 ``` 
-sudo  service nginx start
-
+请加微信好友:yangcuiwang 验证信息:加入go-cms群
 ```
