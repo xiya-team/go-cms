@@ -7,6 +7,7 @@ import (
 	"go-cms/models"
 	"go-cms/pkg/e"
 	"go-cms/pkg/util"
+	"go-cms/services"
 	"go-cms/validations/backend"
 	"log"
 )
@@ -124,8 +125,8 @@ func (c *UserController) Login() {
 		loginData.Password = password
 		c.ValidatorAuto(&loginData)
 		
-		userModel := models.NewUser()
-		user, _ :=userModel.FindByUserName(user_name)
+		//通过service查询
+		user := services.FindByUserName(user_name)
 		
 		if php2go.Empty(user) {
 			c.JsonResult(e.ERROR, "User Not Exist")
