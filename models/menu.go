@@ -4,7 +4,7 @@ import "errors"
 
 type Menu struct {
 	Model
-	MenuId    int       `json:"menu_id"   form:"menu_id"   gorm:"default:''"`
+	Id        int       `json:"id"        form:"id"        gorm:"default:''"`
 	MenuName  string    `json:"menu_name" form:"menu_name" gorm:"default:''"`
 	ParentId  int       `json:"parent_id" form:"parent_id" gorm:"default:'0'"`
 	OrderNum  int       `json:"order_num" form:"order_num" gorm:"default:'0'"`

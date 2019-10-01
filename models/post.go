@@ -4,7 +4,7 @@ import "errors"
 
 type Post struct {
 	Model
-	PostId    int       `json:"post_id"   form:"post_id"   gorm:"default:''"`
+	Id        int       `json:"id"        form:"id"        gorm:"default:''"`
 	PostCode  string    `json:"post_code" form:"post_code" gorm:"default:''"`
 	PostName  string    `json:"post_name" form:"post_name" gorm:"default:''"`
 	PostSort  int       `json:"post_sort" form:"post_sort" gorm:"default:''"`

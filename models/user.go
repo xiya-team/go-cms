@@ -4,12 +4,12 @@ import "errors"
 
 type User struct {
 	Model
-	UserId     int        `json:"user_id"    form:"user_id"    gorm:"default:''"`
-	DeptId     int        `json:"dept_id"    form:"dept_id"    gorm:"default:''"`
+	Id         int        `json:"id"         form:"id"         gorm:"default:''"`
 	LoginName  string     `json:"login_name" form:"login_name" gorm:"default:''"`
 	UserName   string     `json:"user_name"  form:"user_name"  gorm:"default:''"`
 	UserType   string     `json:"user_type"  form:"user_type"  gorm:"default:'00'"`
 	Email      string     `json:"email"      form:"email"      gorm:"default:''"`
+	Phone      string     `json:"phone"      form:"phone"      gorm:"default:''"`
 	Phonenumber string     `json:"phonenumber"form:"phonenumber"gorm:"default:''"`
 	Sex        string     `json:"sex"        form:"sex"        gorm:"default:'0'"`
 	Avatar     string     `json:"avatar"     form:"avatar"     gorm:"default:''"`
@@ -23,6 +23,7 @@ type User struct {
 	CreatedAt  int        `json:"created_at" form:"created_at" gorm:"default:''"`
 	UpdateBy   string     `json:"update_by"  form:"update_by"  gorm:"default:''"`
 	UpdatedAt  int        `json:"updated_at" form:"updated_at" gorm:"default:''"`
+	DeletedAt  int        `json:"deleted_at" form:"deleted_at" gorm:"default:''"`
 	Remark     string     `json:"remark"     form:"remark"     gorm:"default:''"`
 	
 }
@@ -81,3 +82,9 @@ func (m *User) FindById(id int) (user User, err error) {
 	return
 }
 
+/*****************************************************************新增加的方法*****************************************************************/
+
+func (m *User) FindByUserName(user_name string) (user User, err error) {
+	err = Db.Select("id,user_name,password,salt").Where("user_name=?", user_name).First(&user).Error
+	return
+}

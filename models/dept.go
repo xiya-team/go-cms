@@ -4,7 +4,7 @@ import "errors"
 
 type Dept struct {
 	Model
-	DeptId    int       `json:"dept_id"   form:"dept_id"   gorm:"default:''"`
+	Id        int       `json:"id"        form:"id"        gorm:"default:''"`
 	ParentId  int       `json:"parent_id" form:"parent_id" gorm:"default:'0'"`
 	Ancestors string    `json:"ancestors" form:"ancestors" gorm:"default:''"`
 	DeptName  string    `json:"dept_name" form:"dept_name" gorm:"default:''"`

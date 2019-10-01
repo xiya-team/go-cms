@@ -6,6 +6,7 @@ type RoleDept struct {
 	Model
 	RoleId int    `json:"role_id"form:"role_id"gorm:"default:''"`
 	DeptId int    `json:"dept_id"form:"dept_id"gorm:"default:''"`
+	Id     int    `json:"id"     form:"id"     gorm:"default:''"`
 	
 }
 

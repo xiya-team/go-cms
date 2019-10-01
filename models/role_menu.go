@@ -6,6 +6,7 @@ type RoleMenu struct {
 	Model
 	RoleId int    `json:"role_id"form:"role_id"gorm:"default:''"`
 	MenuId int    `json:"menu_id"form:"menu_id"gorm:"default:''"`
+	Id     int    `json:"id"     form:"id"     gorm:"default:''"`
 	
 }
 

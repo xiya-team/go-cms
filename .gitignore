@@ -12,6 +12,7 @@
 *.out
 .idea
 go-cms
+go_build_go_cms
 *.tmp
 routers/*controllers.go
 conf/app.conf

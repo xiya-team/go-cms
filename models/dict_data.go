@@ -5,6 +5,7 @@ import "errors"
 type DictData struct {
 	Model
 	DictCode  int       `json:"dict_code" form:"dict_code" gorm:"default:''"`
+	Id        int       `json:"id"        form:"id"        gorm:"default:''"`
 	DictSort  int       `json:"dict_sort" form:"dict_sort" gorm:"default:'0'"`
 	DictLabel string    `json:"dict_label"form:"dict_label"gorm:"default:''"`
 	DictValue string    `json:"dict_value"form:"dict_value"gorm:"default:''"`

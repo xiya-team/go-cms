@@ -13,7 +13,6 @@ type AdminLog struct {
 	CreatedAt  int        `json:"created_at" form:"created_at" gorm:"default:'0'"`
 	UpdatedAt  int        `json:"updated_at" form:"updated_at" gorm:"default:'0'"`
 	DeletedAt  int        `json:"deleted_at" form:"deleted_at" gorm:"default:'0'"`
-	
 }
 
 

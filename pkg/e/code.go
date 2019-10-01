@@ -1,8 +1,8 @@
 package e
 
 const (
-	SUCCESS        = 200
-	ERROR          = 500
+	SUCCESS        = 0
+	ERROR          = 1
 	INVALID_PARAMS = 400
 
 	ERROR_EXIST_TAG         = 10001

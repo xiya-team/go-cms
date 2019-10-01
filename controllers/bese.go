@@ -1,16 +1,20 @@
 package controllers
 
 import (
+	"github.com/astaxie/beego"
+	"github.com/syyongx/php2go"
 	"go-cms/common"
 	"go-cms/models"
 	"go-cms/pkg/d"
-	"github.com/astaxie/beego"
+	"go-cms/pkg/e"
+	"go-cms/pkg/util"
 )
 
 type BaseController struct {
 	beego.Controller
 	ADMIN_TPL string
 }
+
 
 func (c *BaseController) Prepare() {
 	c.ADMIN_TPL = "admin/"
@@ -49,4 +53,22 @@ func (c *BaseController) JsonResult(code int, msg string, data ...interface{}) {
 	}
 	c.ServeJSON()
 	c.StopRun()
+}
+
+func (c *BaseController) CheckToken(){
+	
+	token := c.Ctx.Input.Header("Authorization")
+	
+	b, _ := util.CheckToken(token)
+	
+	if !b {
+		c.JsonResult(e.ERROR,"验证失败!")
+	}
+	
+	c.JsonResult(e.SUCCESS,"success")
+}
+
+//获取当前url
+func (c *BaseController) CurrentUrl() string {
+	return php2go.Strtolower(c.Ctx.Request.URL.String())
 }

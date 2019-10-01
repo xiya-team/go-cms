@@ -21,7 +21,7 @@ func (c *ConfigssController) Index() {
 		limit, _ := c.GetInt("limit")
 		key := c.GetString("key", "")
 
-		result, count := models.NewConfigss().Pagination((page-1)*limit, limit, key)
+		result, count := models.NewConfigs().Pagination((page-1)*limit, limit, key)
 		c.JsonResult(0, "ok", result, count)
 	}
 	c.TplName = c.ADMIN_TPL + "configss/index.html"
@@ -29,7 +29,7 @@ func (c *ConfigssController) Index() {
 
 func (c *ConfigssController) Create() {
 	if c.Ctx.Input.IsPost() {
-		configssModel := models.NewConfigss()
+		configssModel := models.NewConfigs()
 		//1.压入数据
 		if err := c.ParseForm(configssModel); err != nil {
 			c.JsonResult(1001, "赋值失败")
@@ -49,13 +49,13 @@ func (c *ConfigssController) Create() {
 		c.JsonResult(0, "添加成功")
 	}
 
-	c.Data["vo"] = models.Configss{}
+	c.Data["vo"] = models.Configs{}
 	c.TplName = c.ADMIN_TPL + "configss/create.html"
 }
 
 func (c *ConfigssController) Update() {
 	id, _ := c.GetInt("id")
-	configss, _ := models.NewConfigss().FindById(id)
+	configss, _ := models.NewConfigs().FindById(id)
 
 	if c.Ctx.Input.IsPost() {
 		//1
@@ -82,7 +82,7 @@ func (c *ConfigssController) Update() {
 }
 
 func (c *ConfigssController) Delete() {
-	configssModel := models.NewConfigss()
+	configssModel := models.NewConfigs()
 	id, _ := c.GetInt("id")
 	configssModel.Id = id
 	if err := configssModel.Delete(); err != nil {
@@ -97,7 +97,7 @@ func (c *ConfigssController) BatchDelete() {
 		c.JsonResult(1001, "赋值失败")
 	}
 
-	configssModel := models.NewConfigss()
+	configssModel := models.NewConfigs()
 	if err := configssModel.DelBatch(ids); err != nil {
 		c.JsonResult(1001, "删除失败")
 	}
