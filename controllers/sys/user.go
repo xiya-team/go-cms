@@ -7,6 +7,7 @@ import (
 	"go-cms/models"
 	"go-cms/pkg/e"
 	"go-cms/pkg/util"
+	"go-cms/validations/backend"
 	"log"
 )
 
@@ -117,19 +118,10 @@ func (c *UserController) Login() {
 		user_name := c.GetString("user_name")
 		password := c.GetString("password")
 		
-		u := models.User{UserName: user_name, Password: password}
-		
-		valid := validation.Validation{}
-		valid.Required(u.UserName, "用户名").Message("不能为空!")
-		valid.Required(u.Password, "密码").Message("不能为空!")
-		
-		if valid.HasErrors() {
-			// 如果有错误信息，证明验证没通过
-			// 打印错误信息
-			for _, err := range valid.Errors {
-				c.JsonResult(e.ERROR, err.Key+":"+err.Message)
-			}
-		}
+		loginData := backend.UserLoginValidation{}
+		loginData.UserName = user_name
+		loginData.Password = password
+		c.ValidatorAuto(&loginData)
 		
 		userModel := models.NewUser()
 		user, _ :=userModel.FindByUserName(user_name)
