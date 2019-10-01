@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/astaxie/beego/context"
 	"github.com/astaxie/beego/logs"
+	"github.com/syyongx/php2go"
 	"go-cms/pkg/d"
 	"go-cms/pkg/e"
 	"go-cms/pkg/util"
@@ -11,7 +12,8 @@ import (
 
 var supportMethod = [6]string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"}
 
-var supportUrls = [1]string{"/api/user/login"}
+//配置不需要登录的url
+var supportUrls = [2]string{"/api/user/login","/api/user/create"}
 
 // 支持伪造restful风格的http请求
 // _method = "DELETE" 即将http的POST请求改为DELETE请求
@@ -57,14 +59,15 @@ func RestfulHandler() func(ctx *context.Context) {
 		}
 		
 		//判断是否需要登录
-		if allow==false{
+		if allow == false{
 			token := ctx.Input.Header("Authorization")
 			b, _ := util.CheckToken(token)
-			if(b==false){
+			if(b == false){
 				Data := make(map[interface{}]interface{})
 				Data["json"] = d.LayuiJson(e.ERROR, "需要登录", "", "")
 				ctx.Output.JSON(Data["json"], false, false)
 				panic(errors.New("user stop run"))
+				php2go.Exit(0)
 				return
 			}
 			

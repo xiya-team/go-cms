@@ -5,9 +5,9 @@
 # https://www.sequelpro.com/
 # https://github.com/sequelpro/sequelpro
 #
-# Host: 127.0.0.1 (MySQL 5.7.23)
-# Database: go_cms
-# Generation Time: 2019-09-29 09:41:27 +0000
+# Host: 49.233.71.184 (MySQL 5.7.27-log)
+# Database: go_cms_dev
+# Generation Time: 2019-10-01 13:32:58 +0000
 # ************************************************************
 
 
@@ -108,7 +108,7 @@ CREATE TABLE `sys_category` (
 DROP TABLE IF EXISTS `sys_configs`;
 
 CREATE TABLE `sys_configs` (
-  `config_id` int(5) NOT NULL AUTO_INCREMENT COMMENT '参数主键',
+  `id` int(5) NOT NULL AUTO_INCREMENT COMMENT '参数主键',
   `config_name` varchar(100) DEFAULT '' COMMENT '参数名称',
   `config_key` varchar(100) DEFAULT '' COMMENT '参数键名',
   `config_value` varchar(100) DEFAULT '' COMMENT '参数键值',
@@ -119,7 +119,7 @@ CREATE TABLE `sys_configs` (
   `updated_at` int(11) DEFAULT NULL COMMENT '更新时间',
   `deleted_at` int(11) DEFAULT NULL COMMENT '删除时间',
   `remark` varchar(500) DEFAULT NULL COMMENT '备注',
-  PRIMARY KEY (`config_id`)
+  PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='参数配置表';
 
 
@@ -130,7 +130,7 @@ CREATE TABLE `sys_configs` (
 DROP TABLE IF EXISTS `sys_dept`;
 
 CREATE TABLE `sys_dept` (
-  `dept_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '部门id',
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '部门id',
   `parent_id` int(11) DEFAULT '0' COMMENT '父部门id',
   `ancestors` varchar(50) DEFAULT '' COMMENT '祖级列表',
   `dept_name` varchar(30) DEFAULT '' COMMENT '部门名称',
@@ -145,7 +145,7 @@ CREATE TABLE `sys_dept` (
   `update_by` varchar(64) DEFAULT '' COMMENT '更新者',
   `updated_at` int(11) DEFAULT NULL COMMENT '更新时间',
   `remark` varchar(500) DEFAULT '' COMMENT '备注',
-  PRIMARY KEY (`dept_id`)
+  PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='部门表';
 
 
@@ -156,7 +156,8 @@ CREATE TABLE `sys_dept` (
 DROP TABLE IF EXISTS `sys_dict_data`;
 
 CREATE TABLE `sys_dict_data` (
-  `dict_code` int(11) NOT NULL AUTO_INCREMENT COMMENT '字典编码',
+  `dict_code` int(11) NOT NULL COMMENT 'ID',
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `dict_sort` int(4) DEFAULT '0' COMMENT '字典排序',
   `dict_label` varchar(100) DEFAULT '' COMMENT '字典标签',
   `dict_value` varchar(100) DEFAULT '' COMMENT '字典键值',
@@ -170,7 +171,7 @@ CREATE TABLE `sys_dict_data` (
   `update_by` varchar(64) DEFAULT '' COMMENT '更新者',
   `updated_at` int(11) DEFAULT NULL COMMENT '更新时间',
   `remark` varchar(500) DEFAULT NULL COMMENT '备注',
-  PRIMARY KEY (`dict_code`)
+  PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='字典数据表';
 
 
@@ -181,7 +182,8 @@ CREATE TABLE `sys_dict_data` (
 DROP TABLE IF EXISTS `sys_dict_type`;
 
 CREATE TABLE `sys_dict_type` (
-  `dict_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '字典主键',
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `dict_id` int(11) NOT NULL COMMENT '字典主键',
   `dict_name` varchar(100) DEFAULT '' COMMENT '字典名称',
   `dict_type` varchar(100) DEFAULT '' COMMENT '字典类型',
   `status` char(1) DEFAULT '0' COMMENT '状态（0正常 1停用）',
@@ -190,7 +192,7 @@ CREATE TABLE `sys_dict_type` (
   `update_by` varchar(64) DEFAULT '' COMMENT '更新者',
   `updated_at` int(11) DEFAULT NULL COMMENT '更新时间',
   `remark` varchar(500) DEFAULT NULL COMMENT '备注',
-  PRIMARY KEY (`dict_id`),
+  PRIMARY KEY (`id`),
   UNIQUE KEY `dict_type` (`dict_type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='字典类型表';
 
@@ -202,7 +204,7 @@ CREATE TABLE `sys_dict_type` (
 DROP TABLE IF EXISTS `sys_menu`;
 
 CREATE TABLE `sys_menu` (
-  `menu_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '菜单ID',
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '菜单ID',
   `menu_name` varchar(50) NOT NULL COMMENT '菜单名称',
   `parent_id` int(11) DEFAULT '0' COMMENT '父菜单ID',
   `order_num` int(4) DEFAULT '0' COMMENT '显示顺序',
@@ -216,7 +218,7 @@ CREATE TABLE `sys_menu` (
   `update_by` varchar(64) DEFAULT '' COMMENT '更新者',
   `updated_at` int(11) DEFAULT NULL COMMENT '更新时间',
   `remark` varchar(500) DEFAULT '' COMMENT '备注',
-  PRIMARY KEY (`menu_id`)
+  PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='菜单权限表';
 
 
@@ -227,7 +229,7 @@ CREATE TABLE `sys_menu` (
 DROP TABLE IF EXISTS `sys_post`;
 
 CREATE TABLE `sys_post` (
-  `post_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '岗位ID',
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '岗位ID',
   `post_code` varchar(64) NOT NULL COMMENT '岗位编码',
   `post_name` varchar(50) NOT NULL COMMENT '岗位名称',
   `post_sort` int(4) NOT NULL COMMENT '显示顺序',
@@ -237,7 +239,7 @@ CREATE TABLE `sys_post` (
   `update_by` varchar(64) DEFAULT '' COMMENT '更新者',
   `updated_at` int(11) DEFAULT NULL COMMENT '更新时间',
   `remark` varchar(500) DEFAULT NULL COMMENT '备注',
-  PRIMARY KEY (`post_id`)
+  PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='岗位信息表';
 
 
@@ -248,7 +250,7 @@ CREATE TABLE `sys_post` (
 DROP TABLE IF EXISTS `sys_role`;
 
 CREATE TABLE `sys_role` (
-  `role_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '角色ID',
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '角色ID',
   `role_name` varchar(30) NOT NULL COMMENT '角色名称',
   `role_key` varchar(100) NOT NULL COMMENT '角色权限字符串',
   `role_sort` int(4) NOT NULL COMMENT '显示顺序',
@@ -260,7 +262,7 @@ CREATE TABLE `sys_role` (
   `update_by` varchar(64) DEFAULT '' COMMENT '更新者',
   `updated_at` int(11) DEFAULT NULL COMMENT '更新时间',
   `remark` varchar(500) DEFAULT NULL COMMENT '备注',
-  PRIMARY KEY (`role_id`)
+  PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='角色信息表';
 
 
@@ -273,7 +275,8 @@ DROP TABLE IF EXISTS `sys_role_dept`;
 CREATE TABLE `sys_role_dept` (
   `role_id` int(11) NOT NULL COMMENT '角色ID',
   `dept_id` int(11) NOT NULL COMMENT '部门ID',
-  PRIMARY KEY (`role_id`,`dept_id`)
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='角色和部门关联表';
 
 
@@ -286,7 +289,8 @@ DROP TABLE IF EXISTS `sys_role_menu`;
 CREATE TABLE `sys_role_menu` (
   `role_id` int(11) NOT NULL COMMENT '角色ID',
   `menu_id` int(11) NOT NULL COMMENT '菜单ID',
-  PRIMARY KEY (`role_id`,`menu_id`)
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='角色和菜单关联表';
 
 
@@ -297,12 +301,12 @@ CREATE TABLE `sys_role_menu` (
 DROP TABLE IF EXISTS `sys_user`;
 
 CREATE TABLE `sys_user` (
-  `user_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '用户ID',
-  `dept_id` int(11) DEFAULT NULL COMMENT '部门ID',
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '用户ID',
   `login_name` varchar(30) NOT NULL COMMENT '登录账号',
   `user_name` varchar(30) NOT NULL COMMENT '用户昵称',
   `user_type` varchar(2) DEFAULT '00' COMMENT '用户类型（00系统用户）',
   `email` varchar(50) DEFAULT '' COMMENT '用户邮箱',
+  `phone` varchar(12) DEFAULT NULL COMMENT '手机号',
   `phonenumber` varchar(11) DEFAULT '' COMMENT '手机号码',
   `sex` char(1) DEFAULT '0' COMMENT '用户性别（0男 1女 2未知）',
   `avatar` varchar(100) DEFAULT '' COMMENT '头像路径',
@@ -316,10 +320,24 @@ CREATE TABLE `sys_user` (
   `created_at` int(11) DEFAULT NULL COMMENT '创建时间',
   `update_by` varchar(64) DEFAULT '' COMMENT '更新者',
   `updated_at` int(11) DEFAULT NULL COMMENT '更新时间',
+  `deleted_at` int(11) DEFAULT NULL COMMENT '删除时间',
   `remark` varchar(500) DEFAULT '' COMMENT '备注',
-  PRIMARY KEY (`user_id`)
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `user_name` (`user_name`) USING BTREE,
+  UNIQUE KEY `phone` (`phone`) USING BTREE,
+  UNIQUE KEY `email` (`email`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户信息表';
 
+LOCK TABLES `sys_user` WRITE;
+/*!40000 ALTER TABLE `sys_user` DISABLE KEYS */;
+
+INSERT INTO `sys_user` (`id`, `login_name`, `user_name`, `user_type`, `email`, `phone`, `phonenumber`, `sex`, `avatar`, `password`, `salt`, `status`, `del_flag`, `login_ip`, `login_date`, `create_by`, `created_at`, `update_by`, `updated_at`, `deleted_at`, `remark`)
+VALUES
+	(1,'yangcuiwang','yangcuiwang','00','',NULL,'','0','','68bfa7a9aa2bb572ecd9e5ec3c2bec50','lkukn','0','0','',NULL,'',NULL,'',NULL,NULL,''),
+	(6,'kim','kim','00','kim',NULL,'','0','','ca8a03da7a2ff812d049a9ee6972c7a2','THDUH','0','0','',NULL,'',1569935823,'',1569935824,NULL,'');
+
+/*!40000 ALTER TABLE `sys_user` ENABLE KEYS */;
+UNLOCK TABLES;
 
 
 # Dump of table sys_user_post
@@ -330,7 +348,8 @@ DROP TABLE IF EXISTS `sys_user_post`;
 CREATE TABLE `sys_user_post` (
   `user_id` int(11) NOT NULL COMMENT '用户ID',
   `post_id` int(11) NOT NULL COMMENT '岗位ID',
-  PRIMARY KEY (`user_id`,`post_id`)
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户与岗位关联表';
 
 
@@ -343,7 +362,8 @@ DROP TABLE IF EXISTS `sys_user_role`;
 CREATE TABLE `sys_user_role` (
   `user_id` int(11) NOT NULL COMMENT '用户ID',
   `role_id` int(11) NOT NULL COMMENT '角色ID',
-  PRIMARY KEY (`user_id`,`role_id`)
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户和角色关联表';
 
 
