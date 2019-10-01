@@ -6,6 +6,7 @@ type UserPost struct {
 	Model
 	UserId int    `json:"user_id"form:"user_id"gorm:"default:''"`
 	PostId int    `json:"post_id"form:"post_id"gorm:"default:''"`
+	Id     int    `json:"id"     form:"id"     gorm:"default:''"`
 	
 }
 

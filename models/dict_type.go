@@ -4,6 +4,7 @@ import "errors"
 
 type DictType struct {
 	Model
+	Id        int       `json:"id"        form:"id"        gorm:"default:''"`
 	DictId    int       `json:"dict_id"   form:"dict_id"   gorm:"default:''"`
 	DictName  string    `json:"dict_name" form:"dict_name" gorm:"default:''"`
 	DictType  string    `json:"dict_type" form:"dict_type" gorm:"default:''"`

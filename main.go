@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
 	"github.com/astaxie/beego/plugins/cors"
 	"go-cms/generate"
@@ -8,8 +9,6 @@ import (
 	_ "go-cms/routers"
 	"html/template"
 	"net/http"
-	
-	"github.com/astaxie/beego"
 )
 
 func page_not_found(rw http.ResponseWriter, r *http.Request) {
@@ -35,6 +34,7 @@ func init() {
 }
 
 func main() {
+	
 	//gii
 	if b, err := beego.AppConfig.Bool("gii"); b {
 		if err == nil {

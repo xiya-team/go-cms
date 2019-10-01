@@ -4,7 +4,7 @@ import "errors"
 
 type Role struct {
 	Model
-	RoleId    int       `json:"role_id"   form:"role_id"   gorm:"default:''"`
+	Id        int       `json:"id"        form:"id"        gorm:"default:''"`
 	RoleName  string    `json:"role_name" form:"role_name" gorm:"default:''"`
 	RoleKey   string    `json:"role_key"  form:"role_key"  gorm:"default:''"`
 	RoleSort  int       `json:"role_sort" form:"role_sort" gorm:"default:''"`

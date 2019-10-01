@@ -1,11 +1,17 @@
 package handlers
 
 import (
+	"errors"
 	"github.com/astaxie/beego/context"
 	"github.com/astaxie/beego/logs"
+	"go-cms/pkg/d"
+	"go-cms/pkg/e"
+	"go-cms/pkg/util"
 )
 
 var supportMethod = [6]string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"}
+
+var supportUrls = [1]string{"/api/user/login"}
 
 // 支持伪造restful风格的http请求
 // _method = "DELETE" 即将http的POST请求改为DELETE请求
@@ -40,6 +46,36 @@ func RestfulHandler() func(ctx *context.Context) {
 		if requestMethod != "" && ctx.Input.IsPost() {
 			ctx.Request.Method = requestMethod
 		}
+		
+		allow := false
+		current_url := ctx.Request.URL.String()
+		for _, url := range supportUrls{
+			if url == current_url {
+				allow = true
+				break
+			}
+		}
+		
+		//判断是否需要登录
+		if allow==false{
+			token := ctx.Input.Header("Authorization")
+			b, _ := util.CheckToken(token)
+			if(b==false){
+				Data := make(map[interface{}]interface{})
+				Data["json"] = d.LayuiJson(e.ERROR, "需要登录", "", "")
+				ctx.Output.JSON(Data["json"], false, false)
+				panic(errors.New("user stop run"))
+				return
+			}
+			
+			//
+			//_, ok := ctx.Input.Session("uid").(string)
+			//ok2 := strings.Contains(ctx.Request.RequestURI, "/login")
+			//if !ok && !ok2{
+			//	ctx.Redirect(302, "/login/index")
+			//}
+		}
+		
 	}
 	return restfulHandler
 }

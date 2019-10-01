@@ -4,7 +4,7 @@ import "errors"
 
 type Configs struct {
 	Model
-	ConfigId    int         `json:"config_id"   form:"config_id"   gorm:"default:''"`
+	Id          int         `json:"id"          form:"id"          gorm:"default:''"`
 	ConfigName  string      `json:"config_name" form:"config_name" gorm:"default:''"`
 	ConfigKey   string      `json:"config_key"  form:"config_key"  gorm:"default:''"`
 	ConfigValue string      `json:"config_value"form:"config_value"gorm:"default:''"`

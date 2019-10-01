@@ -166,3 +166,10 @@ sudo  service nginx start
 bee run 
 
 ```
+
+* 需要进微信群 
+
+``` 
+sudo  service nginx start
+
+```

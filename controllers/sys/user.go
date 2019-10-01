@@ -1,9 +1,12 @@
 package sys
 
 import (
+	"github.com/astaxie/beego/validation"
+	"github.com/syyongx/php2go"
 	"go-cms/controllers"
 	"go-cms/models"
-	"github.com/astaxie/beego/validation"
+	"go-cms/pkg/e"
+	"go-cms/pkg/util"
 	"log"
 )
 
@@ -102,5 +105,42 @@ func (c *UserController) BatchDelete() {
 		c.JsonResult(1001, "删除失败")
 	}
 	c.JsonResult(0, "删除成功")
+}
+
+func (c *UserController) Login() {
+	user_name := c.GetString("user_name")
+	password := c.GetString("password")
+	
+	u := models.User{UserName: user_name, Password: password}
+	
+	valid := validation.Validation{}
+	valid.Required(u.UserName, "用户名").Message("不能为空!")
+	valid.Required(u.Password, "密码").Message("不能为空!")
+	
+	if valid.HasErrors() {
+		// 如果有错误信息，证明验证没通过
+		// 打印错误信息
+		for _, err := range valid.Errors {
+			c.JsonResult(e.ERROR, err.Key+":"+err.Message)
+		}
+	}
+	
+	userModel := models.NewUser()
+	user, _ :=userModel.FindByUserName(user_name)
+	
+	if php2go.Empty(user) {
+		c.JsonResult(e.ERROR, "User Not Exist")
+	}
+	
+	has := php2go.Md5(password+user.Salt)
+	
+	if(user.Password == has){
+		token:=util.CreateToken(user)
+		jsonData := make(map[string]interface{}, 1)
+		jsonData["token"] = token
+		c.JsonResult(e.SUCCESS,"登录成功!",jsonData)
+	}
+	
+	c.JsonResult(e.ERROR, has)
 }
 
