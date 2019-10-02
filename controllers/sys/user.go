@@ -144,3 +144,17 @@ func (c *UserController) Login() {
 		c.JsonResult(e.ERROR, has)
 	}
 }
+
+
+func (c *UserController) CheckToken(){
+	
+	token := c.Ctx.Input.Header("Authorization")
+	
+	b, _ := util.CheckToken(token)
+	
+	if !b {
+		c.JsonResult(e.ERROR,"验证失败!")
+	}
+	
+	c.JsonResult(e.SUCCESS,"success")
+}

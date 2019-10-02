@@ -17,5 +17,5 @@ func init() {
 	
 	beego.Router("/api/user/login", &sys.UserController{}, "post:Login")
 	beego.Router("/api/user/create", &sys.UserController{}, "post:Create")
-	//beego.Router("/api/user/check", &sys.UserController{}, "*:DoCheck")
+	beego.Router("/api/user/check_token", &sys.UserController{}, "post:CheckToken")
 }

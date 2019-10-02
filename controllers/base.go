@@ -8,7 +8,6 @@ import (
 	"go-cms/models"
 	"go-cms/pkg/d"
 	"go-cms/pkg/e"
-	"go-cms/pkg/util"
 )
 
 type BaseController struct {
@@ -56,18 +55,6 @@ func (c *BaseController) JsonResult(code int, msg string, data ...interface{}) {
 	c.StopRun()
 }
 
-func (c *BaseController) CheckToken(){
-	
-	token := c.Ctx.Input.Header("Authorization")
-	
-	b, _ := util.CheckToken(token)
-	
-	if !b {
-		c.JsonResult(e.ERROR,"验证失败!")
-	}
-	
-	c.JsonResult(e.SUCCESS,"success")
-}
 
 //获取当前url
 func (c *BaseController) CurrentUrl() string {
