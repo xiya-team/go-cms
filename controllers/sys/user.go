@@ -119,8 +119,6 @@ func (c *UserController) Login() {
 		user_name := c.GetString("user_name")
 		password := c.GetString("password")
 		
-		util.SendAliyunSMS()
-		
 		//数据校验
 		loginData := backend.UserLoginValidation{}
 		loginData.UserName = user_name
