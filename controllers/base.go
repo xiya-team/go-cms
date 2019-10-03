@@ -44,11 +44,13 @@ func (c *BaseController) History(msg string, url string) {
 }
 
 func (c *BaseController) JsonResult(code int, msg string, data ...interface{}) {
-	if len(data) > 1 {
+	
+	switch len(data) {
+	case 2:
 		c.Data["json"] = d.LayuiJson(code, msg, data[0], data[1])
-	} else if len(data) > 0 {
+	case 1:
 		c.Data["json"] = d.LayuiJson(code, msg, data[0], 0)
-	} else {
+	default:
 		c.Data["json"] = d.LayuiJson(code, msg, 0, 0)
 	}
 	c.ServeJSON()

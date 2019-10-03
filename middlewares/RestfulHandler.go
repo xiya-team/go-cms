@@ -14,7 +14,7 @@ import (
 var supportMethod = [6]string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"}
 
 //配置不需要登录的url
-var urlMapping = [2]string{"/api/user/login","/api/user/create"}
+var urlMapping = []string{"/api/user/login","/api/user/create"}
 
 // 支持伪造restful风格的http请求
 // _method = "DELETE" 即将http的POST请求改为DELETE请求
