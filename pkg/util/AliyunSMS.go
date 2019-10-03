@@ -8,11 +8,11 @@ import (
 
 func SendAliyunSMS(){
 	
-	sc, err := SmsClient.NewSMSClient("oIlPLqoEBciuy86h", "NI8XDGEpBleP76CzbL3NEP1GLkTzHR")
+	sc, err := SmsClient.NewSMSClient("", "")
 	if err != nil {
 		return
 	}
-	statusCode, _, _ := sc.SendSMS(SmsClient.Params{"13911052021", "洗牙网", "SMS_165117151", `{"code":"123456"}`})
+	statusCode, _, _ := sc.SendSMS(SmsClient.Params{"", "", "", `{"code":"123456"}`})
 	if statusCode == http.StatusOK {
 		log.Println("发送成功")
 	} else {
