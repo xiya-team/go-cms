@@ -167,9 +167,5 @@ bee run
 
 ```
 
-* 需要进微信群 
-
-``` 
-请加微信好友:yangcuiwang 
-入群验证信息:加入go-cms群
-```
+* 需要进微信群 (入群验证信息:加入go-cms群)
+![](public/Wechat.jpeg)

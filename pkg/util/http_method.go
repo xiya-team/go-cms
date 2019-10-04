@@ -37,7 +37,7 @@ func HttpGet(url string) (res string, err error) {
 }
 
 func HttpPost() {
-	resp, err := http.Post("http://www.01happy.com/demo/accept.php",
+	resp, err := http.Post("http://www.01happy.com/demo/accept.c *BaseController",
 		"application/x-www-form-urlencoded",
 		strings.NewReader("name=cjb"))
 	if err != nil {

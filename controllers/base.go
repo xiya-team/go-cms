@@ -8,7 +8,6 @@ import (
 	"go-cms/models"
 	"go-cms/pkg/d"
 	"go-cms/pkg/e"
-	"go-cms/pkg/util"
 )
 
 type BaseController struct {
@@ -45,29 +44,19 @@ func (c *BaseController) History(msg string, url string) {
 }
 
 func (c *BaseController) JsonResult(code int, msg string, data ...interface{}) {
-	if len(data) > 1 {
+	
+	switch len(data) {
+	case 2:
 		c.Data["json"] = d.LayuiJson(code, msg, data[0], data[1])
-	} else if len(data) > 0 {
+	case 1:
 		c.Data["json"] = d.LayuiJson(code, msg, data[0], 0)
-	} else {
+	default:
 		c.Data["json"] = d.LayuiJson(code, msg, 0, 0)
 	}
 	c.ServeJSON()
 	c.StopRun()
 }
 
-func (c *BaseController) CheckToken(){
-	
-	token := c.Ctx.Input.Header("Authorization")
-	
-	b, _ := util.CheckToken(token)
-	
-	if !b {
-		c.JsonResult(e.ERROR,"验证失败!")
-	}
-	
-	c.JsonResult(e.SUCCESS,"success")
-}
 
 //获取当前url
 func (c *BaseController) CurrentUrl() string {

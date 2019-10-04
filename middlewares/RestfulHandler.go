@@ -2,6 +2,7 @@ package middlewares
 
 import (
 	"errors"
+	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/context"
 	"github.com/astaxie/beego/logs"
 	"github.com/syyongx/php2go"
@@ -13,7 +14,7 @@ import (
 var supportMethod = [6]string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"}
 
 //配置不需要登录的url
-var supportUrls = [2]string{"/api/user/login","/api/user/create"}
+var urlMapping = []string{"/api/user/login","/api/user/create"}
 
 // 支持伪造restful风格的http请求
 // _method = "DELETE" 即将http的POST请求改为DELETE请求
@@ -50,9 +51,9 @@ func RestfulHandler() func(ctx *context.Context) {
 		}
 		
 		allow := false
-		current_url := ctx.Request.URL.String()
-		for _, url := range supportUrls{
-			if url == current_url {
+		current_url := ctx.Request.URL.RequestURI()
+		for _, baseurl := range urlMapping{
+			if php2go.Strtolower(baseurl) == php2go.Strtolower(current_url) {
 				allow = true
 				break
 			}
@@ -60,7 +61,7 @@ func RestfulHandler() func(ctx *context.Context) {
 		
 		//判断是否需要登录
 		if allow == false{
-			token := ctx.Input.Header("Authorization")
+			token := ctx.Input.Header(beego.AppConfig.String("tokenName"))
 			b, _ := util.CheckToken(token)
 			if(b == false){
 				Data := make(map[interface{}]interface{})
