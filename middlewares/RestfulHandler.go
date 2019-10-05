@@ -1,15 +1,33 @@
 package middlewares
 
 import (
-	"errors"
+	"encoding/json"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/context"
 	"github.com/astaxie/beego/logs"
 	"github.com/syyongx/php2go"
-	"go-cms/pkg/d"
-	"go-cms/pkg/e"
 	"go-cms/pkg/util"
+	"time"
 )
+
+
+//map[string]interface{}{"code": 400, "msg": "no user exists!", "data": nil}
+type Response struct {
+	Code      int         `json:"code"`
+	Msg       string      `json:"msg"`
+	Data      interface{} `json:"data"`
+	TimeStamp int64       `json:"timestamp"`
+}
+
+func OutResponse(code int, data interface{}, msg string) Response {
+	Resp := Response{
+		Code:      code,
+		Msg:       msg,
+		Data:      data,
+		TimeStamp: time.Now().Unix(), //time.Now().Format("2006-01-02 15:04:05")
+	}
+	return Resp
+}
 
 var supportMethod = [6]string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"}
 
@@ -64,12 +82,12 @@ func RestfulHandler() func(ctx *context.Context) {
 			token := ctx.Input.Header(beego.AppConfig.String("jwt::token_name"))
 			b, _ := util.CheckToken(token)
 			if(b == false){
-				Data := make(map[interface{}]interface{})
-				Data["json"] = d.LayuiJson(e.ERROR, "需要登录", "", "")
-				ctx.Output.JSON(Data["json"], false, false)
-				panic(errors.New("user stop run"))
-				php2go.Exit(0)
-				return
+				ctx.Output.Header("Content-Type", "application/json")
+				resBody, err := json.Marshal(OutResponse(1, nil, "非法请求,token不合法"))
+				ctx.Output.Body(resBody)
+				if err != nil {
+					panic(err)
+				}
 			}
 			
 			//
