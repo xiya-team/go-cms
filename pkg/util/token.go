@@ -30,17 +30,61 @@ func CheckToken(tokenString string) (b bool, t *jwt.Token) {
 		return false, nil
 	}
 	
-	t, err := jwt.Parse(kv[1], func(*jwt.Token) (interface{}, error) {
+	token, err := jwt.Parse(kv[1], func(*jwt.Token) (interface{}, error) {
 		return []byte(beego.AppConfig.String("jwt::secrets")), nil
 	})
 	
 	fmt.Println(err)
 	
 	if err != nil {
+		switch err.(type) {
+		
+		case *jwt.ValidationError: // something was wrong during the validation
+			vErr := err.(*jwt.ValidationError)
+			switch vErr.Errors {
+			case jwt.ValidationErrorExpired:
+				//ctx.Output.SetStatus(401)
+				//resBody, err := json.Marshal(controllers.OutResponse(401, nil, "登录已过期，请重新登录"))
+				//ctx.Output.Body(resBody)
+				//if err != nil {
+				//	panic(err)
+				//}
+				return false,nil
+			default:
+				//ctx.Output.SetStatus(401)
+				//resBytes, err := json.Marshal(controllers.OutResponse(401, nil, "非法请求，请重新登录"))
+				//ctx.Output.Body(resBytes)
+				//if err != nil {
+				//	panic(err)
+				//}
+				return false,nil
+			}
+		default: // something else went wrong
+			//ctx.Output.SetStatus(401)
+			//resBytes, err := json.Marshal(controllers.OutResponse(401, nil, "非法请求，请重新登录"))
+			//ctx.Output.Body(resBytes)
+			//if err != nil {
+			//	panic(err)
+			//}
+			return false,nil
+		}
+		
 		fmt.Println("转换为jwt claims失败.", err)
 		return false, nil
 	}
-	return true, t
+	
+	if !token.Valid {
+		// but may still be invalid
+		//ctx.Output.SetStatus(401)
+		//resBytes, err := json.Marshal(controllers.OutResponse(401, nil, "非法请求，请重新登录"))
+		//ctx.Output.Body(resBytes)
+		//if err != nil {
+		//	panic(err)
+		//}
+		return false, nil
+	}
+	
+	return true, token
 }
 
 func GetUserIdByToken(tokenString string)  float64{

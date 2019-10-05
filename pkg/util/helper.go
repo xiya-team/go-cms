@@ -4,11 +4,22 @@ import (
 	"crypto"
 	"encoding/hex"
 	"fmt"
+	"math/rand"
+	"net"
 	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
+)
+
+const letterBytes = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+const numLetterBytes = "0123456789"
+
+const (
+	letterIdxBits = 6                    // 6 bits to represent a letter index
+	letterIdxMask = 1<<letterIdxBits - 1 // All 1-bits, as many as letterIdxBits
+	letterIdxMax  = 63 / letterIdxBits   // # of letter indices fitting in 63 bits
 )
 
 func SHA256Encode(s string) string {
@@ -92,4 +103,56 @@ func Pwd() string {
 // 传入开始时间，计算结束时间
 func ComputedHandlerSeconds(startTime int64) float64 {
 	return float64(time.Now().UnixNano()-startTime) / 1e9
+}
+
+// 获取服务器IP
+func GetLocalIp() string {
+	addrSlice, err := net.InterfaceAddrs()
+	if err != nil {
+		fmt.Println("Get local IP addr failed!")
+		return "127.0.0.1"
+	}
+	for _, addr := range addrSlice {
+		if ipnet, ok := addr.(*net.IPNet); ok && !ipnet.IP.IsLoopback() {
+			if nil != ipnet.IP.To4() {
+				return ipnet.IP.String()
+			}
+		}
+	}
+	return "127.0.0.1"
+}
+
+// 字符串转数组
+func StrToArray(str, prefix string) interface{} {
+	if str == "" {
+		return nil
+	}
+	//strings.Join(strArr, ",")数组转字符串
+	return strings.Split(str, prefix)
+}
+
+func randString(n int, LetterBytes string) string {
+	src := rand.NewSource(time.Now().UnixNano())
+	b := make([]byte, n)
+	// A src.Int63() generates 63 random bits, enough for letterIdxMax characters!
+	for i, cache, remain := n-1, src.Int63(), letterIdxMax; i >= 0; {
+		if remain == 0 {
+			cache, remain = src.Int63(), letterIdxMax
+		}
+		if idx := int(cache & letterIdxMask); idx < len(LetterBytes) {
+			b[i] = LetterBytes[idx]
+			i--
+		}
+		cache >>= letterIdxBits
+		remain--
+	}
+	return string(b)
+}
+
+func RandString(n int) string {
+	return randString(n, letterBytes)
+}
+
+func RandNumString(n int) string {
+	return randString(n, numLetterBytes)
 }
