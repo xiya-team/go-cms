@@ -2,7 +2,7 @@ package e
 
 const (
 	SUCCESS        = 0
-	ERROR          = 1001
+	ERROR          = 1
 	INVALID_PARAMS = 400
 
 	ERROR_EXIST_TAG         = 10001

@@ -8,6 +8,7 @@ import (
 	_ "go-cms/routers"
 	"html/template"
 	"net/http"
+	"runtime"
 )
 
 func page_not_found(rw http.ResponseWriter, r *http.Request) {
@@ -25,6 +26,8 @@ func init() {
 }
 
 func main() {
+	//指定使用多核，核心数为CPU的实际核心数量
+	runtime.GOMAXPROCS(runtime.NumCPU())
 	
 	//gii
 	if b, err := beego.AppConfig.Bool("gii"); b {

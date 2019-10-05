@@ -1,15 +1,34 @@
 package middlewares
 
 import (
-	"errors"
+	"encoding/json"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/context"
 	"github.com/astaxie/beego/logs"
 	"github.com/syyongx/php2go"
-	"go-cms/pkg/d"
 	"go-cms/pkg/e"
 	"go-cms/pkg/util"
+	"time"
 )
+
+
+//map[string]interface{}{"code": 400, "msg": "no user exists!", "data": nil}
+type Response struct {
+	Code      int         `json:"code"`
+	Msg       string      `json:"msg"`
+	Data      interface{} `json:"data"`
+	TimeStamp int64       `json:"timestamp"`
+}
+
+func OutResponse(code int, data interface{}, msg string) Response {
+	Resp := Response{
+		Code:      code,
+		Msg:       msg,
+		Data:      data,
+		TimeStamp: time.Now().Unix(), //time.Now().Format("2006-01-02 15:04:05")
+	}
+	return Resp
+}
 
 var supportMethod = [6]string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"}
 
@@ -40,8 +59,12 @@ func RestfulHandler() func(ctx *context.Context) {
 		
 		// 方法请求
 		if flag == false {
-			ctx.ResponseWriter.WriteHeader(405)
-			ctx.Output.Body([]byte("Method Not Allow"))
+			ctx.Output.Header("Content-Type", "application/json")
+			resBody, err := json.Marshal(OutResponse(e.ERROR, nil, "Method Not Allow"))
+			ctx.Output.Body(resBody)
+			if err != nil {
+				panic(err)
+			}
 			return
 		}
 		
@@ -50,34 +73,24 @@ func RestfulHandler() func(ctx *context.Context) {
 			ctx.Request.Method = requestMethod
 		}
 		
-		allow := false
 		current_url := ctx.Request.URL.RequestURI()
-		for _, baseurl := range urlMapping{
-			if php2go.Strtolower(baseurl) == php2go.Strtolower(current_url) {
-				allow = true
-				break
+		if php2go.InArray(php2go.Strtolower(current_url),urlMapping) != true {
+			token := ctx.Input.Header(beego.AppConfig.String("jwt::token_name"))
+			allow, _ := util.CheckToken(token)
+			if(allow == false){
+				ctx.Output.Header("Content-Type", "application/json")
+				resBody, err := json.Marshal(OutResponse(e.ERROR, nil, "非法请求,token不合法"))
+				ctx.Output.Body(resBody)
+				if err != nil {
+					panic(err)
+				}
+				
+				//_, ok := ctx.Input.Session("uid").(string)
+				//ok2 := strings.Contains(ctx.Request.RequestURI, "/login")
+				//if !ok && !ok2{
+				//	ctx.Redirect(302, "/login/index")
+				//}
 			}
-		}
-		
-		//判断是否需要登录
-		if allow == false{
-			token := ctx.Input.Header(beego.AppConfig.String("tokenName"))
-			b, _ := util.CheckToken(token)
-			if(b == false){
-				Data := make(map[interface{}]interface{})
-				Data["json"] = d.LayuiJson(e.ERROR, "需要登录", "", "")
-				ctx.Output.JSON(Data["json"], false, false)
-				panic(errors.New("user stop run"))
-				php2go.Exit(0)
-				return
-			}
-			
-			//
-			//_, ok := ctx.Input.Session("uid").(string)
-			//ok2 := strings.Contains(ctx.Request.RequestURI, "/login")
-			//if !ok && !ok2{
-			//	ctx.Redirect(302, "/login/index")
-			//}
 		}
 		
 	}
