@@ -74,25 +74,22 @@ func RestfulHandler() func(ctx *context.Context) {
 		}
 		
 		current_url := ctx.Request.URL.RequestURI()
-		for _, baseurl := range urlMapping{
-			if php2go.Strtolower(baseurl) == php2go.Strtolower(current_url) {
-				token := ctx.Input.Header(beego.AppConfig.String("jwt::token_name"))
-				allow, _ := util.CheckToken(token)
-				if(allow == false){
-					ctx.Output.Header("Content-Type", "application/json")
-					resBody, err := json.Marshal(OutResponse(e.ERROR, nil, "非法请求,token不合法"))
-					ctx.Output.Body(resBody)
-					if err != nil {
-						panic(err)
-					}
-					
-					//_, ok := ctx.Input.Session("uid").(string)
-					//ok2 := strings.Contains(ctx.Request.RequestURI, "/login")
-					//if !ok && !ok2{
-					//	ctx.Redirect(302, "/login/index")
-					//}
+		if php2go.InArray(php2go.Strtolower(current_url),urlMapping) != true {
+			token := ctx.Input.Header(beego.AppConfig.String("jwt::token_name"))
+			allow, _ := util.CheckToken(token)
+			if(allow == false){
+				ctx.Output.Header("Content-Type", "application/json")
+				resBody, err := json.Marshal(OutResponse(e.ERROR, nil, "非法请求,token不合法"))
+				ctx.Output.Body(resBody)
+				if err != nil {
+					panic(err)
 				}
-				break
+				
+				//_, ok := ctx.Input.Session("uid").(string)
+				//ok2 := strings.Contains(ctx.Request.RequestURI, "/login")
+				//if !ok && !ok2{
+				//	ctx.Redirect(302, "/login/index")
+				//}
 			}
 		}
 		
