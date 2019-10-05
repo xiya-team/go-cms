@@ -61,7 +61,7 @@ func RestfulHandler() func(ctx *context.Context) {
 		
 		//判断是否需要登录
 		if allow == false{
-			token := ctx.Input.Header(beego.AppConfig.String("tokenName"))
+			token := ctx.Input.Header(beego.AppConfig.String("jwt::token_name"))
 			b, _ := util.CheckToken(token)
 			if(b == false){
 				Data := make(map[interface{}]interface{})

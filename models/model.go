@@ -95,7 +95,11 @@ func init() {
 			return tablePrefix + defaultTableName
 		}
 		
-		Db.LogMode(true)
+		//开发模式打印SQL
+		if beego.BConfig.RunMode == "dev" {
+			Db.LogMode(true)
+		}
+		
 		Db.SingularTable(true)
 		Db.DB().SetMaxIdleConns(10)
 		Db.DB().SetMaxOpenConns(100)

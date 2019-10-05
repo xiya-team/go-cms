@@ -18,7 +18,7 @@ func CreateToken(user models.User) string {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	
 	//token.Claims=claims
-	tokenString,_ :=token.SignedString([]byte(beego.AppConfig.String("token_secrets")))
+	tokenString,_ :=token.SignedString([]byte(beego.AppConfig.String("jwt::secrets")))
 	
 	return tokenString
 }
@@ -31,7 +31,7 @@ func CheckToken(tokenString string) (b bool, t *jwt.Token) {
 	}
 	
 	t, err := jwt.Parse(kv[1], func(*jwt.Token) (interface{}, error) {
-		return []byte(beego.AppConfig.String("token_secrets")), nil
+		return []byte(beego.AppConfig.String("jwt::secrets")), nil
 	})
 	
 	fmt.Println(err)
@@ -60,7 +60,7 @@ func GetUserNameByToken(tokenString string)  string{
 		if _,ok :=token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil,fmt.Errorf("Unexpected signing method")
 		}
-		return []byte(beego.AppConfig.String("token_secrets")),nil
+		return []byte(beego.AppConfig.String("jwt::secrets")),nil
 	})
 	claims,_:=token.Claims.(jwt.MapClaims)
 	user_name := claims["user_name"].(string)

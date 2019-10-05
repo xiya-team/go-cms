@@ -1,10 +1,14 @@
 package d
 
-import "go-cms/pkg/e"
+import (
+	"go-cms/pkg/e"
+	"time"
+)
 
 //普通json格式
 func ReturnJson(code int, msg string, data interface{}) (jsonData map[string]interface{}) {
 	jsonData = make(map[string]interface{}, 3)
+	jsonData["time_stamp"] = time.Now()
 	jsonData["code"] = code
 	jsonData["msg"] = msg
 	if data != nil {
@@ -30,6 +34,7 @@ func LayuiJson(code int, msg string, data, count interface{}) (jsonData map[stri
 	jsonData["msg"] = msg
 	jsonData["count"] = count
 	jsonData["data"] = data
+	jsonData["time_stamp"] = time.Now()
 	return
 }
 
@@ -40,5 +45,6 @@ func TableJson(data, offset, limit, total interface{}) (jsonData map[string]inte
 	jsonData["offset"] = offset
 	jsonData["limit"] = limit
 	jsonData["total"] = total
+	jsonData["time_stamp"] = time.Now()
 	return
 }
