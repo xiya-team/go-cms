@@ -6,6 +6,7 @@ import (
 	"github.com/astaxie/beego/context"
 	"github.com/astaxie/beego/logs"
 	"github.com/syyongx/php2go"
+	"go-cms/pkg/e"
 	"go-cms/pkg/util"
 	"time"
 )
@@ -59,7 +60,7 @@ func RestfulHandler() func(ctx *context.Context) {
 		// 方法请求
 		if flag == false {
 			ctx.Output.Header("Content-Type", "application/json")
-			resBody, err := json.Marshal(OutResponse(405, nil, "Method Not Allow"))
+			resBody, err := json.Marshal(OutResponse(e.ERROR, nil, "Method Not Allow"))
 			ctx.Output.Body(resBody)
 			if err != nil {
 				panic(err)
@@ -79,7 +80,7 @@ func RestfulHandler() func(ctx *context.Context) {
 				allow, _ := util.CheckToken(token)
 				if(allow == false){
 					ctx.Output.Header("Content-Type", "application/json")
-					resBody, err := json.Marshal(OutResponse(1, nil, "非法请求,token不合法"))
+					resBody, err := json.Marshal(OutResponse(e.ERROR, nil, "非法请求,token不合法"))
 					ctx.Output.Body(resBody)
 					if err != nil {
 						panic(err)
