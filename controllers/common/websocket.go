@@ -3,17 +3,16 @@ package controllers
 import (
 	"errors"
 	"fmt"
+	"go-cms/controllers"
 	"net/http"
 	"sync"
 	"time"
-
-	"github.com/astaxie/beego"
-
+	
 	"github.com/gorilla/websocket"
 )
 
 type WebsocketController struct {
-	beego.Controller
+	controllers.BaseController
 }
 
 var wsUpgrader = websocket.Upgrader{
