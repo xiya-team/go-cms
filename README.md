@@ -167,5 +167,18 @@ bee run
 
 ```
 
+### 快速运行
+
+```
+   1、将项目拉到本地，copy app-backup.conf 为 conf/app.conf 同时修改conf/app.conf中相关配置
+
+   2、执行 ./run.sh start 即可启动项目
+
+   3、执行 ./run.sh stop 停止运行
+
+   4、执行 ./run.sh restart 重启
+
+```
+
 * 需要进微信群 (入群验证信息:加入go-cms群)
 ![](public/Wechat.jpeg)
