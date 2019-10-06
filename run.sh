@@ -28,6 +28,7 @@ case $1 in
             echo kill $PID
             kill $PID
         fi
+        go build
 		sleep 1
 		nohup ./go-cms 2>&1 >> project.log 2>&1 /dev/null &
 		echo "服务已重启..."
