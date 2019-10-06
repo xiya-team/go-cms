@@ -37,10 +37,10 @@ func (m *Post) Create() (newAttr Post, err error) {
     tx := Db.Begin()
 	err = tx.Create(m).Error
 	
-	if err == nil{
-		tx.Commit()
+	if err != nil{
+       tx.Rollback()
 	}else {
-		tx.Rollback()
+		tx.Commit()
 	}
 
 	newAttr = *m
@@ -54,10 +54,10 @@ func (m *Post) Update() (newAttr Post, err error) {
 	} else {
 		err = errors.New("id参数错误")
 	}
-    if err == nil{
-		tx.Commit()
+    if err != nil{
+       tx.Rollback()
 	}else {
-		tx.Rollback()
+		tx.Commit()
 	}
 	newAttr = *m
 	return
@@ -70,10 +70,10 @@ func (m *Post) Delete() (err error) {
 	} else {
 		err = errors.New("id参数错误")
 	}
-    if err == nil{
-		tx.Commit()
+    if err != nil{
+       tx.Rollback()
 	}else {
-		tx.Rollback()
+		tx.Commit()
 	}
 	return
 }
@@ -85,10 +85,10 @@ func (m *Post) DelBatch(ids []int) (err error) {
 	} else {
 		err = errors.New("id参数错误")
 	}
-    if err == nil{
-		tx.Commit()
+    if err != nil{
+       tx.Rollback()
 	}else {
-		tx.Rollback()
+		tx.Commit()
 	}
 	return
 }

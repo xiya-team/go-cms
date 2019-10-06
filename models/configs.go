@@ -38,10 +38,10 @@ func (m *Configs) Create() (newAttr Configs, err error) {
     tx := Db.Begin()
 	err = tx.Create(m).Error
 	
-	if err == nil{
-		tx.Commit()
-	}else {
+	if err != nil{
 		tx.Rollback()
+	}else {
+		tx.Commit()
 	}
 
 	newAttr = *m
@@ -55,10 +55,10 @@ func (m *Configs) Update() (newAttr Configs, err error) {
 	} else {
 		err = errors.New("id参数错误")
 	}
-    if err == nil{
-		tx.Commit()
-	}else {
+	if err != nil{
 		tx.Rollback()
+	}else {
+		tx.Commit()
 	}
 	newAttr = *m
 	return
@@ -71,10 +71,10 @@ func (m *Configs) Delete() (err error) {
 	} else {
 		err = errors.New("id参数错误")
 	}
-    if err == nil{
-		tx.Commit()
-	}else {
+	if err != nil{
 		tx.Rollback()
+	}else {
+		tx.Commit()
 	}
 	return
 }
@@ -86,10 +86,10 @@ func (m *Configs) DelBatch(ids []int) (err error) {
 	} else {
 		err = errors.New("id参数错误")
 	}
-    if err == nil{
-		tx.Commit()
-	}else {
+	if err != nil{
 		tx.Rollback()
+	}else {
+		tx.Commit()
 	}
 	return
 }
