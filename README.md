@@ -170,7 +170,7 @@ bee run
 ### 快速运行
 
 ```
-   1、将项目拉到本地，copy app-backup.conf 为 conf/app.conf 同时修改conf/app.conf中相关配置
+   1、将项目拉到本地，copy app-backup.conf 为 conf/app.conf 同时修改conf/app.conf中相关配置,导入/data下的数据库文件到数据库中
 
    2、执行 ./run.sh start 即可启动项目
 
