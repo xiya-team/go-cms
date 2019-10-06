@@ -1,9 +1,6 @@
 package models
 
-import (
-	"errors"
-	"time"
-)
+import "errors"
 
 type Category struct {
 	Model
@@ -19,9 +16,9 @@ type Category struct {
 	Keywords   string     `json:"keywords"   form:"keywords"   gorm:"default:''"`
 	Description string     `json:"description"form:"description"gorm:"default:''"`
 	Content    string     `json:"content"    form:"content"    gorm:"default:''"`
-	CreatedAt  time.Time  `json:"created_at" form:"created_at" gorm:"default:'0000-00-00 00:00:00'"`
-	UpdatedAt  time.Time  `json:"updated_at" form:"updated_at" gorm:"default:'0000-00-00 00:00:00'"`
-	DeletedAt  time.Time  `json:"deleted_at" form:"deleted_at" gorm:"default:'0000-00-00 00:00:00'"`
+	CreatedAt  int        `json:"created_at" form:"created_at" gorm:"default:''"`
+	UpdatedAt  int        `json:"updated_at" form:"updated_at" gorm:"default:''"`
+	DeletedAt  int        `json:"deleted_at" form:"deleted_at" gorm:"default:''"`
 	Weigh      int        `json:"weigh"      form:"weigh"      gorm:"default:'0'"`
 	Status     int        `json:"status"     form:"status"     gorm:"default:'1'"`
 	Tpl        string     `json:"tpl"        form:"tpl"        gorm:"default:'list'"`
@@ -44,35 +41,62 @@ func (m *Category) Pagination(offset, limit int, key string) (res []Category, co
 }
 
 func (m *Category) Create() (newAttr Category, err error) {
-	err = Db.Create(m).Error
+
+    tx := Db.Begin()
+	err = tx.Create(m).Error
+	
+	if err == nil{
+		tx.Commit()
+	}else {
+		tx.Rollback()
+	}
+
 	newAttr = *m
 	return
 }
 
 func (m *Category) Update() (newAttr Category, err error) {
+    tx := Db.Begin()
 	if m.Id > 0 {
-		err = Db.Where("id=?", m.Id).Save(m).Error
+		err = tx.Where("id=?", m.Id).Save(m).Error
 	} else {
 		err = errors.New("id参数错误")
+	}
+    if err == nil{
+		tx.Commit()
+	}else {
+		tx.Rollback()
 	}
 	newAttr = *m
 	return
 }
 
 func (m *Category) Delete() (err error) {
+    tx := Db.Begin()
 	if m.Id > 0 {
-		err = Db.Delete(m).Error
+		err = tx.Delete(m).Error
 	} else {
 		err = errors.New("id参数错误")
+	}
+    if err == nil{
+		tx.Commit()
+	}else {
+		tx.Rollback()
 	}
 	return
 }
 
 func (m *Category) DelBatch(ids []int) (err error) {
+    tx := Db.Begin()
 	if len(ids) > 0 {
-		err = Db.Where("id in (?)", ids).Delete(m).Error
+		err = tx.Where("id in (?)", ids).Delete(m).Error
 	} else {
 		err = errors.New("id参数错误")
+	}
+    if err == nil{
+		tx.Commit()
+	}else {
+		tx.Rollback()
 	}
 	return
 }

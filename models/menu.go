@@ -37,35 +37,62 @@ func (m *Menu) Pagination(offset, limit int, key string) (res []Menu, count int)
 }
 
 func (m *Menu) Create() (newAttr Menu, err error) {
-	err = Db.Create(m).Error
+
+    tx := Db.Begin()
+	err = tx.Create(m).Error
+	
+	if err == nil{
+		tx.Commit()
+	}else {
+		tx.Rollback()
+	}
+
 	newAttr = *m
 	return
 }
 
 func (m *Menu) Update() (newAttr Menu, err error) {
+    tx := Db.Begin()
 	if m.Id > 0 {
-		err = Db.Where("id=?", m.Id).Save(m).Error
+		err = tx.Where("id=?", m.Id).Save(m).Error
 	} else {
 		err = errors.New("id参数错误")
+	}
+    if err == nil{
+		tx.Commit()
+	}else {
+		tx.Rollback()
 	}
 	newAttr = *m
 	return
 }
 
 func (m *Menu) Delete() (err error) {
+    tx := Db.Begin()
 	if m.Id > 0 {
-		err = Db.Delete(m).Error
+		err = tx.Delete(m).Error
 	} else {
 		err = errors.New("id参数错误")
+	}
+    if err == nil{
+		tx.Commit()
+	}else {
+		tx.Rollback()
 	}
 	return
 }
 
 func (m *Menu) DelBatch(ids []int) (err error) {
+    tx := Db.Begin()
 	if len(ids) > 0 {
-		err = Db.Where("id in (?)", ids).Delete(m).Error
+		err = tx.Where("id in (?)", ids).Delete(m).Error
 	} else {
 		err = errors.New("id参数错误")
+	}
+    if err == nil{
+		tx.Commit()
+	}else {
+		tx.Rollback()
 	}
 	return
 }
