@@ -36,10 +36,10 @@ func (m *AdminLog) Create() (newAttr AdminLog, err error) {
     tx := Db.Begin()
 	err = tx.Create(m).Error
 	
-	if err == nil{
-		tx.Commit()
-	}else {
+	if err != nil{
 		tx.Rollback()
+	}else {
+		tx.Commit()
 	}
 
 	newAttr = *m
@@ -53,10 +53,10 @@ func (m *AdminLog) Update() (newAttr AdminLog, err error) {
 	} else {
 		err = errors.New("id参数错误")
 	}
-    if err == nil{
-		tx.Commit()
-	}else {
+	if err != nil{
 		tx.Rollback()
+	}else {
+		tx.Commit()
 	}
 	newAttr = *m
 	return
@@ -69,10 +69,10 @@ func (m *AdminLog) Delete() (err error) {
 	} else {
 		err = errors.New("id参数错误")
 	}
-    if err == nil{
-		tx.Commit()
-	}else {
+	if err != nil{
 		tx.Rollback()
+	}else {
+		tx.Commit()
 	}
 	return
 }
@@ -84,10 +84,10 @@ func (m *AdminLog) DelBatch(ids []int) (err error) {
 	} else {
 		err = errors.New("id参数错误")
 	}
-    if err == nil{
-		tx.Commit()
-	}else {
+	if err != nil{
 		tx.Rollback()
+	}else {
+		tx.Commit()
 	}
 	return
 }

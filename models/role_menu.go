@@ -30,10 +30,10 @@ func (m *RoleMenu) Create() (newAttr RoleMenu, err error) {
     tx := Db.Begin()
 	err = tx.Create(m).Error
 	
-	if err == nil{
-		tx.Commit()
+	if err != nil{
+       tx.Rollback()
 	}else {
-		tx.Rollback()
+		tx.Commit()
 	}
 
 	newAttr = *m
@@ -47,10 +47,10 @@ func (m *RoleMenu) Update() (newAttr RoleMenu, err error) {
 	} else {
 		err = errors.New("id参数错误")
 	}
-    if err == nil{
-		tx.Commit()
+    if err != nil{
+       tx.Rollback()
 	}else {
-		tx.Rollback()
+		tx.Commit()
 	}
 	newAttr = *m
 	return
@@ -63,10 +63,10 @@ func (m *RoleMenu) Delete() (err error) {
 	} else {
 		err = errors.New("id参数错误")
 	}
-    if err == nil{
-		tx.Commit()
+    if err != nil{
+       tx.Rollback()
 	}else {
-		tx.Rollback()
+		tx.Commit()
 	}
 	return
 }
@@ -78,10 +78,10 @@ func (m *RoleMenu) DelBatch(ids []int) (err error) {
 	} else {
 		err = errors.New("id参数错误")
 	}
-    if err == nil{
-		tx.Commit()
+    if err != nil{
+       tx.Rollback()
 	}else {
-		tx.Rollback()
+		tx.Commit()
 	}
 	return
 }

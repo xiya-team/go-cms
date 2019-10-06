@@ -42,10 +42,10 @@ func (m *DictData) Create() (newAttr DictData, err error) {
     tx := Db.Begin()
 	err = tx.Create(m).Error
 	
-	if err == nil{
-		tx.Commit()
+	if err != nil{
+       tx.Rollback()
 	}else {
-		tx.Rollback()
+		tx.Commit()
 	}
 
 	newAttr = *m
@@ -59,10 +59,10 @@ func (m *DictData) Update() (newAttr DictData, err error) {
 	} else {
 		err = errors.New("id参数错误")
 	}
-    if err == nil{
-		tx.Commit()
+    if err != nil{
+       tx.Rollback()
 	}else {
-		tx.Rollback()
+		tx.Commit()
 	}
 	newAttr = *m
 	return
@@ -75,10 +75,10 @@ func (m *DictData) Delete() (err error) {
 	} else {
 		err = errors.New("id参数错误")
 	}
-    if err == nil{
-		tx.Commit()
+    if err != nil{
+       tx.Rollback()
 	}else {
-		tx.Rollback()
+		tx.Commit()
 	}
 	return
 }
@@ -90,10 +90,10 @@ func (m *DictData) DelBatch(ids []int) (err error) {
 	} else {
 		err = errors.New("id参数错误")
 	}
-    if err == nil{
-		tx.Commit()
+    if err != nil{
+       tx.Rollback()
 	}else {
-		tx.Rollback()
+		tx.Commit()
 	}
 	return
 }
