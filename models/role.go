@@ -35,35 +35,62 @@ func (m *Role) Pagination(offset, limit int, key string) (res []Role, count int)
 }
 
 func (m *Role) Create() (newAttr Role, err error) {
-	err = Db.Create(m).Error
+
+    tx := Db.Begin()
+	err = tx.Create(m).Error
+	
+	if err == nil{
+		tx.Commit()
+	}else {
+		tx.Rollback()
+	}
+
 	newAttr = *m
 	return
 }
 
 func (m *Role) Update() (newAttr Role, err error) {
+    tx := Db.Begin()
 	if m.Id > 0 {
-		err = Db.Where("id=?", m.Id).Save(m).Error
+		err = tx.Where("id=?", m.Id).Save(m).Error
 	} else {
 		err = errors.New("id参数错误")
+	}
+    if err == nil{
+		tx.Commit()
+	}else {
+		tx.Rollback()
 	}
 	newAttr = *m
 	return
 }
 
 func (m *Role) Delete() (err error) {
+    tx := Db.Begin()
 	if m.Id > 0 {
-		err = Db.Delete(m).Error
+		err = tx.Delete(m).Error
 	} else {
 		err = errors.New("id参数错误")
+	}
+    if err == nil{
+		tx.Commit()
+	}else {
+		tx.Rollback()
 	}
 	return
 }
 
 func (m *Role) DelBatch(ids []int) (err error) {
+    tx := Db.Begin()
 	if len(ids) > 0 {
-		err = Db.Where("id in (?)", ids).Delete(m).Error
+		err = tx.Where("id in (?)", ids).Delete(m).Error
 	} else {
 		err = errors.New("id参数错误")
+	}
+    if err == nil{
+		tx.Commit()
+	}else {
+		tx.Rollback()
 	}
 	return
 }

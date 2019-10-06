@@ -13,6 +13,7 @@ type AdminLog struct {
 	CreatedAt  int        `json:"created_at" form:"created_at" gorm:"default:'0'"`
 	UpdatedAt  int        `json:"updated_at" form:"updated_at" gorm:"default:'0'"`
 	DeletedAt  int        `json:"deleted_at" form:"deleted_at" gorm:"default:'0'"`
+	
 }
 
 
@@ -31,35 +32,62 @@ func (m *AdminLog) Pagination(offset, limit int, key string) (res []AdminLog, co
 }
 
 func (m *AdminLog) Create() (newAttr AdminLog, err error) {
-	err = Db.Create(m).Error
+
+    tx := Db.Begin()
+	err = tx.Create(m).Error
+	
+	if err == nil{
+		tx.Commit()
+	}else {
+		tx.Rollback()
+	}
+
 	newAttr = *m
 	return
 }
 
 func (m *AdminLog) Update() (newAttr AdminLog, err error) {
+    tx := Db.Begin()
 	if m.Id > 0 {
-		err = Db.Where("id=?", m.Id).Save(m).Error
+		err = tx.Where("id=?", m.Id).Save(m).Error
 	} else {
 		err = errors.New("id参数错误")
+	}
+    if err == nil{
+		tx.Commit()
+	}else {
+		tx.Rollback()
 	}
 	newAttr = *m
 	return
 }
 
 func (m *AdminLog) Delete() (err error) {
+    tx := Db.Begin()
 	if m.Id > 0 {
-		err = Db.Delete(m).Error
+		err = tx.Delete(m).Error
 	} else {
 		err = errors.New("id参数错误")
+	}
+    if err == nil{
+		tx.Commit()
+	}else {
+		tx.Rollback()
 	}
 	return
 }
 
 func (m *AdminLog) DelBatch(ids []int) (err error) {
+    tx := Db.Begin()
 	if len(ids) > 0 {
-		err = Db.Where("id in (?)", ids).Delete(m).Error
+		err = tx.Where("id in (?)", ids).Delete(m).Error
 	} else {
 		err = errors.New("id参数错误")
+	}
+    if err == nil{
+		tx.Commit()
+	}else {
+		tx.Rollback()
 	}
 	return
 }
