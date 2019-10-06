@@ -17,4 +17,3 @@ go_build_go_cms
 routers/*controllers.go
 conf/app.conf
 project.log
-vendor
