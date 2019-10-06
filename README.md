@@ -180,5 +180,13 @@ bee run
 
 ```
 
+### 支持快速生成代码
+
+```
+   1、需要  开启gii 设置 gii = true (运行项目时需要对gii设置为false)
+       
+   2、sudo go run main.go -m models -c controllers/sys -t menu
+```
+
 * 需要进微信群 (入群验证信息:加入go-cms群)
 ![](public/Wechat.jpeg)
