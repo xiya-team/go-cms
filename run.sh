@@ -1,5 +1,7 @@
 #!/bin/bash
 
+PID=$(ps -ef | grep go-cms | grep -v grep | awk '{ print $2 }')
+
 case $1 in 
 	start)
 	    go build
@@ -8,12 +10,24 @@ case $1 in
 		sleep 1
 	;;
 	stop)
-		killall go-cms
+	    if [ -z "$PID" ]
+        then
+            echo Application is already stopped
+        else
+            echo kill $PID
+            kill $PID
+        fi
 		echo "服务已停止..."
 		sleep 1
 	;;
 	restart)
-		killall go-cms
+		if [ -z "$PID" ]
+        then
+            echo Application is already stopped
+        else
+            echo kill $PID
+            kill $PID
+        fi
 		sleep 1
 		nohup ./go-cms 2>&1 >> project.log 2>&1 /dev/null &
 		echo "服务已重启..."
