@@ -170,15 +170,15 @@ bee run
 ### linux/mac 环境 快速运行
 
 ```
-   0、将项目拉到本地 git clone https://github.com/xiya-team/go-cms
+   1、将项目拉到本地 git clone https://github.com/xiya-team/go-cms
    
-   1、copy app-backup.conf 为 conf/app.conf 同时修改conf/app.conf中相关配置,导入/data下的数据库文件到数据库中
+   2、copy conf/app-backup.conf 为 conf/app.conf 同时修改conf/app.conf中相关配置,导入/data下的数据库文件到数据库中
 
-   2、执行 ./run.sh start 即可启动项目
+   3、执行 ./run.sh start 即可启动项目
 
-   3、执行 ./run.sh stop 停止运行
+   4、执行 ./run.sh stop 停止运行
 
-   4、执行 ./run.sh restart 重启
+   5、执行 ./run.sh restart 重启
 
 ```
 

@@ -4,8 +4,6 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/validation"
 	"github.com/syyongx/php2go"
-	"go-cms/common"
-	"go-cms/models"
 	"go-cms/pkg/d"
 	"go-cms/pkg/e"
 )
@@ -18,11 +16,10 @@ type BaseController struct {
 
 func (c *BaseController) Prepare() {
 	c.ADMIN_TPL = "admin/"
-
-	common.Fc = c.Ctx
-	if user := c.GetSession("loginUser"); user != nil {
-		common.UserId = user.(*models.User).Id
-	}
+	
+	//if user := c.GetSession("loginUser"); user != nil {
+	//	UserId = user.(*models.User).Id
+	//}
 
 	/*	controller, action := c.GetControllerAndAction()
 		if controller!="UserController" && c.GetSession("loginUser") == nil{

@@ -131,22 +131,22 @@ func GetMysqlMsg() (mysqlMsg map[string]string) {
 func CreateAdminLogCallback(scope *gorm.Scope) {
 	if scope.TableName() != "cms_admin_log" {
 		fmt.Println(scope)
-		//Db.Create(&AdminLog{Route: common.Fc.Request.URL.String(),
-		//	UserId:      common.UserId,
-		//	Ip:          int(str.Ip2long(common.Fc.Input.IP())),
-		//	Method:      common.Fc.Request.Method,
-		//	Description: fmt.Sprintf("%s添加了表%s 的%s", common.UserId, scope.TableName(), fmt.Sprintf("%+v", scope.Value)),
-		//})
+		Db.Create(&AdminLog{Route: common.Ctx.Request.URL.String(),
+			UserId:      common.UserId,
+			Ip:          int(str.Ip2long(common.Ctx.Input.IP())),
+			Method:      common.Ctx.Request.Method,
+			Description: fmt.Sprintf("%s添加了表%s 的%s", common.UserId, scope.TableName(), fmt.Sprintf("%+v", scope.Value)),
+		})
 	}
 	return
 }
 
 func UpdateAdminLogCallback(scope *gorm.Scope) {
-	if common.Fc != nil {
-		Db.Create(&AdminLog{Route: common.Fc.Request.URL.String(),
+	if common.Ctx != nil {
+		Db.Create(&AdminLog{Route: common.Ctx.Request.URL.String(),
 			UserId:      common.UserId,
-			Ip:          int(str.Ip2long(common.Fc.Input.IP())),
-			Method:      common.Fc.Request.Method,
+			Ip:          int(str.Ip2long(common.Ctx.Input.IP())),
+			Method:      common.Ctx.Request.Method,
 			Description: fmt.Sprintf("%s修改了表%s 的%s", common.UserId, scope.TableName(), fmt.Sprintf("%+v", scope.Value)),
 		})
 	}
@@ -154,10 +154,10 @@ func UpdateAdminLogCallback(scope *gorm.Scope) {
 }
 
 func DeleteAdminLogCallback(scope *gorm.Scope) {
-	Db.Create(&AdminLog{Route: common.Fc.Request.URL.String(),
+	Db.Create(&AdminLog{Route: common.Ctx.Request.URL.String(),
 		UserId:      common.UserId,
-		Ip:          int(str.Ip2long(common.Fc.Input.IP())),
-		Method:      common.Fc.Request.Method,
+		Ip:          int(str.Ip2long(common.Ctx.Input.IP())),
+		Method:      common.Ctx.Request.Method,
 		Description: fmt.Sprintf("%s删除了表%s 的一条数据", common.UserId, scope.TableName(), scope.Value),
 	})
 	return
