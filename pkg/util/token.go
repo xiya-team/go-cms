@@ -83,19 +83,19 @@ func CheckToken(tokenString string) (b bool, t *jwt.Token) {
 		//}
 		return false, nil
 	}
-	
-	return true, token
+	//GetUserNameByToken(kv[1])
+	return true, nil
 }
 
-func GetUserIdByToken(tokenString string)  float64{
+func GetUserIdByToken(tokenString string)  int{
 	token,_ :=jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _,ok :=token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil,fmt.Errorf("Unexpected signing method")
 		}
-		return []byte(beego.AppConfig.String("token_secrets")),nil
+		return []byte(beego.AppConfig.String("jwt::secrets")),nil
 	})
 	claims,_:=token.Claims.(jwt.MapClaims)
-	id := claims["id"].(float64)
+	id := claims["id"].(int)
 	return id
 }
 
