@@ -54,7 +54,7 @@ func init() {
 	mux.EventHandleFunc(menu.EventTypeClick, menuClickEventHandler)
 
 	msgHandler = mux
-	msgServer = core.NewServer(wxOriId, wxAppId, wxToken, wxEncodedAESKey, msgHandler, nil)
+	//msgServer = core.NewServer(wxOriId, wxAppId, wxToken, wxEncodedAESKey, msgHandler, nil)
 }
 
 func textMsgHandler(ctx *core.Context) {
