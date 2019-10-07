@@ -57,7 +57,7 @@ var recodeText = map[string]string{
 	RECODE_UNKNOWERR:  "未知错误",
 }
 
-func RecodeText(code string)string  {
+func RecodeText(code string) string{
 	str,ok := recodeText[code]
 	if ok {
 		return str
@@ -98,6 +98,8 @@ func init() {
 		//开发模式打印SQL
 		if beego.BConfig.RunMode == "dev" {
 			Db.LogMode(true)
+			//同步数据库
+			//Db.AutoMigrate(&User{})
 		}
 		
 		Db.SingularTable(true)
