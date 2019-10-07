@@ -37,7 +37,7 @@
 sudo apt update
 sudo apt install mysql-server mysql-common mysql-client
 ```
-安装完成后创建 myblog数据库或者其他名称,与项目目录conf下app.conf中mysqldb保持一致即可
+安装完成后创建数据库或者其他名称,与项目目录conf下app.conf中配置保持一致即可
 
 ``` shell
 	mysql -u root -p
@@ -167,10 +167,12 @@ bee run
 
 ```
 
-### 快速运行
+### linux/mac 环境 快速运行
 
 ```
-   1、将项目拉到本地，copy app-backup.conf 为 conf/app.conf 同时修改conf/app.conf中相关配置,导入/data下的数据库文件到数据库中
+   0、将项目拉到本地 git clone https://github.com/xiya-team/go-cms
+   
+   1、copy app-backup.conf 为 conf/app.conf 同时修改conf/app.conf中相关配置,导入/data下的数据库文件到数据库中
 
    2、执行 ./run.sh start 即可启动项目
 
@@ -178,6 +180,14 @@ bee run
 
    4、执行 ./run.sh restart 重启
 
+```
+
+### pm2 启动方式
+```
+   1、安装pm2
+   2、pm2 start go-cms (启动)
+   3、pm2 restart go-cms (重启)
+   4、pm2 stop go-cms (停止)
 ```
 
 ### 支持快速生成代码
