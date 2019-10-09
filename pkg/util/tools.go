@@ -357,3 +357,13 @@ func Struct2Map(obj interface{}) map[string]interface{} {
 	}
 	return data
 }
+
+func InitPageCount(page, pageCount int) (int, int) {
+	if page <= 0 {
+		page = 1
+	}
+	if pageCount <= 0 {
+		pageCount = 10
+	}
+	return page, pageCount
+}
