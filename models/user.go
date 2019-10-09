@@ -8,30 +8,28 @@ import (
 
 type User struct {
 	Model
-	Id         int        `json:"id"         form:"id"         gorm:"default:''"`
-	LoginName  string     `json:"login_name" form:"login_name" gorm:"default:''" valid:"Required;MaxSize(20);MinSize(2)"`
-	UserName   string     `json:"user_name"  form:"user_name"  gorm:"default:''" valid:"Required;MaxSize(20);MinSize(6)"`
-	UserType   string     `json:"user_type"  form:"user_type"  gorm:"default:'00'"`
-	Email      string     `json:"email"      form:"email"      gorm:"default:''" valid:"Email"`
-	Phone      string     `json:"phone"      form:"phone"      gorm:"default:''"`
-	Phonenumber string    `json:"phonenumber"form:"phonenumber"gorm:"default:''"`
-	Sex        string     `json:"sex"        form:"sex"        gorm:"default:'0'"`
-	Avatar     string     `json:"avatar"     form:"avatar"     gorm:"default:''"`
-	Password   string     `json:"password"   form:"password"   gorm:"default:''" valid:"Required;MaxSize(20);MinSize(6)"`
-	Salt       string     `json:"salt"       form:"salt"       gorm:"default:''"`
-	Status     string     `json:"status"     form:"status"     gorm:"default:'0'" valid:"Range(1,2,3,4)"`
-	DelFlag    string     `json:"del_flag"   form:"del_flag"   gorm:"default:'0'"`
-	LoginIp    string     `json:"login_ip"   form:"login_ip"   gorm:"default:''"`
-	LoginDate  int64      `json:"login_date" form:"login_date" gorm:"default:''"`
-	CreateBy   string     `json:"create_by"  form:"create_by"  gorm:"default:''"`
-	CreatedAt  int64      `json:"created_at" form:"created_at" gorm:"default:''"`
-	UpdateBy   string     `json:"update_by"  form:"update_by"  gorm:"default:''"`
-	UpdatedAt  int64      `json:"updated_at" form:"updated_at" gorm:"default:''"`
-	DeletedAt  int64      `json:"deleted_at" form:"deleted_at" gorm:"default:''"`
-	Remark     string     `json:"remark"     form:"remark"     gorm:"default:''"`
-	
+	Id          int    `json:"id"         form:"id"         gorm:"default:''"`
+	LoginName   string `json:"login_name" form:"login_name" gorm:"default:''" valid:"Required;MaxSize(20);MinSize(2)"`
+	UserName    string `json:"user_name"  form:"user_name"  gorm:"default:''" valid:"Required;MaxSize(20);MinSize(6)"`
+	UserType    string `json:"user_type"  form:"user_type"  gorm:"default:'00'"`
+	Email       string `json:"email"      form:"email"      gorm:"default:''" valid:"Email"`
+	Phone       string `json:"phone"      form:"phone"      gorm:"default:''"`
+	Phonenumber string `json:"phonenumber"form:"phonenumber"gorm:"default:''"`
+	Sex         string `json:"sex"        form:"sex"        gorm:"default:'0'"`
+	Avatar      string `json:"avatar"     form:"avatar"     gorm:"default:''"`
+	Password    string `json:"password"   form:"password"   gorm:"default:''" valid:"Required;MaxSize(33);MinSize(6)"`
+	Salt        string `json:"salt"       form:"salt"       gorm:"default:''"`
+	Status      string `json:"status"     form:"status"     gorm:"default:'0'"`
+	DelFlag     string `json:"del_flag"   form:"del_flag"   gorm:"default:'0'"`
+	LoginIp     string `json:"login_ip"   form:"login_ip"   gorm:"default:''"`
+	LoginDate   int64  `json:"login_date" form:"login_date" gorm:"default:''"`
+	CreateBy    string `json:"create_by"  form:"create_by"  gorm:"default:''"`
+	CreatedAt   int64  `json:"created_at" form:"created_at" gorm:"default:''"`
+	UpdateBy    string `json:"update_by"  form:"update_by"  gorm:"default:''"`
+	UpdatedAt   int64  `json:"updated_at" form:"updated_at" gorm:"default:''"`
+	DeletedAt   int64  `json:"deleted_at" form:"deleted_at" gorm:"default:''"`
+	Remark      string `json:"remark"     form:"remark"     gorm:"default:''"`
 }
-
 
 func NewUser() (user *User) {
 	return &User{}
@@ -48,15 +46,17 @@ func (m *User) Pagination(offset, limit int, key string) (res []User, count int)
 }
 
 func (m *User) Create() (newAttr User, err error) {
-	tx := Db.Begin()
-	err = tx.Create(m).Error
-	
-	if err != nil{
-		tx.Rollback()
-	}else {
-		tx.Commit()
-	}
-	
+	//tx := Db.Begin()
+
+	err = Db.Create(m).Error
+
+	//
+	//if err != nil{
+	//	tx.Rollback()
+	//}else {
+	//	tx.Commit()
+	//}
+	//
 	newAttr = *m
 	return
 }
@@ -68,9 +68,9 @@ func (m *User) Update() (newAttr User, err error) {
 	} else {
 		err = errors.New("id参数错误")
 	}
-	if err != nil{
+	if err != nil {
 		tx.Rollback()
-	}else {
+	} else {
 		tx.Commit()
 	}
 	newAttr = *m
@@ -84,9 +84,9 @@ func (m *User) Delete() (err error) {
 	} else {
 		err = errors.New("id参数错误")
 	}
-	if err != nil{
+	if err != nil {
 		tx.Rollback()
-	}else {
+	} else {
 		tx.Commit()
 	}
 	return
@@ -99,9 +99,9 @@ func (m *User) DelBatch(ids []int) (err error) {
 	} else {
 		err = errors.New("id参数错误")
 	}
-	if err != nil{
+	if err != nil {
 		tx.Rollback()
-	}else {
+	} else {
 		tx.Commit()
 	}
 	return

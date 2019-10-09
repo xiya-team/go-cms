@@ -38,22 +38,28 @@ func (c *UserController) Create() {
 		if err := c.ParseForm(userModel); err != nil {
 			c.JsonResult(e.ERROR, "赋值失败")
 		}
-		salt := util.Krand(5,2)
+
+		salt := util.Krand(5, 2)
 		userModel.Salt = salt
 		userModel.LoginName = userModel.UserName
-		userModel.Email = userModel.UserName
-		userModel.Password = php2go.Md5(userModel.Password+salt)
+		userModel.Email = userModel.Email
+		userModel.Password = php2go.Md5(userModel.Password + salt)
 		userModel.CreatedAt = php2go.Time()
 		userModel.UpdatedAt = php2go.Time()
-		
+
 		//2.验证
 		valid := validation.Validation{}
-		if b, _ := valid.Valid(userModel); !b {
+		b, err := valid.Valid(userModel)
+		if err != nil {
+			log.Printf("%v\n%v", err, valid.Errors)
+			c.JsonResult(e.ERROR, "验证失败")
+		}
+		if !b {
 			for _, err := range valid.Errors {
 				log.Println(err.Key, err.Message)
 			}
-			c.JsonResult(e.ERROR, "验证失败")
 		}
+
 		//3.插入数据
 		if _, err := userModel.Create(); err != nil {
 			c.JsonResult(e.ERROR, "创建失败")
@@ -118,43 +124,42 @@ func (c *UserController) Login() {
 	if c.Ctx.Input.IsPost() {
 		user_name := c.GetString("user_name")
 		password := c.GetString("password")
-		
+
 		//数据校验
 		loginData := backend.UserLoginValidation{}
 		loginData.UserName = user_name
 		loginData.Password = password
 		c.ValidatorAuto(&loginData)
-		
+
 		//通过service查询
 		user := services.FindByUserName(user_name)
-		
+
 		if php2go.Empty(user) {
 			c.JsonResult(e.ERROR, "User Not Exist")
 		}
-		
-		has := php2go.Md5(password+user.Salt)
-		
-		if(user.Password == has){
-			token:=util.CreateToken(user)
+
+		has := php2go.Md5(password + user.Salt)
+
+		if (user.Password == has) {
+			token := util.CreateToken(user)
 			jsonData := make(map[string]interface{}, 1)
 			jsonData["token"] = token
-			c.JsonResult(e.SUCCESS,"登录成功!",jsonData)
+			c.JsonResult(e.SUCCESS, "登录成功!", jsonData)
 		}
-		
+
 		c.JsonResult(e.ERROR, has)
 	}
 }
 
+func (c *UserController) CheckToken() {
 
-func (c *UserController) CheckToken(){
-	
 	token := c.Ctx.Input.Header("Authorization")
-	
+
 	b, _ := util.CheckToken(token)
-	
+
 	if !b {
-		c.JsonResult(e.ERROR,"验证失败!")
+		c.JsonResult(e.ERROR, "验证失败!")
 	}
-	
-	c.JsonResult(e.SUCCESS,"success")
+
+	c.JsonResult(e.SUCCESS, "success")
 }
