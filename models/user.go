@@ -131,9 +131,11 @@ func (m *User) FindByMap(page, pageCount int, dataMap map[string]interface{}) (u
 	if phone,ok:=dataMap["phone"].(string);ok{
 		where+=fmt.Sprintf(" AND phone like '%v'","%"+phone+"%")
 	}
-	err = Db.Offset((page - 1) * pageCount).Limit(pageCount).Where(where).Find(&user).Error
+	err = Db.Offset((page - 1) * pageCount).Limit(pageCount).Where(where).Order("created_at DESC").Find(&user).Error
 	err = Db.Model(&User{}).Where(where).Count(&total).Error
 	return
+
+
 }
 
 func (m *User) FindByMaps(page, pageSize int, dataMap map[string]interface{}) (user []User, total int, err error) {
