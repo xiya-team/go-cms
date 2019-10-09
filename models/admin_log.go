@@ -10,9 +10,9 @@ type AdminLog struct {
 	Description string     `json:"description"form:"description"gorm:"default:''"`
 	UserId     int        `json:"user_id"    form:"user_id"    gorm:"default:'0'"`
 	Ip         int        `json:"ip"         form:"ip"         gorm:"default:'0'"`
-	CreatedAt  int        `json:"created_at" form:"created_at" gorm:"default:'0'"`
-	UpdatedAt  int        `json:"updated_at" form:"updated_at" gorm:"default:'0'"`
-	DeletedAt  int        `json:"deleted_at" form:"deleted_at" gorm:"default:'0'"`
+	CreatedAt  int64      `json:"created_at" form:"created_at" gorm:"default:'0'"`
+	UpdatedAt  int64      `json:"updated_at" form:"updated_at" gorm:"default:'0'"`
+	DeletedAt  int64      `json:"deleted_at" form:"deleted_at" gorm:"default:'0'"`
 	
 }
 
