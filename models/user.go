@@ -136,6 +136,36 @@ func (m *User) FindByMap(page, pageCount int, dataMap map[string]interface{}) (u
 	return
 }
 
+func (m *User) FindByMaps(page, pageSize int, dataMap map[string]interface{}) (user []User, total int, err error) {
+	query := Db
+	if status,isExist:=dataMap["status"].(int);isExist == true{
+		query = query.Where("status = ?", status)
+	}
+	if loginName,ok:=dataMap["login_name"].(string);ok{
+		query = query.Where("login_name LIKE ?", "%"+loginName+"%")
+	}
+	
+	if userName,ok:=dataMap["user_name"].(string);ok{
+		query = query.Where("user_name LIKE ?", "%"+userName+"%")
+	}
+	if startTime,ok:=dataMap["start_time"].(int64);ok{
+		query = query.Where("created_at > ?", startTime)
+	}
+	if endTime,ok:=dataMap["end_time"].(int64);ok{
+		query = query.Where("created_at <= ?", endTime)
+	}
+	if phone,ok:=dataMap["phone"].(string);ok{
+		query = query.Where("phone LIKE ?", "%"+phone+"%")
+	}
+	
+	// 获取取指page，指定pagesize的记录
+	err = query.Offset((page-1)*pageSize).Order("created_at desc").Limit(pageSize).Find(&user).Error
+	if err == nil{
+		err = query.Model(&User{}).Count(&total).Error
+	}
+	return
+}
+
 /*****************************************************************新增加的方法*****************************************************************/
 
 func (m *User) FindByUserName(user_name string) (user User, err error) {
