@@ -1,6 +1,7 @@
 package sys
 
 import (
+	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/validation"
 	"github.com/syyongx/php2go"
 	"go-cms/controllers"
@@ -10,6 +11,7 @@ import (
 	"go-cms/services"
 	"go-cms/validations/backend"
 	"log"
+	"strings"
 )
 
 type UserController struct {
@@ -30,7 +32,16 @@ func (c *UserController) Index() {
 		c.JsonResult(e.SUCCESS, "ok", result, count)
 	}
 }
-
+func (c *UserController) UserInfo() {
+	token := c.Ctx.Input.Header(beego.AppConfig.String("jwt::token_name"))
+	kv := strings.Split(token, " ")
+	uid := util.GetUserIdByToken(kv[1])
+	userInfo, err := models.NewUser().FindById(uid)
+	if err != nil {
+		c.JsonResult(e.ERROR, e.ResponseMap[e.ERROR])
+	}
+	c.JsonResult(e.SUCCESS, "success", userInfo)
+}
 func (c *UserController) Create() {
 	if c.Ctx.Input.IsPost() {
 		userModel := models.NewUser()

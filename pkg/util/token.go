@@ -95,8 +95,8 @@ func GetUserIdByToken(tokenString string)  int{
 		return []byte(beego.AppConfig.String("jwt::secrets")),nil
 	})
 	claims,_:=token.Claims.(jwt.MapClaims)
-	id := claims["id"].(int)
-	return id
+	id := claims["id"].(float64)
+	return int(id)
 }
 
 func GetUserNameByToken(tokenString string)  string{
