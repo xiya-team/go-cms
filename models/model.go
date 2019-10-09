@@ -143,7 +143,8 @@ func CreateAdminLogCallback(scope *gorm.Scope) {
 
 func UpdateAdminLogCallback(scope *gorm.Scope) {
 	if common.Ctx != nil {
-		Db.Create(&AdminLog{Route: common.Ctx.Request.URL.String(),
+		Db.Create(&AdminLog{
+			Route: common.Ctx.Request.URL.String(),
 			UserId:      common.UserId,
 			Ip:          int(str.Ip2long(common.Ctx.Input.IP())),
 			Method:      common.Ctx.Request.Method,
@@ -154,7 +155,8 @@ func UpdateAdminLogCallback(scope *gorm.Scope) {
 }
 
 func DeleteAdminLogCallback(scope *gorm.Scope) {
-	Db.Create(&AdminLog{Route: common.Ctx.Request.URL.String(),
+	Db.Create(&AdminLog{
+		Route: common.Ctx.Request.URL.String(),
 		UserId:      common.UserId,
 		Ip:          int(str.Ip2long(common.Ctx.Input.IP())),
 		Method:      common.Ctx.Request.Method,
