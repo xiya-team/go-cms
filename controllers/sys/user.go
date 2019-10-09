@@ -1,6 +1,7 @@
 package sys
 
 import (
+	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/validation"
 	"github.com/syyongx/php2go"
 	"go-cms/controllers"
@@ -10,6 +11,7 @@ import (
 	"go-cms/services"
 	"go-cms/validations/backend"
 	"log"
+	"strings"
 )
 
 type UserController struct {
@@ -19,7 +21,58 @@ type UserController struct {
 func (c *UserController) Prepare() {
 
 }
-
+func (c *UserController) UserList() {
+	req := struct {
+		UserName  string `form:"user_name"`
+		PageCount int    `form:"page_count"`
+		Page      int    `form:"page"`
+		LoginName string `form:"login_name"`
+		Phone     string `form:"phone"`
+		Status    int    `form:"status"`
+		StartTime int64  `form:"start_time"`
+		EndTime   int64  `form:"end_time"`
+	}{}
+	type RespUser struct {
+		List  []models.User `json:"list"`
+		Count int           `json:"count"`
+	}
+	err := c.ParseForm(&req)
+	if err != nil {
+		c.JsonResult(e.ERROR, "参数解析错误!")
+	}
+	dataMap := make(map[string]interface{}, 0)
+	if req.Status == 1 {
+		dataMap["status"] = req.Status
+	}
+	if req.LoginName != "" {
+		dataMap["login_name"] = req.LoginName
+	}
+	if req.UserName != "" {
+		dataMap["user_name"] = req.UserName
+	}
+	if req.StartTime != 0 {
+		dataMap["start_time"] = req.StartTime
+	}
+	if req.EndTime != 0 {
+		dataMap["end_time"] = req.EndTime
+	}
+	if req.Phone != "" {
+		dataMap["phone"] = req.Phone
+	}
+	page, pageCount := util.InitPageCount(req.Page, req.PageCount)
+	user, total, err := models.NewUser().FindByMaps(page, pageCount, dataMap)
+	if err != nil {
+		c.JsonResult(e.ERROR, e.ResponseMap[e.ERROR])
+	}
+	resp := RespUser{
+		List:  make([]models.User, 0),
+		Count: total,
+	}
+	if len(user) != 0 {
+		resp.List = user
+	}
+	c.JsonResult(e.SUCCESS, e.ResponseMap[e.SUCCESS], resp)
+}
 func (c *UserController) Index() {
 	if c.Ctx.Input.IsAjax() {
 		page, _ := c.GetInt("page")
@@ -30,7 +83,16 @@ func (c *UserController) Index() {
 		c.JsonResult(e.SUCCESS, "ok", result, count)
 	}
 }
-
+func (c *UserController) UserInfo() {
+	token := c.Ctx.Input.Header(beego.AppConfig.String("jwt::token_name"))
+	kv := strings.Split(token, " ")
+	uid := util.GetUserIdByToken(kv[1])
+	userInfo, err := models.NewUser().FindById(uid)
+	if err != nil {
+		c.JsonResult(e.ERROR, e.ResponseMap[e.ERROR])
+	}
+	c.JsonResult(e.SUCCESS, e.ResponseMap[e.SUCCESS], userInfo)
+}
 func (c *UserController) Create() {
 	if c.Ctx.Input.IsPost() {
 		userModel := models.NewUser()

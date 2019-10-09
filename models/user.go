@@ -2,6 +2,7 @@ package models
 
 import (
 	"errors"
+	"fmt"
 	"github.com/astaxie/beego/validation"
 	"log"
 )
@@ -49,13 +50,13 @@ func (m *User) Create() (newAttr User, err error) {
 	tx := Db.Begin()
 
 	err = Db.Create(m).Error
-	
-	if err != nil{
+
+	if err != nil {
 		tx.Rollback()
-	}else {
+	} else {
 		tx.Commit()
 	}
-	
+
 	newAttr = *m
 	return
 }
@@ -108,6 +109,62 @@ func (m *User) DelBatch(ids []int) (err error) {
 
 func (m *User) FindById(id int) (user User, err error) {
 	err = Db.Where("id=?", id).First(&user).Error
+	return
+}
+func (m *User) FindByMap(page, pageCount int, dataMap map[string]interface{}) (user []User, total int, err error) {
+	var where string="1=1"
+	if status,ok:=dataMap["status"].(int);ok{
+		where+=fmt.Sprintf(" AND status=%v",status)
+	}
+	if loginName,ok:=dataMap["login_name"].(string);ok{
+		where+=fmt.Sprintf(" AND login_name like '%v'","%"+loginName+"%")
+	}
+	if userName,ok:=dataMap["user_name"].(string);ok{
+		where+=fmt.Sprintf(" AND user_name like '%v'","%"+userName+"%")
+	}
+	if startTime,ok:=dataMap["start_time"].(int64);ok{
+		where+=fmt.Sprintf(" AND created_at>=%v",startTime)
+	}
+	if endTime,ok:=dataMap["end_time"].(int64);ok{
+		where+=fmt.Sprintf(" created_at<=%v",endTime)
+	}
+	if phone,ok:=dataMap["phone"].(string);ok{
+		where+=fmt.Sprintf(" AND phone like '%v'","%"+phone+"%")
+	}
+	err = Db.Offset((page - 1) * pageCount).Limit(pageCount).Where(where).Order("created_at DESC").Find(&user).Error
+	err = Db.Model(&User{}).Where(where).Count(&total).Error
+	return
+
+
+}
+
+func (m *User) FindByMaps(page, pageSize int, dataMap map[string]interface{}) (user []User, total int, err error) {
+	query := Db
+	if status,isExist:=dataMap["status"].(int);isExist == true{
+		query = query.Where("status = ?", status)
+	}
+	if loginName,ok:=dataMap["login_name"].(string);ok{
+		query = query.Where("login_name LIKE ?", "%"+loginName+"%")
+	}
+	
+	if userName,ok:=dataMap["user_name"].(string);ok{
+		query = query.Where("user_name LIKE ?", "%"+userName+"%")
+	}
+	if startTime,ok:=dataMap["start_time"].(int64);ok{
+		query = query.Where("created_at > ?", startTime)
+	}
+	if endTime,ok:=dataMap["end_time"].(int64);ok{
+		query = query.Where("created_at <= ?", endTime)
+	}
+	if phone,ok:=dataMap["phone"].(string);ok{
+		query = query.Where("phone LIKE ?", "%"+phone+"%")
+	}
+	
+	// 获取取指page，指定pagesize的记录
+	err = query.Offset((page-1)*pageSize).Order("created_at desc").Limit(pageSize).Find(&user).Error
+	if err == nil{
+		err = query.Model(&User{}).Count(&total).Error
+	}
 	return
 }
 

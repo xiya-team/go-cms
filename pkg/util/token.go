@@ -11,7 +11,7 @@ import (
 
 func CreateToken(user models.User) string {
 	claims := make(jwt.MapClaims)
-	claims["exp"] = time.Now().Add(time.Hour * time.Duration(1)).Unix()
+	claims["exp"] = time.Now().Add(time.Hour * time.Duration(72)).Unix()
 	claims["iat"] = time.Now().Unix()
 	claims["id"]=user.Id
 	claims["user_name"]=user.UserName
@@ -95,8 +95,8 @@ func GetUserIdByToken(tokenString string)  int{
 		return []byte(beego.AppConfig.String("jwt::secrets")),nil
 	})
 	claims,_:=token.Claims.(jwt.MapClaims)
-	id := claims["id"].(int)
-	return id
+	id := claims["id"].(float64)
+	return int(id)
 }
 
 func GetUserNameByToken(tokenString string)  string{
