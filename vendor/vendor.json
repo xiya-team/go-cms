@@ -81,6 +81,18 @@
 			"revisionTime": "2018-02-08T00:28:26Z"
 		},
 		{
+			"checksumSHA1": "8+f4h5mx5I6jnA3woMCWPoEdzBY=",
+			"path": "github.com/chanxuehong/rand",
+			"revision": "4b3aff17f488b938cf3f70f495b90c1fc99fdb57",
+			"revisionTime": "2018-08-30T05:39:58Z"
+		},
+		{
+			"checksumSHA1": "lmW9qa1QZQNQ6lcSQNslyX868Ug=",
+			"path": "github.com/chanxuehong/util/security",
+			"revision": "caf892acd09c51b89b9a68f89a89bc57f85d63ae",
+			"revisionTime": "2018-11-16T10:07:27Z"
+		},
+		{
 			"checksumSHA1": "M+msEqmucF5amP09SrUVY9gZTZM=",
 			"path": "github.com/chanxuehong/wechat/internal/debug/api",
 			"revision": "fafb751f9916a5e91a45e19f91f1982a82f47b34",
@@ -371,10 +383,10 @@
 			"revisionTime": "2019-09-09T22:43:31Z"
 		},
 		{
-			"checksumSHA1": "Y+HGqEkYM15ir+J93MEaHdyFy0c=",
+			"checksumSHA1": "GtamqiJoL7PGHsN454AoffBFMa8=",
 			"path": "golang.org/x/net/context",
-			"revision": "a6577fac2d73be281a500b310739095313165611",
-			"revisionTime": "2017-03-08T20:54:49Z"
+			"revision": "72f939374954d0a1b2a1e27dcda950e2724dd5c1",
+			"revisionTime": "2019-10-07T16:10:19Z"
 		},
 		{
 			"checksumSHA1": "tqqo7DEeFCclb58XbN44WwdpWww=",

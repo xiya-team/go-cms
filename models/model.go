@@ -130,20 +130,32 @@ func GetMysqlMsg() (mysqlMsg map[string]string) {
 
 func CreateAdminLogCallback(scope *gorm.Scope) {
 	if scope.TableName() != "cms_admin_log" {
-		fmt.Println(scope)
-		Db.Create(&AdminLog{Route: common.Ctx.Request.URL.String(),
-			UserId:      common.UserId,
-			Ip:          int(str.Ip2long(common.Ctx.Input.IP())),
-			Method:      common.Ctx.Request.Method,
-			Description: fmt.Sprintf("%s添加了表%s 的%s", common.UserId, scope.TableName(), fmt.Sprintf("%+v", scope.Value)),
-		})
+		
+		//adminLogModel := NewAdminLog()
+		//adminLogModel.CreatedAt = php2go.Time()
+		//adminLogModel.UpdatedAt = php2go.Time()
+		//adminLogModel.Ip = int(str.Ip2long(common.Ctx.Input.IP()))
+		//adminLogModel.UserId = common.UserId
+		//adminLogModel.Route = common.Ctx.Request.URL.String()
+		//adminLogModel.Method = common.Ctx.Request.Method
+		//adminLogModel.Description = fmt.Sprintf("%s添加了表%s 的%s", common.UserId, scope.TableName(), fmt.Sprintf("%+v", scope.Value))
+		//adminLogModel.Create()
+		
+		//Db.Create(&AdminLog{
+		//	Route: common.Ctx.Request.URL.String(),
+		//	UserId:      common.UserId,
+		//	Ip:          int(str.Ip2long(common.Ctx.Input.IP())),
+		//	Method:      common.Ctx.Request.Method,
+		//	Description: fmt.Sprintf("%s添加了表%s 的%s", common.UserId, scope.TableName(), fmt.Sprintf("%+v", scope.Value)),
+		//})
 	}
 	return
 }
 
 func UpdateAdminLogCallback(scope *gorm.Scope) {
 	if common.Ctx != nil {
-		Db.Create(&AdminLog{Route: common.Ctx.Request.URL.String(),
+		Db.Create(&AdminLog{
+			Route: common.Ctx.Request.URL.String(),
 			UserId:      common.UserId,
 			Ip:          int(str.Ip2long(common.Ctx.Input.IP())),
 			Method:      common.Ctx.Request.Method,
@@ -154,7 +166,8 @@ func UpdateAdminLogCallback(scope *gorm.Scope) {
 }
 
 func DeleteAdminLogCallback(scope *gorm.Scope) {
-	Db.Create(&AdminLog{Route: common.Ctx.Request.URL.String(),
+	Db.Create(&AdminLog{
+		Route: common.Ctx.Request.URL.String(),
 		UserId:      common.UserId,
 		Ip:          int(str.Ip2long(common.Ctx.Input.IP())),
 		Method:      common.Ctx.Request.Method,
