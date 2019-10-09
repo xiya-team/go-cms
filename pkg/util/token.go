@@ -11,7 +11,7 @@ import (
 
 func CreateToken(user models.User) string {
 	claims := make(jwt.MapClaims)
-	claims["exp"] = time.Now().Add(time.Hour * time.Duration(1)).Unix()
+	claims["exp"] = time.Now().Add(time.Hour * time.Duration(72)).Unix()
 	claims["iat"] = time.Now().Unix()
 	claims["id"]=user.Id
 	claims["user_name"]=user.UserName
