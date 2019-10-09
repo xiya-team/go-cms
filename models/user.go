@@ -46,17 +46,16 @@ func (m *User) Pagination(offset, limit int, key string) (res []User, count int)
 }
 
 func (m *User) Create() (newAttr User, err error) {
-	//tx := Db.Begin()
+	tx := Db.Begin()
 
 	err = Db.Create(m).Error
-
-	//
-	//if err != nil{
-	//	tx.Rollback()
-	//}else {
-	//	tx.Commit()
-	//}
-	//
+	
+	if err != nil{
+		tx.Rollback()
+	}else {
+		tx.Commit()
+	}
+	
 	newAttr = *m
 	return
 }
