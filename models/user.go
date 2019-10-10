@@ -11,7 +11,7 @@ type User struct {
 	Id          int    `json:"id"         form:"id"         gorm:"default:''"`
 	LoginName   string `json:"login_name" form:"login_name" gorm:"default:''" valid:"Required;MaxSize(20);MinSize(2)"`
 	UserName    string `json:"user_name"  form:"user_name"  gorm:"default:''" valid:"Required;MaxSize(20);MinSize(6)"`
-	UserType    string `json:"user_type"  form:"user_type"  gorm:"default:'00'"`
+	UserType    int    `json:"user_type"  form:"user_type"  gorm:"default:'00'"`
 	Email       string `json:"email"      form:"email"      gorm:"default:''" valid:"Email"`
 	Phone       string `json:"phone"      form:"phone"      gorm:"default:''"`
 	Phonenumber string `json:"phonenumber"form:"phonenumber"gorm:"default:''"`
