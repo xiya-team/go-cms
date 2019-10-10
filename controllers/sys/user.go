@@ -2,10 +2,8 @@ package sys
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/validation"
-	"github.com/go-redis/redis"
 	"github.com/syyongx/php2go"
 	"go-cms/controllers"
 	"go-cms/models"
@@ -200,29 +198,18 @@ func (c *UserController) Login() {
 
 		//通过service查询
 		user := services.FindByUserName(user_name)
-		fmt.Print(user.UserName)
 		
-		client := redis.NewClient(&redis.Options{
-			Addr:     "localhost:6379",
-			Password: "", // no password set //foobared
-			DB:       1,  // use default DB
-		})
-		defer client.Close()
-		
-		pong, err := client.Ping().Result()
-		fmt.Println(pong, err)
 		jsonRes, err := json.Marshal(map[string]interface{}{"Id": user.Id, "UserName": user.UserName})
 		if err != nil {
 			panic(err)
 		}
-		fmt.Print(jsonRes)
 		
-		err = client.Set("foo", "bar", 0).Err()
-		if err != nil {
+		redisClient := util.NewRedisClient()
+		if err != nil{
 			c.JsonResult(e.ERROR, err.Error())
 		}
 		
-		err = client.Set("token_"+user.UserName,"yangcuiwnag",time.Hour*2).Err()
+		err = redisClient.Set("token_"+user.UserName,string(jsonRes),time.Hour*10).Err()
 		if err != nil {
 			c.JsonResult(e.ERROR, err.Error())
 		}
