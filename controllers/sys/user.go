@@ -1,7 +1,6 @@
 package sys
 
 import (
-	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/validation"
 	"github.com/syyongx/php2go"
 	"go-cms/controllers"
@@ -11,7 +10,6 @@ import (
 	"go-cms/services"
 	"go-cms/validations/backend"
 	"log"
-	"strings"
 )
 
 type PaginationRequest struct {
@@ -41,7 +39,7 @@ func (c *UserController) UserList() {
 		c.JsonResult(e.ERROR_CODE__JSON__PARSE_FAILED, e.ResponseMap[e.ERROR_CODE__JSON__PARSE_FAILED])
 	}
 	dataMap := make(map[string]interface{}, 0)
-	if req.Status == "1" || req.Status == "0" {
+	if req.Status == 1 || req.Status == 0 {
 		dataMap["status"] = req.Status
 	}
 	if req.LoginName != "" {
