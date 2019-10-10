@@ -16,12 +16,12 @@ type User struct {
 	Email       string `json:"email"      form:"email"      gorm:"default:''" valid:"Email"`
 	Phone       string `json:"phone"      form:"phone"      gorm:"default:''"`
 	Phonenumber string `json:"phonenumber"form:"phonenumber"gorm:"default:''"`
-	Sex         string `json:"sex"        form:"sex"        gorm:"default:'0'"`
+	Sex         int    `json:"sex"        form:"sex"        gorm:"default:'0'"`
 	Avatar      string `json:"avatar"     form:"avatar"     gorm:"default:''"`
 	Password    string `json:"password"   form:"password"   gorm:"default:''" valid:"Required;MaxSize(33);MinSize(6)"`
 	Salt        string `json:"salt"       form:"salt"       gorm:"default:''"`
-	Status      string `json:"status"     form:"status"     gorm:"default:'0'"`
-	DelFlag     string `json:"del_flag"   form:"del_flag"   gorm:"default:'0'"`
+	Status      int    `json:"status"     form:"status"     gorm:"default:'0'"`
+	DelFlag     int    `json:"del_flag"   form:"del_flag"   gorm:"default:'0'"`
 	LoginIp     string `json:"login_ip"   form:"login_ip"   gorm:"default:''"`
 	LoginDate   int64  `json:"login_date" form:"login_date" gorm:"default:''"`
 	CreateBy    string `json:"create_by"  form:"create_by"  gorm:"default:''"`
