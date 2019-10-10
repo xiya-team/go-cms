@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/dgrijalva/jwt-go"
+	"go-cms/common"
 	"go-cms/models"
 	"strings"
 	"time"
@@ -23,14 +24,21 @@ func CreateToken(user models.User) string {
 	return tokenString
 }
 
-func CheckToken(tokenString string) (b bool, t *jwt.Token) {
+/**
+ * 获取真实的token
+ */
+func FetchToken()  (token string){
+	tokenString := common.Ctx.Input.Header(beego.AppConfig.String("jwt::token_name"))
 	kv := strings.Split(tokenString, " ")
 	if len(kv) != 2 || kv[0] != "Bearer" {
-		fmt.Println("AuthString invalid:", tokenString)
-		return false, nil
+		token = ""
 	}
-	
-	token, err := jwt.Parse(kv[1], func(*jwt.Token) (interface{}, error) {
+	token = kv[1]
+	return
+}
+
+func CheckToken(tokenString string) (b bool, t *jwt.Token) {
+	token, err := jwt.Parse(tokenString, func(*jwt.Token) (interface{}, error) {
 		return []byte(beego.AppConfig.String("jwt::secrets")), nil
 	})
 	

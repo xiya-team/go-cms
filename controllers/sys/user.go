@@ -85,9 +85,8 @@ func (c *UserController) Index() {
 	}
 }
 func (c *UserController) UserInfo() {
-	token := c.Ctx.Input.Header(beego.AppConfig.String("jwt::token_name"))
-	kv := strings.Split(token, " ")
-	uid := util.GetUserIdByToken(kv[1])
+	token := util.FetchToken()
+	uid := util.GetUserIdByToken(token)
 	userInfo, err := models.NewUser().FindById(uid)
 	if err != nil {
 		c.JsonResult(e.ERROR, e.ResponseMap[e.ERROR])
