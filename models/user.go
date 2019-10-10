@@ -138,7 +138,7 @@ func (m *User) FindByMap(page, pageCount int, dataMap map[string]interface{}) (u
 
 }
 
-func (m *User) FindByMaps(page, pageSize int, dataMap map[string]interface{}) (user []User, total int, err error) {
+func (m *User) FindByMaps(offset, limit int, dataMap map[string]interface{},orderBy string) (user []User, total int, err error) {
 	query := Db
 	if status,isExist:=dataMap["status"].(int);isExist == true{
 		query = query.Where("status = ?", status)
@@ -160,8 +160,12 @@ func (m *User) FindByMaps(page, pageSize int, dataMap map[string]interface{}) (u
 		query = query.Where("phone LIKE ?", "%"+phone+"%")
 	}
 	
+	if orderBy!=""{
+		query = query.Order(orderBy)
+	}
+	
 	// 获取取指page，指定pagesize的记录
-	err = query.Offset((page-1)*pageSize).Order("created_at desc").Limit(pageSize).Find(&user).Error
+	err = query.Offset(offset).Limit(limit).Find(&user).Error
 	if err == nil{
 		err = query.Model(&User{}).Count(&total).Error
 	}

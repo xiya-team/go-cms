@@ -39,7 +39,7 @@ func (m *Configs) Create() (newAttr Configs, err error) {
 	err = tx.Create(m).Error
 	
 	if err != nil{
-		tx.Rollback()
+       tx.Rollback()
 	}else {
 		tx.Commit()
 	}
@@ -55,8 +55,8 @@ func (m *Configs) Update() (newAttr Configs, err error) {
 	} else {
 		err = errors.New("id参数错误")
 	}
-	if err != nil{
-		tx.Rollback()
+    if err != nil{
+       tx.Rollback()
 	}else {
 		tx.Commit()
 	}
@@ -71,8 +71,8 @@ func (m *Configs) Delete() (err error) {
 	} else {
 		err = errors.New("id参数错误")
 	}
-	if err != nil{
-		tx.Rollback()
+    if err != nil{
+       tx.Rollback()
 	}else {
 		tx.Commit()
 	}
@@ -86,8 +86,8 @@ func (m *Configs) DelBatch(ids []int) (err error) {
 	} else {
 		err = errors.New("id参数错误")
 	}
-	if err != nil{
-		tx.Rollback()
+    if err != nil{
+       tx.Rollback()
 	}else {
 		tx.Commit()
 	}
@@ -96,6 +96,34 @@ func (m *Configs) DelBatch(ids []int) (err error) {
 
 func (m *Configs) FindById(id int) (configs Configs, err error) {
 	err = Db.Where("id=?", id).First(&configs).Error
+	return
+}
+
+func (m *Configs) FindByMap(offset, limit int, dataMap map[string]interface{},orderBy string) (res []Configs, total int, err error) {
+	query := Db
+	if status,isExist:=dataMap["status"].(int);isExist{
+		query = query.Where("status = ?", status)
+	}
+	if name,ok:=dataMap["name"].(string);ok{
+		query = query.Where("name LIKE ?", "%"+name+"%")
+	}
+
+	if startTime,ok:=dataMap["start_time"].(int64);ok{
+		query = query.Where("created_at > ?", startTime)
+	}
+	if endTime,ok:=dataMap["end_time"].(int64);ok{
+		query = query.Where("created_at <= ?", endTime)
+	}
+
+    if orderBy!=""{
+		query = query.Order(orderBy)
+	}
+
+	// 获取取指page，指定pagesize的记录
+	err = query.Offset(offset).Limit(limit).Find(&res).Error
+	if err == nil{
+		err = query.Model(&User{}).Count(&total).Error
+	}
 	return
 }
 
