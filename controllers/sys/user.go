@@ -60,7 +60,7 @@ func (c *UserController) UserList() {
 		dataMap["phone"] = req.Phone
 	}
 	page, pageCount := util.InitPageCount(req.Page, req.PageCount)
-	user, total, err := models.NewUser().FindByMaps(page, pageCount, dataMap)
+	user, total, err := models.NewUser().FindByMap(page, pageCount, dataMap)
 	if err != nil {
 		c.JsonResult(e.ERROR, e.ResponseMap[e.ERROR])
 	}

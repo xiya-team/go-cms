@@ -91,3 +91,31 @@ func (m *UserRole) FindById(id int) (userRole UserRole, err error) {
 	return
 }
 
+func (m *UserRole) FindByMap(offset, limit int, dataMap map[string]interface{},orderBy string) (res []UserRole, total int, err error) {
+	query := Db
+	if status,isExist:=dataMap["status"].(int);isExist{
+		query = query.Where("status = ?", status)
+	}
+	if name,ok:=dataMap["name"].(string);ok{
+		query = query.Where("name LIKE ?", "%"+name+"%")
+	}
+
+	if startTime,ok:=dataMap["start_time"].(int64);ok{
+		query = query.Where("created_at > ?", startTime)
+	}
+	if endTime,ok:=dataMap["end_time"].(int64);ok{
+		query = query.Where("created_at <= ?", endTime)
+	}
+
+    if orderBy!=""{
+		query = query.Order(orderBy)
+	}
+
+	// 获取取指page，指定pagesize的记录
+	err = query.Offset(offset).Limit(limit).Find(&res).Error
+	if err == nil{
+		err = query.Model(&User{}).Count(&total).Error
+	}
+	return
+}
+
