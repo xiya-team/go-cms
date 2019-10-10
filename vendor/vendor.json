@@ -183,6 +183,12 @@
 			"revisionTime": "2017-02-16T21:49:44Z"
 		},
 		{
+			"checksumSHA1": "NQzqegnJeN+F56Lb16EkejAQM3s=",
+			"path": "github.com/go-redis/redis",
+			"revision": "f10f34eb29c0ccc9629111312b92e0465b718773",
+			"revisionTime": "2019-10-08T09:50:13Z"
+		},
+		{
 			"checksumSHA1": "QD6LqgLz2JMxXqns8TaxtK9AuHs=",
 			"path": "github.com/go-sql-driver/mysql",
 			"revision": "2e00b5cd70399450106cec6431c2e2ce3cae5034",
