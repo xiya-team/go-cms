@@ -14,6 +14,12 @@ import (
 	"strings"
 )
 
+type PaginationRequest struct {
+	PageCount int   `form:"page_count" json:"page_count"`
+	Page      int   `form:"page" json:"page"`
+	StartTime int64 `form:"start_time" json:"start_time"`
+	EndTime   int64 `form:"end_time" json:"end_time"`
+}
 type UserController struct {
 	controllers.BaseController
 }
@@ -23,14 +29,8 @@ func (c *UserController) Prepare() {
 }
 func (c *UserController) UserList() {
 	req := struct {
-		UserName  string `form:"user_name"`
-		PageCount int    `form:"page_count"`
-		Page      int    `form:"page"`
-		LoginName string `form:"login_name"`
-		Phone     string `form:"phone"`
-		Status    int    `form:"status"`
-		StartTime int64  `form:"start_time"`
-		EndTime   int64  `form:"end_time"`
+		PaginationRequest
+		models.User
 	}{}
 	type RespUser struct {
 		List  []models.User `json:"list"`
@@ -38,10 +38,10 @@ func (c *UserController) UserList() {
 	}
 	err := c.ParseForm(&req)
 	if err != nil {
-		c.JsonResult(e.ERROR, "参数解析错误!")
+		c.JsonResult(e.ERROR_CODE__JSON__PARSE_FAILED, e.ResponseMap[e.ERROR_CODE__JSON__PARSE_FAILED])
 	}
 	dataMap := make(map[string]interface{}, 0)
-	if req.Status == 1 {
+	if req.Status == "1" || req.Status == "0" {
 		dataMap["status"] = req.Status
 	}
 	if req.LoginName != "" {
@@ -60,7 +60,8 @@ func (c *UserController) UserList() {
 		dataMap["phone"] = req.Phone
 	}
 	page, pageCount := util.InitPageCount(req.Page, req.PageCount)
-	user, total, err := models.NewUser().FindByMap(page, pageCount, dataMap)
+	var orderBy string = "created_at DESC"
+	user, total, err := models.NewUser().FindByMaps(page, pageCount, dataMap, orderBy)
 	if err != nil {
 		c.JsonResult(e.ERROR, e.ResponseMap[e.ERROR])
 	}

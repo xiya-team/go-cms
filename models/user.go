@@ -2,7 +2,6 @@ package models
 
 import (
 	"errors"
-	"fmt"
 	"github.com/astaxie/beego/validation"
 	"log"
 )
@@ -110,32 +109,6 @@ func (m *User) DelBatch(ids []int) (err error) {
 func (m *User) FindById(id int) (user User, err error) {
 	err = Db.Where("id=?", id).First(&user).Error
 	return
-}
-func (m *User) FindByMap(page, pageCount int, dataMap map[string]interface{}) (user []User, total int, err error) {
-	var where string="1=1"
-	if status,ok:=dataMap["status"].(int);ok{
-		where+=fmt.Sprintf(" AND status=%v",status)
-	}
-	if loginName,ok:=dataMap["login_name"].(string);ok{
-		where+=fmt.Sprintf(" AND login_name like '%v'","%"+loginName+"%")
-	}
-	if userName,ok:=dataMap["user_name"].(string);ok{
-		where+=fmt.Sprintf(" AND user_name like '%v'","%"+userName+"%")
-	}
-	if startTime,ok:=dataMap["start_time"].(int64);ok{
-		where+=fmt.Sprintf(" AND created_at>=%v",startTime)
-	}
-	if endTime,ok:=dataMap["end_time"].(int64);ok{
-		where+=fmt.Sprintf(" created_at<=%v",endTime)
-	}
-	if phone,ok:=dataMap["phone"].(string);ok{
-		where+=fmt.Sprintf(" AND phone like '%v'","%"+phone+"%")
-	}
-	err = Db.Offset((page - 1) * pageCount).Limit(pageCount).Where(where).Order("created_at DESC").Find(&user).Error
-	err = Db.Model(&User{}).Where(where).Count(&total).Error
-	return
-
-
 }
 
 func (m *User) FindByMaps(offset, limit int, dataMap map[string]interface{},orderBy string) (user []User, total int, err error) {
