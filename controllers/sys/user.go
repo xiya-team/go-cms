@@ -231,6 +231,16 @@ func (c *UserController) Login() {
 	}
 }
 
+func (c *UserController) Logout()  {
+	redisClient := util.NewRedisClient()
+	tokenString := c.Ctx.Input.Header(beego.AppConfig.String("jwt::token_name"))
+	username := util.GetUserNameByToken(tokenString)
+	
+	redisClient.Del("token_"+username)
+	
+	c.JsonResult(e.SUCCESS, "success")
+}
+
 func (c *UserController) CheckToken() {
 
 	token := c.Ctx.Input.Header("Authorization")
