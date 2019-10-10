@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
 	"go-cms/generate"
@@ -31,6 +32,7 @@ func main() {
 	
 	//gii
 	if b, err := beego.AppConfig.Bool("gii"); b {
+		fmt.Print("gii已经开启,代码生成中......")
 		if err == nil {
 			generate.Run() //开启gii
 		}
