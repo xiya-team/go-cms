@@ -1,7 +1,11 @@
 package sys
 
 import (
+	"encoding/json"
+	"fmt"
+	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/validation"
+	"github.com/go-redis/redis"
 	"github.com/syyongx/php2go"
 	"go-cms/controllers"
 	"go-cms/models"
@@ -10,6 +14,8 @@ import (
 	"go-cms/services"
 	"go-cms/validations/backend"
 	"log"
+	"strings"
+	"time"
 )
 
 type PaginationRequest struct {
@@ -83,8 +89,9 @@ func (c *UserController) Index() {
 	}
 }
 func (c *UserController) UserInfo() {
-	token := util.FetchToken()
-	uid := util.GetUserIdByToken(token)
+	token := c.Ctx.Input.Header(beego.AppConfig.String("jwt::token_name"))
+	kv := strings.Split(token, " ")
+	uid := util.GetUserIdByToken(kv[1])
 	userInfo, err := models.NewUser().FindById(uid)
 	if err != nil {
 		c.JsonResult(e.ERROR, e.ResponseMap[e.ERROR])
@@ -193,7 +200,33 @@ func (c *UserController) Login() {
 
 		//通过service查询
 		user := services.FindByUserName(user_name)
-
+		fmt.Print(user.UserName)
+		
+		client := redis.NewClient(&redis.Options{
+			Addr:     "localhost:6379",
+			Password: "", // no password set //foobared
+			DB:       1,  // use default DB
+		})
+		defer client.Close()
+		
+		pong, err := client.Ping().Result()
+		fmt.Println(pong, err)
+		jsonRes, err := json.Marshal(map[string]interface{}{"Id": user.Id, "UserName": user.UserName})
+		if err != nil {
+			panic(err)
+		}
+		fmt.Print(jsonRes)
+		
+		err = client.Set("foo", "bar", 0).Err()
+		if err != nil {
+			c.JsonResult(e.ERROR, err.Error())
+		}
+		
+		err = client.Set("token_"+user.UserName,"yangcuiwnag",time.Hour*2).Err()
+		if err != nil {
+			c.JsonResult(e.ERROR, err.Error())
+		}
+		
 		if php2go.Empty(user) {
 			c.JsonResult(e.ERROR, "User Not Exist")
 		}

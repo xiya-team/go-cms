@@ -2,6 +2,7 @@ package middlewares
 
 import (
 	"encoding/json"
+	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/context"
 	"github.com/astaxie/beego/logs"
 	"github.com/syyongx/php2go"
@@ -74,7 +75,7 @@ func RestfulHandler() func(ctx *context.Context) {
 		
 		current_url := ctx.Request.URL.RequestURI()
 		if php2go.InArray(php2go.Strtolower(current_url),urlMapping) != true {
-			token := util.FetchToken()
+			token := ctx.Input.Header(beego.AppConfig.String("jwt::token_name"))
 			allow, _ := util.CheckToken(token)
 			if(allow == false){
 				ctx.Output.Header("Content-Type", "application/json")
