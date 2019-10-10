@@ -45,7 +45,7 @@ func (c *UserController) UserList() {
 		c.JsonResult(e.ERROR_CODE__JSON__PARSE_FAILED, e.ResponseMap[e.ERROR_CODE__JSON__PARSE_FAILED])
 	}
 	dataMap := make(map[string]interface{}, 0)
-	if req.Status == 1 || req.Status == 0 {
+	if req.Status == 1 || req.Status == 2 {
 		dataMap["status"] = req.Status
 	}
 	if req.LoginName != "" {
