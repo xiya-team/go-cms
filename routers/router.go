@@ -21,4 +21,6 @@ func init() {
 	beego.Router("/api/user/list", &sys.UserController{}, "get:UserList") // 获取用户列表
 	beego.Router("/api/user/check_token", &sys.UserController{}, "post:CheckToken")
 	beego.Router("/api/user/logout", &sys.UserController{}, "get:Logout")
+	
+	beego.Router("/api/captcha/check", &sys.CaptchaController{}, "post:Check")
 }
