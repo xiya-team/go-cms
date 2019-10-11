@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/dgrijalva/jwt-go"
+	"github.com/syyongx/php2go"
 	"go-cms/models"
-	"strings"
 	"time"
 )
 
@@ -24,13 +24,13 @@ func CreateToken(user models.User) string {
 }
 
 func CheckToken(tokenString string) (b bool, t *jwt.Token) {
-	kv := strings.Split(tokenString, " ")
-	if len(kv) != 2 || kv[0] != "Bearer" {
-		fmt.Println("AuthString invalid:", tokenString)
-		return false, nil
-	}
+	//kv := strings.Split(tokenString, " ")
+	//if len(kv) != 2 || kv[0] != "Bearer" {
+	//	fmt.Println("AuthString invalid:", tokenString)
+	//	return false, nil
+	//}
 	
-	token, err := jwt.Parse(kv[1], func(*jwt.Token) (interface{}, error) {
+	token, err := jwt.Parse(tokenString, func(*jwt.Token) (interface{}, error) {
 		return []byte(beego.AppConfig.String("jwt::secrets")), nil
 	})
 	
@@ -84,6 +84,16 @@ func CheckToken(tokenString string) (b bool, t *jwt.Token) {
 		return false, nil
 	}
 	//GetUserNameByToken(kv[1])
+	
+	redisClient := NewRedisClient()
+	
+	username := GetUserNameByToken(tokenString)
+	
+	jsonResToken ,err := redisClient.Get("token_"+username).Result()
+	if err != nil || php2go.Empty(jsonResToken){
+		return false,nil
+	}
+	
 	return true, nil
 }
 
