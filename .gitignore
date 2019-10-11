@@ -18,3 +18,4 @@ routers/*controllers.go
 conf/app.conf
 project.log
 project.*
+vendor
