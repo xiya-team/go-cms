@@ -1,8 +1,8 @@
 package sys
 
 import (
-	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/httplib"
+	"github.com/astaxie/beego/logs"
 	"github.com/tidwall/gjson"
 	"go-cms/controllers"
 	"go-cms/pkg/e"
@@ -61,7 +61,7 @@ func (c *CaptchaController) Hander(){
 	if value.Int() == 1 {
 		c.JsonResult(e.SUCCESS, "success")
 	}else {
-		beego.Error(str)
+		logs.Error(str)
 		c.JsonResult(e.ERROR, "验证失败!")
 	}
 }
