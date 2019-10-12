@@ -32,7 +32,32 @@ func (c *CaptchaController) Check()  {
 	}
 	
 	value := gjson.Get(str, "retcode")
-	if value.String() == "0" {
+	if value.Int() == 0 {
+		c.JsonResult(e.SUCCESS, "success")
+	}else {
+		c.JsonResult(e.ERROR, str)
+	}
+}
+
+func (c *CaptchaController) Hander(){
+	Ticket := c.GetString("ticket")
+	UserIp := c.Ctx.Input.IP()
+	Randstr := c.GetString("randstr")
+	
+	req := httplib.Get("https://ssl.captcha.qq.com/ticket/verify")
+	req.Param("Ticket",Ticket)
+	req.Param("UserIp",UserIp)
+	req.Param("Randstr",Randstr)
+	req.Param("Aid","1251180753")
+	req.Param("AppSecretKey","AKIDC9qITMDOUIoQlpMwvd3CckbAWeW7a4PT")
+	str, err := req.String()
+	
+	if err != nil {
+		c.JsonResult(e.ERROR, "error")
+	}
+	
+	value := gjson.Get(str, "response")
+	if value.Int() == 1 {
 		c.JsonResult(e.SUCCESS, "success")
 	}else {
 		c.JsonResult(e.ERROR, str)
