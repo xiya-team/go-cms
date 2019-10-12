@@ -47,9 +47,9 @@ func (c *CaptchaController) Hander(){
 	
 	req := httplib.Get("https://ssl.captcha.qq.com/ticket/verify")
 	req.Param("Ticket",Ticket)
-	req.Param("UserIp",UserIp)
+	req.Param("UserIP",UserIp)
 	req.Param("Randstr",Randstr)
-	req.Param("Aid","1251180753")
+	req.Param("aid","1251180753")
 	req.Param("AppSecretKey","zlqfnkcniyxxZvJQV2I2Xona69vQFpAE")
 	str, err := req.String()
 	
