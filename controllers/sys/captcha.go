@@ -1,6 +1,7 @@
 package sys
 
 import (
+	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/httplib"
 	"github.com/tidwall/gjson"
 	"go-cms/controllers"
@@ -49,7 +50,7 @@ func (c *CaptchaController) Hander(){
 	req.Param("UserIp",UserIp)
 	req.Param("Randstr",Randstr)
 	req.Param("Aid","1251180753")
-	req.Param("AppSecretKey","AKIDC9qITMDOUIoQlpMwvd3CckbAWeW7a4PT")
+	req.Param("AppSecretKey","zlqfnkcniyxxZvJQV2I2Xona69vQFpAE")
 	str, err := req.String()
 	
 	if err != nil {
@@ -60,6 +61,7 @@ func (c *CaptchaController) Hander(){
 	if value.Int() == 1 {
 		c.JsonResult(e.SUCCESS, "success")
 	}else {
+		beego.Error(str)
 		c.JsonResult(e.ERROR, "验证失败!")
 	}
 }
