@@ -3,6 +3,7 @@ package sys
 import (
 	"encoding/json"
 	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/logs"
 	"github.com/astaxie/beego/validation"
 	"github.com/syyongx/php2go"
 	"go-cms/controllers"
@@ -206,16 +207,18 @@ func (c *UserController) Login() {
 		
 		redisClient := util.NewRedisClient()
 		if err != nil{
-			c.JsonResult(e.ERROR, err.Error())
+			logs.Debug(err.Error())
+			c.JsonResult(e.ERROR, "用户名或密码错误!")
 		}
 		
 		err = redisClient.Set("token_"+user.UserName,string(jsonRes),time.Hour*10).Err()
 		if err != nil {
-			c.JsonResult(e.ERROR, err.Error())
+			logs.Debug(err.Error())
+			c.JsonResult(e.ERROR, "用户名或密码错误!")
 		}
 		
 		if php2go.Empty(user) {
-			c.JsonResult(e.ERROR, "User Not Exist")
+			c.JsonResult(e.ERROR, "用户名不存在!")
 		}
 
 		has := php2go.Md5(password + user.Salt)
@@ -225,9 +228,9 @@ func (c *UserController) Login() {
 			jsonData := make(map[string]interface{}, 1)
 			jsonData["token"] = token
 			c.JsonResult(e.SUCCESS, "登录成功!", jsonData)
+		}else {
+			c.JsonResult(e.ERROR, "用户名或密码错误!")
 		}
-
-		c.JsonResult(e.ERROR, has)
 	}
 }
 
