@@ -1,7 +1,7 @@
 package sys
 
 import (
-	"gitea/modules/httplib"
+	"github.com/astaxie/beego/httplib"
 	"github.com/tidwall/gjson"
 	"go-cms/controllers"
 	"go-cms/pkg/e"
