@@ -1,106 +1,121 @@
 package sys
 
 import (
+	"github.com/astaxie/beego/logs"
 	"github.com/astaxie/beego/validation"
+	"github.com/syyongx/php2go"
 	"go-cms/controllers"
 	"go-cms/models"
+	"go-cms/pkg/e"
 	"log"
 )
 
-type ConfigssController struct {
+type ConfigsController struct {
 	controllers.BaseController
 }
 
-func (c *ConfigssController) Prepare() {
+func (c *ConfigsController) Prepare() {
 
 }
 
-func (c *ConfigssController) Index() {
-	if c.Ctx.Input.IsAjax() {
-		page, _ := c.GetInt("page")
-		limit, _ := c.GetInt("limit")
-		key := c.GetString("key", "")
-
-		result, count := models.NewConfigs().Pagination((page-1)*limit, limit, key)
-		c.JsonResult(0, "ok", result, count)
-	}
-	c.TplName = c.ADMIN_TPL + "configss/index.html"
-}
-
-func (c *ConfigssController) Create() {
+func (c *ConfigsController) Index() {
 	if c.Ctx.Input.IsPost() {
-		configssModel := models.NewConfigs()
+		page, _ := c.GetInt("page",1)
+		limit, _ := c.GetInt("limit",10)
+		
+		configs := models.NewConfigs()
+		
+		dataMap := make(map[string]interface{}, 0)
+		
+		if !php2go.Empty(configs.ConfigType) {
+			dataMap["config_type"] = configs.ConfigType
+		}
+		
+		if !php2go.Empty(configs.StartTime) {
+			dataMap["start_time"] = configs.StartTime
+		}
+		if !php2go.Empty(configs.EndTime) {
+			dataMap["end_time"] = configs.EndTime
+		}
+		
+		var orderBy string = "created_at DESC"
+		
+		result, count,err := models.NewConfigs().FindByMap((page-1)*limit, limit, dataMap,orderBy)
+		if err != nil{
+			c.JsonResult(e.ERROR, "获取数据失败")
+		}
+		c.JsonResult(e.SUCCESS, "ok", result, count)
+	}
+}
+
+func (c *ConfigsController) Create() {
+	if c.Ctx.Input.IsPost() {
+		configsModel := models.NewConfigs()
 		//1.压入数据
-		if err := c.ParseForm(configssModel); err != nil {
-			c.JsonResult(1001, "赋值失败")
+		if err := c.ParseForm(configsModel); err != nil {
+			c.JsonResult(e.ERROR, "赋值失败")
 		}
 		//2.验证
 		valid := validation.Validation{}
-		if b, _ := valid.Valid(configssModel); !b {
+		if b, _ := valid.Valid(configsModel); !b {
 			for _, err := range valid.Errors {
 				log.Println(err.Key, err.Message)
 			}
-			c.JsonResult(1001, "验证失败")
+			c.JsonResult(e.ERROR, "验证失败")
 		}
 		//3.插入数据
-		if _, err := configssModel.Create(); err != nil {
-			c.JsonResult(1001, "创建失败")
+		if _, err := configsModel.Create(); err != nil {
+			c.JsonResult(e.ERROR, "创建失败")
 		}
-		c.JsonResult(0, "添加成功")
+		c.JsonResult(e.SUCCESS, "添加成功")
 	}
-
-	c.Data["vo"] = models.Configs{}
-	c.TplName = c.ADMIN_TPL + "configss/create.html"
 }
 
-func (c *ConfigssController) Update() {
-	id, _ := c.GetInt("id")
-	configss, _ := models.NewConfigs().FindById(id)
-
+func (c *ConfigsController) Update() {
+	
 	if c.Ctx.Input.IsPost() {
+		id, _ := c.GetInt("id")
+		configs, _ := models.NewConfigs().FindById(id)
 		//1
-		if err := c.ParseForm(&configss); err != nil {
-			c.JsonResult(1001, "赋值失败")
+		if err := c.ParseForm(&configs); err != nil {
+			c.JsonResult(e.ERROR, "赋值失败")
 		}
 		//2
 		valid := validation.Validation{}
-		if b, _ := valid.Valid(configss); !b {
+		if b, _ := valid.Valid(configs); !b {
 			for _, err := range valid.Errors {
 				log.Println(err.Key, err.Message)
 			}
-			c.JsonResult(1001, "验证失败")
+			c.JsonResult(e.ERROR, "验证失败")
 		}
 		//3
-		if _, err := configss.Update(); err != nil {
-			c.JsonResult(1001, "修改失败")
+		if _, err := configs.Update(); err != nil {
+			logs.Debug(err.Error())
+			c.JsonResult(e.ERROR, "修改失败")
 		}
-		c.JsonResult(0, "修改成功")
+		c.JsonResult(e.SUCCESS, "修改成功")
 	}
-
-	c.Data["vo"] = configss
-	c.TplName = c.ADMIN_TPL + "configss/update.html"
 }
 
-func (c *ConfigssController) Delete() {
-	configssModel := models.NewConfigs()
+func (c *ConfigsController) Delete() {
+	configsModel := models.NewConfigs()
 	id, _ := c.GetInt("id")
-	configssModel.Id = id
-	if err := configssModel.Delete(); err != nil {
-		c.JsonResult(1001, "删除失败")
+	configsModel.Id = id
+	if err := configsModel.Delete(); err != nil {
+		c.JsonResult(e.ERROR, "删除失败")
 	}
-	c.JsonResult(0, "删除成功")
+	c.JsonResult(e.SUCCESS, "删除成功")
 }
 
-func (c *ConfigssController) BatchDelete() {
+func (c *ConfigsController) BatchDelete() {
 	var ids []int
 	if err := c.Ctx.Input.Bind(&ids, "ids"); err != nil {
-		c.JsonResult(1001, "赋值失败")
+		c.JsonResult(e.ERROR, "赋值失败")
 	}
-
-	configssModel := models.NewConfigs()
-	if err := configssModel.DelBatch(ids); err != nil {
-		c.JsonResult(1001, "删除失败")
+	
+	configsModel := models.NewConfigs()
+	if err := configsModel.DelBatch(ids); err != nil {
+		c.JsonResult(e.ERROR, "删除失败")
 	}
-	c.JsonResult(0, "删除成功")
+	c.JsonResult(e.SUCCESS, "删除成功")
 }
-
