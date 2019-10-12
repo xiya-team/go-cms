@@ -60,6 +60,6 @@ func (c *CaptchaController) Hander(){
 	if value.Int() == 1 {
 		c.JsonResult(e.SUCCESS, "success")
 	}else {
-		c.JsonResult(e.ERROR, str)
+		c.JsonResult(e.ERROR, "验证失败!")
 	}
 }
