@@ -1,9 +1,9 @@
 package sys
 
 import (
+	"github.com/astaxie/beego/validation"
 	"go-cms/controllers"
 	"go-cms/models"
-	"github.com/astaxie/beego/validation"
 	"log"
 )
 
