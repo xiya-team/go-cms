@@ -89,7 +89,7 @@ func (m *Article) Delete() (err error) {
 func (m *Article) DelBatch(ids []int) (err error) {
     tx := Db.Begin()
 	if len(ids) > 0 {
-		err = tx.Where("id in (?)", ids).Delete(m).Error
+		err = tx.Model(&m).Where("id=?", m.Id).Updates(m).Error
 	} else {
 		err = errors.New("id参数错误")
 	}

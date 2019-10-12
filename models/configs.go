@@ -55,15 +55,14 @@ func (m *Configs) Create() (newAttr Configs, err error) {
 }
 
 func (m *Configs) Update() (newAttr Configs, err error) {
-	m.UpdatedAt = php2go.Time()
     tx := Db.Begin()
 	if m.Id > 0 {
-		err = tx.Where("id=?", m.Id).Updates(m).Error
+		err = tx.Model(&m).Where("id=?", m.Id).Updates(m).Error
 	} else {
 		err = errors.New("id参数错误")
 	}
     if err != nil{
-       tx.Rollback()
+    	tx.Rollback()
 	}else {
 		tx.Commit()
 	}

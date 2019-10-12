@@ -47,7 +47,7 @@ func (m *Area) Create() (newAttr Area, err error) {
 func (m *Area) Update() (newAttr Area, err error) {
 	tx := Db.Begin()
 	if m.Id > 0 {
-		err = tx.Where("id=?", m.Id).Save(m).Error
+		err = tx.Model(&m).Where("id=?", m.Id).Updates(m).Error
 	} else {
 		err = errors.New("id参数错误")
 	}

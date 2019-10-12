@@ -9,6 +9,7 @@ import (
 	"go-cms/pkg/str"
 	"log"
 	"sync"
+	"time"
 )
 
 var Db *gorm.DB
@@ -106,6 +107,9 @@ func init() {
 		Db.DB().SetMaxIdleConns(10)
 		Db.DB().SetMaxOpenConns(100)
 		
+		Db.Callback().Create().Replace("gorm:update_time_stamp",updateTimeStampForCreateCallback)
+		Db.Callback().Update().Replace("gorm:update_time_stamp",updateTimeStampForUpdateCallback)
+		
 		Db.Callback().Create().Register("create_admin_log", CreateAdminLogCallback)
 		Db.Callback().Update().Register("update_admin_log", UpdateAdminLogCallback)
 		//Db.Callback().Update().Remove("gorm:xxx")
@@ -150,6 +154,33 @@ func CreateAdminLogCallback(scope *gorm.Scope) {
 		//})
 	}
 	return
+}
+
+func updateTimeStampForCreateCallback(scope *gorm.Scope) {
+	
+	if !scope.HasError() {
+		nowTime := time.Now().Unix()
+		if createAtField, ok := scope.FieldByName("CreatedAt"); ok {
+			if createAtField.IsBlank {
+				createAtField.Set(nowTime)
+			}
+		}
+		
+		if updatedAtField, ok := scope.FieldByName("UpdatedAt"); ok {
+			if updatedAtField.IsBlank {
+				updatedAtField.Set(nowTime)
+			}
+		}
+	}
+}
+
+// 注册更新钩子在持久化之前
+func updateTimeStampForUpdateCallback(scope *gorm.Scope) {
+	if updatedAtField, ok := scope.FieldByName("UpdatedAt"); ok {
+		if updatedAtField.IsBlank {
+			updatedAtField.Set(time.Now().Unix())
+		}
+	}
 }
 
 func UpdateAdminLogCallback(scope *gorm.Scope) {

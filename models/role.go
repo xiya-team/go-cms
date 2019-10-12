@@ -52,7 +52,7 @@ func (m *Role) Create() (newAttr Role, err error) {
 func (m *Role) Update() (newAttr Role, err error) {
     tx := Db.Begin()
 	if m.Id > 0 {
-		err = tx.Where("id=?", m.Id).Save(m).Error
+		err = tx.Model(&m).Where("id=?", m.Id).Updates(m).Error
 	} else {
 		err = errors.New("id参数错误")
 	}

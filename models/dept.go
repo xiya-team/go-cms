@@ -55,7 +55,7 @@ func (m *Dept) Create() (newAttr Dept, err error) {
 func (m *Dept) Update() (newAttr Dept, err error) {
     tx := Db.Begin()
 	if m.Id > 0 {
-		err = tx.Where("id=?", m.Id).Save(m).Error
+		err = tx.Model(&m).Where("id=?", m.Id).Updates(m).Error
 	} else {
 		err = errors.New("id参数错误")
 	}
