@@ -49,8 +49,8 @@ func (c *CaptchaController) Hander(){
 	req.Param("Ticket",Ticket)
 	req.Param("UserIP",UserIp)
 	req.Param("Randstr",Randstr)
-	req.Param("aid","1251180753")
-	req.Param("AppSecretKey","zlqfnkcniyxxZvJQV2I2Xona69vQFpAE")
+	req.Param("aid","2089743215")
+	req.Param("AppSecretKey","03meqbpjC7UjN3sRm1_EEYQ**")
 	str, err := req.String()
 	
 	if err != nil {
