@@ -3,6 +3,7 @@ package models
 import (
 	"errors"
 	"github.com/syyongx/php2go"
+	"time"
 )
 
 type Configs struct {
@@ -16,7 +17,7 @@ type Configs struct {
 	UpdatedBy   int         `json:"updated_by"  form:"updated_by"  gorm:"default:''"`
 	CreatedAt   int64       `json:"created_at"  form:"created_at"  gorm:"default:''"`
 	UpdatedAt   int64       `json:"updated_at"  form:"updated_at"  gorm:"default:''"`
-	DeletedAt   int64       `json:"deleted_at"  form:"deleted_at"  gorm:"default:''"`
+	DeletedAt   time.Time   `json:"deleted_at"  form:"deleted_at"  gorm:"default:''"`
 	Remark      string      `json:"remark"      form:"remark"      gorm:"default:''"`
 	
 	StartTime   int64       `form:"start_time"   gorm:"-"`   // 忽略这个字段
@@ -71,10 +72,9 @@ func (m *Configs) Update() (newAttr Configs, err error) {
 }
 
 func (m *Configs) Delete() (err error) {
-	m.DeletedAt = php2go.Time()
     tx := Db.Begin()
 	if m.Id > 0 {
-		err = tx.Delete(m).Error
+		err = tx.Model(&m).Delete(m).Error
 	} else {
 		err = errors.New("id参数错误")
 	}
@@ -87,10 +87,9 @@ func (m *Configs) Delete() (err error) {
 }
 
 func (m *Configs) DelBatch(ids []int) (err error) {
-	m.DeletedAt = php2go.Time()
     tx := Db.Begin()
 	if len(ids) > 0 {
-		err = tx.Where("id in (?)", ids).Delete(m).Error
+		err = tx.Model(&m).Where("id in (?)", ids).Delete(m).Error
 	} else {
 		err = errors.New("id参数错误")
 	}

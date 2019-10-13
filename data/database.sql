@@ -7,7 +7,7 @@
 #
 # Host: 49.233.71.184 (MySQL 5.7.27-log)
 # Database: go_cms_dev
-# Generation Time: 2019-10-01 13:32:58 +0000
+# Generation Time: 2019-10-13 02:44:19 +0000
 # ************************************************************
 
 
@@ -27,17 +27,36 @@ SET NAMES utf8mb4;
 DROP TABLE IF EXISTS `sys_admin_log`;
 
 CREATE TABLE `sys_admin_log` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` bigint(11) NOT NULL AUTO_INCREMENT,
   `route` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `method` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `description` text COLLATE utf8_unicode_ci,
   `user_id` int(10) NOT NULL DEFAULT '0',
-  `ip` bigint(20) NOT NULL DEFAULT '0',
+  `ip` varchar(20) COLLATE utf8_unicode_ci NOT NULL DEFAULT '0',
   `created_at` int(11) NOT NULL DEFAULT '0',
-  `updated_at` int(11) NOT NULL DEFAULT '0',
-  `deleted_at` int(11) NOT NULL DEFAULT '0',
+  `updated_at` int(11) NOT NULL,
+  `deleted_at` timestamp NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='后台用户日志';
+
+
+
+# Dump of table sys_area
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `sys_area`;
+
+CREATE TABLE `sys_area` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `adcode` varchar(20) COLLATE utf8_bin DEFAULT NULL,
+  `citycode` int(11) NOT NULL,
+  `center` varchar(500) COLLATE utf8_bin DEFAULT NULL,
+  `name` varchar(100) COLLATE utf8_bin DEFAULT NULL,
+  `parent_id` int(11) NOT NULL,
+  `is_end` tinyint(1) DEFAULT '1',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `adcode` (`adcode`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin ROW_FORMAT=DYNAMIC COMMENT='地区信息';
 
 
 
@@ -91,7 +110,7 @@ CREATE TABLE `sys_category` (
   `content` text NOT NULL COMMENT '内容',
   `created_at` int(11) NOT NULL COMMENT '创建时间',
   `updated_at` int(11) NOT NULL COMMENT '更新时间',
-  `deleted_at` int(11) NOT NULL COMMENT '删除时间',
+  `deleted_at` timestamp NOT NULL COMMENT '删除时间',
   `weigh` int(10) NOT NULL DEFAULT '0' COMMENT '权重',
   `status` tinyint(3) NOT NULL DEFAULT '1' COMMENT '状态',
   `tpl` varchar(255) NOT NULL DEFAULT 'list' COMMENT '模板文件',
@@ -112,12 +131,12 @@ CREATE TABLE `sys_configs` (
   `config_name` varchar(100) DEFAULT '' COMMENT '参数名称',
   `config_key` varchar(100) DEFAULT '' COMMENT '参数键名',
   `config_value` varchar(100) DEFAULT '' COMMENT '参数键值',
-  `config_type` char(1) DEFAULT 'N' COMMENT '系统内置（Y是 N否）',
+  `config_type` tinyint(1) DEFAULT '1' COMMENT '系统内置（1是 2否）',
   `created_by` int(11) DEFAULT NULL COMMENT '创建者',
   `updated_by` int(11) DEFAULT NULL COMMENT '更新着',
   `created_at` int(11) DEFAULT NULL COMMENT '创建时间',
   `updated_at` int(11) DEFAULT NULL COMMENT '更新时间',
-  `deleted_at` int(11) DEFAULT NULL COMMENT '删除时间',
+  `deleted_at` timestamp NULL DEFAULT NULL COMMENT '删除时间',
   `remark` varchar(500) DEFAULT NULL COMMENT '备注',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='参数配置表';
@@ -304,23 +323,23 @@ CREATE TABLE `sys_user` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '用户ID',
   `login_name` varchar(30) NOT NULL COMMENT '登录账号',
   `user_name` varchar(30) NOT NULL COMMENT '用户昵称',
-  `user_type` varchar(2) DEFAULT '00' COMMENT '用户类型（00系统用户）',
+  `user_type` tinyint(2) DEFAULT '1' COMMENT '用户类型（1系统用户）',
   `email` varchar(50) DEFAULT '' COMMENT '用户邮箱',
   `phone` varchar(12) DEFAULT NULL COMMENT '手机号',
   `phonenumber` varchar(11) DEFAULT '' COMMENT '手机号码',
-  `sex` char(1) DEFAULT '0' COMMENT '用户性别（0男 1女 2未知）',
+  `sex` tinyint(1) DEFAULT '1' COMMENT '用户性别（1男 2女 3未知）',
   `avatar` varchar(100) DEFAULT '' COMMENT '头像路径',
   `password` varchar(50) DEFAULT '' COMMENT '密码',
   `salt` varchar(20) DEFAULT '' COMMENT '盐加密',
-  `status` char(1) DEFAULT '0' COMMENT '帐号状态（0正常 1停用）',
-  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `status` tinyint(1) DEFAULT '1' COMMENT '帐号状态（1正常 2禁用）',
+  `del_flag` tinyint(4) DEFAULT '1' COMMENT '删除标志（1代表存在 2代表删除）',
   `login_ip` varchar(50) DEFAULT '' COMMENT '最后登陆IP',
   `login_date` int(11) DEFAULT NULL COMMENT '最后登陆时间',
   `create_by` varchar(64) DEFAULT '' COMMENT '创建者',
   `created_at` int(11) DEFAULT NULL COMMENT '创建时间',
   `update_by` varchar(64) DEFAULT '' COMMENT '更新者',
   `updated_at` int(11) DEFAULT NULL COMMENT '更新时间',
-  `deleted_at` int(11) DEFAULT NULL COMMENT '删除时间',
+  `deleted_at` timestamp NULL DEFAULT NULL COMMENT '删除时间',
   `remark` varchar(500) DEFAULT '' COMMENT '备注',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `user_name` (`user_name`) USING BTREE,
@@ -328,16 +347,6 @@ CREATE TABLE `sys_user` (
   UNIQUE KEY `email` (`email`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户信息表';
 
-LOCK TABLES `sys_user` WRITE;
-/*!40000 ALTER TABLE `sys_user` DISABLE KEYS */;
-
-INSERT INTO `sys_user` (`id`, `login_name`, `user_name`, `user_type`, `email`, `phone`, `phonenumber`, `sex`, `avatar`, `password`, `salt`, `status`, `del_flag`, `login_ip`, `login_date`, `create_by`, `created_at`, `update_by`, `updated_at`, `deleted_at`, `remark`)
-VALUES
-	(1,'yangcuiwang','yangcuiwang','00','',NULL,'','0','','68bfa7a9aa2bb572ecd9e5ec3c2bec50','lkukn','0','0','',NULL,'',NULL,'',NULL,NULL,''),
-	(6,'kim','kim','00','kim',NULL,'','0','','ca8a03da7a2ff812d049a9ee6972c7a2','THDUH','0','0','',NULL,'',1569935823,'',1569935824,NULL,'');
-
-/*!40000 ALTER TABLE `sys_user` ENABLE KEYS */;
-UNLOCK TABLES;
 
 
 # Dump of table sys_user_post

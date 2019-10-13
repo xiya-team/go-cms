@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/astaxie/beego/validation"
 	"log"
+	"time"
 )
 
 type User struct {
@@ -27,7 +28,7 @@ type User struct {
 	CreatedAt   int64  `json:"created_at" form:"created_at" gorm:"default:''"`
 	UpdateBy    string `json:"update_by"  form:"update_by"  gorm:"default:''"`
 	UpdatedAt   int64  `json:"updated_at" form:"updated_at" gorm:"default:''"`
-	DeletedAt   int64  `json:"deleted_at" form:"deleted_at" gorm:"default:''"`
+	DeletedAt   time.Time  `json:"deleted_at" form:"deleted_at" gorm:"default:''"`
 	Remark      string `json:"remark"     form:"remark"     gorm:"default:''"`
 }
 
@@ -79,7 +80,7 @@ func (m *User) Update() (newAttr User, err error) {
 func (m *User) Delete() (err error) {
 	tx := Db.Begin()
 	if m.Id > 0 {
-		err = tx.Delete(m).Error
+		err = tx.Model(&m).Delete(m).Error
 	} else {
 		err = errors.New("id参数错误")
 	}
@@ -94,7 +95,7 @@ func (m *User) Delete() (err error) {
 func (m *User) DelBatch(ids []int) (err error) {
 	tx := Db.Begin()
 	if len(ids) > 0 {
-		err = tx.Where("id in (?)", ids).Delete(m).Error
+		err = tx.Model(&m).Where("id in (?)", ids).Delete(m).Error
 	} else {
 		err = errors.New("id参数错误")
 	}

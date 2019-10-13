@@ -1,18 +1,21 @@
 package models
 
-import "errors"
+import (
+	"errors"
+	"time"
+)
 
 type AdminLog struct {
 	Model
 	Id         int        `json:"id"         form:"id"         gorm:"default:''"`
 	Route      string     `json:"route"      form:"route"      gorm:"default:''"`
 	Method     string     `json:"method"     form:"method"     gorm:"default:''"`
-	Description string     `json:"description"form:"description"gorm:"default:''"`
+	Description string    `json:"description"form:"description"gorm:"default:''"`
 	UserId     int        `json:"user_id"    form:"user_id"    gorm:"default:'0'"`
-	Ip         int        `json:"ip"         form:"ip"         gorm:"default:'0'"`
+	Ip         string     `json:"ip"         form:"ip"         gorm:"default:'0'"`
 	CreatedAt  int64      `json:"created_at" form:"created_at" gorm:"default:'0'"`
 	UpdatedAt  int64      `json:"updated_at" form:"updated_at" gorm:"default:'0'"`
-	DeletedAt  int64      `json:"deleted_at" form:"deleted_at" gorm:"default:'0'"`
+	DeletedAt  time.Time  `json:"deleted_at" form:"deleted_at" gorm:"default:'0'"`
 	
 }
 
@@ -65,7 +68,7 @@ func (m *AdminLog) Update() (newAttr AdminLog, err error) {
 func (m *AdminLog) Delete() (err error) {
     tx := Db.Begin()
 	if m.Id > 0 {
-		err = tx.Delete(m).Error
+		err = tx.Model(&m).Delete(m).Error
 	} else {
 		err = errors.New("id参数错误")
 	}
@@ -80,7 +83,7 @@ func (m *AdminLog) Delete() (err error) {
 func (m *AdminLog) DelBatch(ids []int) (err error) {
     tx := Db.Begin()
 	if len(ids) > 0 {
-		err = tx.Where("id in (?)", ids).Delete(m).Error
+		err = tx.Model(&m).Where("id in (?)", ids).Delete(m).Error
 	} else {
 		err = errors.New("id参数错误")
 	}

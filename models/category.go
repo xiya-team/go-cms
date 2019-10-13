@@ -1,6 +1,9 @@
 package models
 
-import "errors"
+import (
+	"errors"
+	"time"
+)
 
 type Category struct {
 	Model
@@ -18,7 +21,7 @@ type Category struct {
 	Content    string     `json:"content"    form:"content"    gorm:"default:''"`
 	CreatedAt  int        `json:"created_at" form:"created_at" gorm:"default:''"`
 	UpdatedAt  int        `json:"updated_at" form:"updated_at" gorm:"default:''"`
-	DeletedAt  int        `json:"deleted_at" form:"deleted_at" gorm:"default:''"`
+	DeletedAt  time.Time  `json:"deleted_at" form:"deleted_at" gorm:"default:''"`
 	Weigh      int        `json:"weigh"      form:"weigh"      gorm:"default:'0'"`
 	Status     int        `json:"status"     form:"status"     gorm:"default:'1'"`
 	Tpl        string     `json:"tpl"        form:"tpl"        gorm:"default:'list'"`
@@ -74,7 +77,7 @@ func (m *Category) Update() (newAttr Category, err error) {
 func (m *Category) Delete() (err error) {
     tx := Db.Begin()
 	if m.Id > 0 {
-		err = tx.Delete(m).Error
+		err = tx.Model(&m).Delete(m).Error
 	} else {
 		err = errors.New("id参数错误")
 	}
@@ -89,7 +92,7 @@ func (m *Category) Delete() (err error) {
 func (m *Category) DelBatch(ids []int) (err error) {
     tx := Db.Begin()
 	if len(ids) > 0 {
-		err = tx.Where("id in (?)", ids).Delete(m).Error
+		err = tx.Model(&m).Where("id in (?)", ids).Delete(m).Error
 	} else {
 		err = errors.New("id参数错误")
 	}

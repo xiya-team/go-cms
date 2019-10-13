@@ -66,7 +66,7 @@ func (m *DictType) Update() (newAttr DictType, err error) {
 func (m *DictType) Delete() (err error) {
     tx := Db.Begin()
 	if m.Id > 0 {
-		err = tx.Delete(m).Error
+		err = tx.Model(&m).Delete(m).Error
 	} else {
 		err = errors.New("id参数错误")
 	}
@@ -81,7 +81,7 @@ func (m *DictType) Delete() (err error) {
 func (m *DictType) DelBatch(ids []int) (err error) {
     tx := Db.Begin()
 	if len(ids) > 0 {
-		err = tx.Where("id in (?)", ids).Delete(m).Error
+		err = tx.Model(&m).Where("id in (?)", ids).Delete(m).Error
 	} else {
 		err = errors.New("id参数错误")
 	}
