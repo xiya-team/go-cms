@@ -58,7 +58,7 @@ func (m *Article) Create() (newAttr Article, err error) {
 func (m *Article) Update() (newAttr Article, err error) {
     tx := Db.Begin()
 	if m.Id > 0 {
-		err = tx.Where("id=?", m.Id).Save(m).Error
+		err = tx.Model(&m).Where("id=?", m.Id).Save(m).Error
 	} else {
 		err = errors.New("id参数错误")
 	}
@@ -74,7 +74,7 @@ func (m *Article) Update() (newAttr Article, err error) {
 func (m *Article) Delete() (err error) {
     tx := Db.Begin()
 	if m.Id > 0 {
-		err = tx.Delete(m).Error
+		err = tx.Model(&m).Delete(m).Error
 	} else {
 		err = errors.New("id参数错误")
 	}
@@ -89,7 +89,7 @@ func (m *Article) Delete() (err error) {
 func (m *Article) DelBatch(ids []int) (err error) {
     tx := Db.Begin()
 	if len(ids) > 0 {
-		err = tx.Where("id in (?)", ids).Delete(m).Error
+		err = tx.Model(&m).Where("id=?", m.Id).Updates(m).Error
 	} else {
 		err = errors.New("id参数错误")
 	}

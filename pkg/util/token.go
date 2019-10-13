@@ -14,6 +14,7 @@ func CreateToken(user models.User) string {
 	claims["exp"] = time.Now().Add(time.Hour * time.Duration(72)).Unix()
 	claims["iat"] = time.Now().Unix()
 	claims["id"]=user.Id
+	claims["verification"]=php2go.Md5(user.UserName)
 	claims["user_name"]=user.UserName
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	
@@ -94,6 +95,12 @@ func CheckToken(tokenString string) (b bool, t *jwt.Token) {
 		return false,nil
 	}
 	
+	verification := GetVerificationByToken(tokenString)
+	
+	if(verification != php2go.Md5(username)){
+		return false,nil
+	}
+	
 	return true, nil
 }
 
@@ -118,5 +125,17 @@ func GetUserNameByToken(tokenString string)  string{
 	})
 	claims,_:=token.Claims.(jwt.MapClaims)
 	user_name := claims["user_name"].(string)
+	return user_name
+}
+
+func GetVerificationByToken(tokenString string)  string{
+	token,_ :=jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		if _,ok :=token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil,fmt.Errorf("Unexpected signing method")
+		}
+		return []byte(beego.AppConfig.String("jwt::secrets")),nil
+	})
+	claims,_:=token.Claims.(jwt.MapClaims)
+	user_name := claims["verification"].(string)
 	return user_name
 }

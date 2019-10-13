@@ -1,21 +1,27 @@
 package models
 
-import "errors"
+import (
+	"errors"
+	"github.com/syyongx/php2go"
+	"time"
+)
 
 type Configs struct {
 	Model
 	Id          int         `json:"id"          form:"id"          gorm:"default:''"`
 	ConfigName  string      `json:"config_name" form:"config_name" gorm:"default:''"`
 	ConfigKey   string      `json:"config_key"  form:"config_key"  gorm:"default:''"`
-	ConfigValue string      `json:"config_value"form:"config_value"gorm:"default:''"`
-	ConfigType  string      `json:"config_type" form:"config_type" gorm:"default:'N'"`
+	ConfigValue string      `json:"config_value"form:"config_value" gorm:"default:''"`
+	ConfigType  int         `json:"config_type" form:"config_type" gorm:"default:''"`
 	CreatedBy   int         `json:"created_by"  form:"created_by"  gorm:"default:''"`
 	UpdatedBy   int         `json:"updated_by"  form:"updated_by"  gorm:"default:''"`
-	CreatedAt   int         `json:"created_at"  form:"created_at"  gorm:"default:''"`
-	UpdatedAt   int         `json:"updated_at"  form:"updated_at"  gorm:"default:''"`
-	DeletedAt   int         `json:"deleted_at"  form:"deleted_at"  gorm:"default:''"`
+	CreatedAt   int64       `json:"created_at"  form:"created_at"  gorm:"default:''"`
+	UpdatedAt   int64       `json:"updated_at"  form:"updated_at"  gorm:"default:''"`
+	DeletedAt   time.Time   `json:"deleted_at"  form:"deleted_at"  gorm:"default:''"`
 	Remark      string      `json:"remark"      form:"remark"      gorm:"default:''"`
 	
+	StartTime   int64       `form:"start_time"   gorm:"-"`   // 忽略这个字段
+	EndTime     int64       `form:"end_time"     gorm:"-"`   // 忽略这个字段
 }
 
 
@@ -34,7 +40,8 @@ func (m *Configs) Pagination(offset, limit int, key string) (res []Configs, coun
 }
 
 func (m *Configs) Create() (newAttr Configs, err error) {
-
+	
+	m.CreatedAt = php2go.Time()
     tx := Db.Begin()
 	err = tx.Create(m).Error
 	
@@ -51,12 +58,12 @@ func (m *Configs) Create() (newAttr Configs, err error) {
 func (m *Configs) Update() (newAttr Configs, err error) {
     tx := Db.Begin()
 	if m.Id > 0 {
-		err = tx.Where("id=?", m.Id).Save(m).Error
+		err = tx.Model(&m).Where("id=?", m.Id).Updates(m).Error
 	} else {
 		err = errors.New("id参数错误")
 	}
     if err != nil{
-       tx.Rollback()
+    	tx.Rollback()
 	}else {
 		tx.Commit()
 	}
@@ -67,7 +74,7 @@ func (m *Configs) Update() (newAttr Configs, err error) {
 func (m *Configs) Delete() (err error) {
     tx := Db.Begin()
 	if m.Id > 0 {
-		err = tx.Delete(m).Error
+		err = tx.Model(&m).Delete(m).Error
 	} else {
 		err = errors.New("id参数错误")
 	}
@@ -82,7 +89,7 @@ func (m *Configs) Delete() (err error) {
 func (m *Configs) DelBatch(ids []int) (err error) {
     tx := Db.Begin()
 	if len(ids) > 0 {
-		err = tx.Where("id in (?)", ids).Delete(m).Error
+		err = tx.Model(&m).Where("id in (?)", ids).Delete(m).Error
 	} else {
 		err = errors.New("id参数错误")
 	}
@@ -101,8 +108,8 @@ func (m *Configs) FindById(id int) (configs Configs, err error) {
 
 func (m *Configs) FindByMap(offset, limit int, dataMap map[string]interface{},orderBy string) (res []Configs, total int, err error) {
 	query := Db
-	if status,isExist:=dataMap["status"].(int);isExist{
-		query = query.Where("status = ?", status)
+	if config_type,isExist:=dataMap["config_type"].(int);isExist{
+		query = query.Where("config_type = ?", config_type)
 	}
 	if name,ok:=dataMap["name"].(string);ok{
 		query = query.Where("name LIKE ?", "%"+name+"%")

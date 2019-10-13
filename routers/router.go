@@ -23,4 +23,10 @@ func init() {
 	beego.Router("/api/user/logout", &sys.UserController{}, "get:Logout")
 	
 	beego.Router("/api/captcha/check", &sys.CaptchaController{}, "post:Hander")
+	
+	//参数设置
+	beego.Router("/api/configs/index", &sys.ConfigsController{}, "post:Index")
+	beego.Router("/api/configs/create", &sys.ConfigsController{}, "post:Create")
+	beego.Router("/api/configs/update", &sys.ConfigsController{}, "post:Update")
+	beego.Router("/api/configs/delete", &sys.ConfigsController{}, "post:Delete")
 }

@@ -6,9 +6,9 @@ import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"go-cms/common"
-	"go-cms/pkg/str"
 	"log"
 	"sync"
+	"time"
 )
 
 var Db *gorm.DB
@@ -106,6 +106,10 @@ func init() {
 		Db.DB().SetMaxIdleConns(10)
 		Db.DB().SetMaxOpenConns(100)
 		
+		Db.Callback().Create().Replace("gorm:update_time_stamp",updateTimeStampForCreateCallback)
+		Db.Callback().Update().Replace("gorm:update_time_stamp",updateTimeStampForUpdateCallback)
+		Db.Callback().Delete().Replace("gorm:update_time_stamp",updateTimeStampForDeleteCallback)
+		
 		Db.Callback().Create().Register("create_admin_log", CreateAdminLogCallback)
 		Db.Callback().Update().Register("update_admin_log", UpdateAdminLogCallback)
 		//Db.Callback().Update().Remove("gorm:xxx")
@@ -130,21 +134,21 @@ func GetMysqlMsg() (mysqlMsg map[string]string) {
 
 func CreateAdminLogCallback(scope *gorm.Scope) {
 	if scope.TableName() != "cms_admin_log" {
-		
 		//adminLogModel := NewAdminLog()
 		//adminLogModel.CreatedAt = php2go.Time()
 		//adminLogModel.UpdatedAt = php2go.Time()
-		//adminLogModel.Ip = int(str.Ip2long(common.Ctx.Input.IP()))
+		////adminLogModel.Ip = common.Ctx.Input.IP()
+		//adminLogModel.Ip = "127.0.0.1"
 		//adminLogModel.UserId = common.UserId
-		//adminLogModel.Route = common.Ctx.Request.URL.String()
-		//adminLogModel.Method = common.Ctx.Request.Method
+		//adminLogModel.Route = ""
+		//adminLogModel.Method = ""
 		//adminLogModel.Description = fmt.Sprintf("%s添加了表%s 的%s", common.UserId, scope.TableName(), fmt.Sprintf("%+v", scope.Value))
 		//adminLogModel.Create()
-		
+		//
 		//Db.Create(&AdminLog{
 		//	Route: common.Ctx.Request.URL.String(),
 		//	UserId:      common.UserId,
-		//	Ip:          int(str.Ip2long(common.Ctx.Input.IP())),
+		//	Ip:          common.Ctx.Input.IP(),
 		//	Method:      common.Ctx.Request.Method,
 		//	Description: fmt.Sprintf("%s添加了表%s 的%s", common.UserId, scope.TableName(), fmt.Sprintf("%+v", scope.Value)),
 		//})
@@ -152,26 +156,62 @@ func CreateAdminLogCallback(scope *gorm.Scope) {
 	return
 }
 
+func updateTimeStampForCreateCallback(scope *gorm.Scope) {
+	
+	if !scope.HasError() {
+		nowTime := time.Now().Unix()
+		if createAtField, ok := scope.FieldByName("CreatedAt"); ok {
+			if createAtField.IsBlank {
+				createAtField.Set(nowTime)
+			}
+		}
+		
+		if updatedAtField, ok := scope.FieldByName("UpdatedAt"); ok {
+			if updatedAtField.IsBlank {
+				updatedAtField.Set(nowTime)
+			}
+		}
+	}
+}
+
+// 注册更新钩子在持久化之前
+func updateTimeStampForUpdateCallback(scope *gorm.Scope) {
+	if updatedAtField, ok := scope.FieldByName("UpdatedAt"); ok {
+		if updatedAtField.IsBlank {
+			updatedAtField.Set(time.Now().Unix())
+		}
+	}
+}
+
+// 注册更新钩子在持久化之前
+func updateTimeStampForDeleteCallback(scope *gorm.Scope) {
+	if deleteAtField, ok := scope.FieldByName("DeletedAt"); ok {
+		if deleteAtField.IsBlank {
+			deleteAtField.Set(time.Now())
+		}
+	}
+}
+
 func UpdateAdminLogCallback(scope *gorm.Scope) {
 	if common.Ctx != nil {
-		Db.Create(&AdminLog{
-			Route: common.Ctx.Request.URL.String(),
-			UserId:      common.UserId,
-			Ip:          int(str.Ip2long(common.Ctx.Input.IP())),
-			Method:      common.Ctx.Request.Method,
-			Description: fmt.Sprintf("%s修改了表%s 的%s", common.UserId, scope.TableName(), fmt.Sprintf("%+v", scope.Value)),
-		})
+		//Db.Create(&AdminLog{
+			//Route: common.Ctx.Request.URL.String(),
+			//UserId:      common.UserId,
+			//Ip:          common.Ctx.Input.IP(),
+			//Method:      common.Ctx.Request.Method,
+			//Description: fmt.Sprintf("%s修改了表%s 的%s", common.UserId, scope.TableName(), fmt.Sprintf("%+v", scope.Value)),
+		//})
 	}
 	return
 }
 
 func DeleteAdminLogCallback(scope *gorm.Scope) {
-	Db.Create(&AdminLog{
-		Route: common.Ctx.Request.URL.String(),
-		UserId:      common.UserId,
-		Ip:          int(str.Ip2long(common.Ctx.Input.IP())),
-		Method:      common.Ctx.Request.Method,
-		Description: fmt.Sprintf("%s删除了表%s 的一条数据", common.UserId, scope.TableName(), scope.Value),
-	})
+	//Db.Create(&AdminLog{
+		//Route: common.Ctx.Request.URL.String(),
+		//UserId:      common.UserId,
+		//Ip:          common.Ctx.Input.IP(),
+		//Method:      common.Ctx.Request.Method,
+		//Description: fmt.Sprintf("%s删除了表%s 的一条数据", common.UserId, scope.TableName(), scope.Value),
+	//})
 	return
 }
