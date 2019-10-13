@@ -37,6 +37,7 @@ func init() {
 	beego.Router("/api/post/update", &sys.PostController{}, "post:Update")
 	beego.Router("/api/post/delete", &sys.PostController{}, "post:Delete")
 	
+	
 	//菜单管理
 	beego.Router("/api/menu/index", &sys.MenuController{}, "post:Index")
 	beego.Router("/api/menu/create", &sys.MenuController{}, "post:Create")
