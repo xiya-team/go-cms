@@ -17,7 +17,7 @@ type Category struct {
 	IsNav      int        `json:"is_nav"     form:"is_nav"     gorm:"default:'0'"`
 	Image      string     `json:"image"      form:"image"      gorm:"default:''"`
 	Keywords   string     `json:"keywords"   form:"keywords"   gorm:"default:''"`
-	Description string     `json:"description"form:"description"gorm:"default:''"`
+	Description string    `json:"description"form:"description"gorm:"default:''"`
 	Content    string     `json:"content"    form:"content"    gorm:"default:''"`
 	CreatedAt  int        `json:"created_at" form:"created_at" gorm:"default:''"`
 	UpdatedAt  int        `json:"updated_at" form:"updated_at" gorm:"default:''"`
