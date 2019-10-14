@@ -1,11 +1,13 @@
 package models
 
-import "errors"
+import (
+	"errors"
+	"time"
+)
 
 type DictType struct {
 	Model
 	Id        int       `json:"id"        form:"id"        gorm:"default:''"`
-	DictId    int       `json:"dict_id"   form:"dict_id"   gorm:"default:''"`
 	DictName  string    `json:"dict_name" form:"dict_name" gorm:"default:''"`
 	DictType  string    `json:"dict_type" form:"dict_type" gorm:"default:''"`
 	Status    string    `json:"status"    form:"status"    gorm:"default:'0'"`
@@ -13,8 +15,11 @@ type DictType struct {
 	CreatedAt int       `json:"created_at"form:"created_at"gorm:"default:''"`
 	UpdateBy  string    `json:"update_by" form:"update_by" gorm:"default:''"`
 	UpdatedAt int       `json:"updated_at"form:"updated_at"gorm:"default:''"`
+	DeletedAt time.Time   `json:"deleted_at"  form:"deleted_at"  gorm:"default:''"`
 	Remark    string    `json:"remark"    form:"remark"    gorm:"default:''"`
 	
+	StartTime   int64       `form:"start_time"   gorm:"-"`   // 忽略这个字段
+	EndTime     int64       `form:"end_time"     gorm:"-"`   // 忽略这个字段
 }
 
 

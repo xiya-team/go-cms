@@ -32,8 +32,16 @@ func LayuiJson(code int, msg string, data, count interface{}) (jsonData map[stri
 	jsonData = make(map[string]interface{}, 3)
 	jsonData["code"] = code
 	jsonData["msg"] = msg
-	jsonData["count"] = count
-	jsonData["data"] = data
+	if count !=false {
+		result := make(map[string]interface{}, 2)
+		result["count"] = count
+		result["list"] = data
+		
+		jsonData["data"] = result
+	}else {
+		jsonData["data"] = data
+	}
+	
 	jsonData["time_stamp"] = time.Now()
 	return
 }
