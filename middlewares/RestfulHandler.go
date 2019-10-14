@@ -102,10 +102,9 @@ func RestfulHandler() func(ctx *context.Context) {
 }
 
 func getControllerAndAction(url string)  (controllerName, actionName string){
-	
-	newStr := strings.ReplaceAll(strings.Replace(url,"/","",1),"/","|")
+	newStr := strings.ReplaceAll(strings.TrimLeft(url,"/api"),"/","|")
 	
 	tmp :=strings.Split(newStr, "|")
 	
-	return tmp[1],tmp[2]
+	return tmp[0],tmp[1]
 }
