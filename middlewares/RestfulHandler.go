@@ -8,6 +8,7 @@ import (
 	"github.com/syyongx/php2go"
 	"go-cms/pkg/e"
 	"go-cms/pkg/util"
+	"strings"
 	"time"
 )
 
@@ -33,7 +34,7 @@ func OutResponse(code int, data interface{}, msg string) Response {
 var supportMethod = [6]string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"}
 
 //配置不需要登录的url
-var urlMapping = []string{"/api/user/login","/api/user/create","/api/common/captcha","/api/captcha/check"}
+var urlMapping = []string{"user::login","user::create","common::captcha","captcha::check"}
 
 // 支持伪造restful风格的http请求
 // _method = "DELETE" 即将http的POST请求改为DELETE请求
@@ -73,14 +74,11 @@ func RestfulHandler() func(ctx *context.Context) {
 			ctx.Request.Method = requestMethod
 		}
 		
-		//controllerName, actionName := beego.Controller.GetControllerAndAction
-		
-		
 		current_url := ctx.Request.URL.RequestURI()
 		
-		logs.Debug(php2go.Explode("/",current_url))
+		controllerName, actionName := getControllerAndAction(current_url)
 		
-		if php2go.InArray(php2go.Strtolower(current_url),urlMapping) != true {
+		if php2go.InArray(php2go.Strtolower(controllerName+"::"+actionName),urlMapping) != true {
 			token := ctx.Input.Header(beego.AppConfig.String("jwt::token_name"))
 			allow, _ := util.CheckToken(token)
 			if(allow == false){
@@ -101,4 +99,13 @@ func RestfulHandler() func(ctx *context.Context) {
 		
 	}
 	return restfulHandler
+}
+
+func getControllerAndAction(url string)  (controllerName, actionName string){
+	
+	newStr := strings.ReplaceAll(strings.Replace(url,"/","",1),"/","|")
+	
+	tmp :=strings.Split(newStr, "|")
+	
+	return tmp[1],tmp[2]
 }
