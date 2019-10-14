@@ -30,6 +30,14 @@ func (c *DictTypeController) Index() {
 		if !php2go.Empty(model.Status) {
 			dataMap["status"] = model.Status
 		}
+	
+	    if !php2go.Empty(model.DictName) {
+		    dataMap["dict_name"] = model.DictName
+	    }
+	
+	    if !php2go.Empty(model.DictType) {
+		    dataMap["dict_type"] = model.DictType
+	    }
 		
 		if !php2go.Empty(model.StartTime) {
 			dataMap["start_time"] = model.StartTime

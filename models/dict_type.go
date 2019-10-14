@@ -108,8 +108,13 @@ func (m *DictType) FindByMap(offset, limit int, dataMap map[string]interface{},o
 	if status,isExist:=dataMap["status"].(int);isExist{
 		query = query.Where("status = ?", status)
 	}
-	if name,ok:=dataMap["name"].(string);ok{
-		query = query.Where("name LIKE ?", "%"+name+"%")
+	
+	if dictName,ok:=dataMap["dict_name"].(string);ok{
+		query = query.Where("dict_name LIKE ?", "%"+dictName+"%")
+	}
+	
+	if dictType,ok:=dataMap["dict_type"].(string);ok{
+		query = query.Where("dict_type LIKE ?", "%"+dictType+"%")
 	}
 
 	if startTime,ok:=dataMap["start_time"].(int64);ok{
