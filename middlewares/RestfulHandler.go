@@ -83,7 +83,7 @@ func RestfulHandler() func(ctx *context.Context) {
 			allow, _ := util.CheckToken(token)
 			if(allow == false){
 				ctx.Output.Header("Content-Type", "application/json")
-				resBody, err := json.Marshal(OutResponse(e.ERROR, nil, "非法请求,token不合法"))
+				resBody, err := json.Marshal(OutResponse(e.ERROR_AUTH_CHECK_TOKEN_FAIL, nil, "非法请求,token不合法"))
 				ctx.Output.Body(resBody)
 				if err != nil {
 					panic(err)
