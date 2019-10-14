@@ -4,8 +4,8 @@ import "errors"
 
 type DictData struct {
 	Model
-	DictCode  int       `json:"dict_code" form:"dict_code" gorm:"default:''"`
 	Id        int       `json:"id"        form:"id"        gorm:"default:''"`
+	DictId    int       `json:"dict_id"   form:"dict_id"   gorm:"default:''"`
 	DictSort  int       `json:"dict_sort" form:"dict_sort" gorm:"default:'0'"`
 	DictLabel string    `json:"dict_label"form:"dict_label"gorm:"default:''"`
 	DictValue string    `json:"dict_value"form:"dict_value"gorm:"default:''"`
@@ -20,6 +20,8 @@ type DictData struct {
 	UpdatedAt int       `json:"updated_at"form:"updated_at"gorm:"default:''"`
 	Remark    string    `json:"remark"    form:"remark"    gorm:"default:''"`
 	
+	StartTime   int64       `form:"start_time"   gorm:"-"`   // 忽略这个字段
+	EndTime     int64       `form:"end_time"     gorm:"-"`   // 忽略这个字段
 }
 
 
