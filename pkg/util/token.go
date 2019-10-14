@@ -24,7 +24,7 @@ func CreateToken(user models.User) string {
 	return tokenString
 }
 
-func CheckToken(tokenString string) (b bool, t *jwt.Token) {
+func CheckToken(tokenString string) (b bool, t string,code int) {
 	//kv := strings.Split(tokenString, " ")
 	//if len(kv) != 2 || kv[0] != "Bearer" {
 	//	fmt.Println("AuthString invalid:", tokenString)
@@ -50,7 +50,7 @@ func CheckToken(tokenString string) (b bool, t *jwt.Token) {
 				//if err != nil {
 				//	panic(err)
 				//}
-				return false,nil
+				return false,"登录已过期，请重新登录",50014
 			default:
 				//ctx.Output.SetStatus(401)
 				//resBytes, err := json.Marshal(controllers.OutResponse(401, nil, "非法请求，请重新登录"))
@@ -58,7 +58,7 @@ func CheckToken(tokenString string) (b bool, t *jwt.Token) {
 				//if err != nil {
 				//	panic(err)
 				//}
-				return false,nil
+				return false,"非法请求，请重新登录",50008
 			}
 		default: // something else went wrong
 			//ctx.Output.SetStatus(401)
@@ -67,11 +67,11 @@ func CheckToken(tokenString string) (b bool, t *jwt.Token) {
 			//if err != nil {
 			//	panic(err)
 			//}
-			return false,nil
+			return false,"非法请求，请重新登录",50008
 		}
 		
 		fmt.Println("转换为jwt claims失败.", err)
-		return false, nil
+		return false, "非法请求，请重新登录",50008
 	}
 	
 	if !token.Valid {
@@ -82,7 +82,7 @@ func CheckToken(tokenString string) (b bool, t *jwt.Token) {
 		//if err != nil {
 		//	panic(err)
 		//}
-		return false, nil
+		return false, "非法请求，请重新登录",50008
 	}
 	//GetUserNameByToken(kv[1])
 	
@@ -92,16 +92,16 @@ func CheckToken(tokenString string) (b bool, t *jwt.Token) {
 	
 	jsonResToken ,err := redisClient.Get("token_"+username).Result()
 	if err != nil || php2go.Empty(jsonResToken){
-		return false,nil
+		return false,"非法请求，请重新登录",50008
 	}
 	
 	verification := GetVerificationByToken(tokenString)
 	
 	if(verification != php2go.Md5(username)){
-		return false,nil
+		return false,"非法请求，请重新登录",50008
 	}
 	
-	return true, nil
+	return true, "非法请求，请重新登录",50008
 }
 
 func GetUserIdByToken(tokenString string)  int{
