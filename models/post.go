@@ -1,6 +1,9 @@
 package models
 
-import "errors"
+import (
+	"errors"
+	"time"
+)
 
 type Post struct {
 	Model
@@ -8,13 +11,13 @@ type Post struct {
 	PostCode  string    `json:"post_code" form:"post_code" gorm:"default:''"`
 	PostName  string    `json:"post_name" form:"post_name" gorm:"default:''"`
 	PostSort  int       `json:"post_sort" form:"post_sort" gorm:"default:''"`
-	Status    string    `json:"status"    form:"status"    gorm:"default:''"`
+	Status    int    `json:"status"    form:"status"    gorm:"default:''"`
 	CreateBy  string    `json:"create_by" form:"create_by" gorm:"default:''"`
 	CreatedAt int       `json:"created_at"form:"created_at"gorm:"default:''"`
 	UpdateBy  string    `json:"update_by" form:"update_by" gorm:"default:''"`
 	UpdatedAt int       `json:"updated_at"form:"updated_at"gorm:"default:''"`
+	DeletedAt time.Time   `json:"deleted_at"  form:"deleted_at"  gorm:"default:''"`
 	Remark    string    `json:"remark"    form:"remark"    gorm:"default:''"`
-	
 }
 
 
@@ -103,17 +106,14 @@ func (m *Post) FindByMap(offset, limit int, dataMap map[string]interface{},order
 	if status,isExist:=dataMap["status"].(int);isExist{
 		query = query.Where("status = ?", status)
 	}
-	if name,ok:=dataMap["name"].(string);ok{
-		query = query.Where("name LIKE ?", "%"+name+"%")
+	if postName,ok:=dataMap["post_name"].(string);ok{
+		query = query.Where("post_name LIKE ?", "%"+postName+"%")
 	}
 
-	if startTime,ok:=dataMap["start_time"].(int64);ok{
-		query = query.Where("created_at > ?", startTime)
+	if postCode,ok:=dataMap["post_code"].(string);ok{
+		query = query.Where("post_code LIKE ?", "%"+postCode+"%")
 	}
-	if endTime,ok:=dataMap["end_time"].(int64);ok{
-		query = query.Where("created_at <= ?", endTime)
-	}
-
+	
     if orderBy!=""{
 		query = query.Order(orderBy)
 	}

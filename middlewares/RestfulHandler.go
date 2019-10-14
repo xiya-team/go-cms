@@ -73,7 +73,13 @@ func RestfulHandler() func(ctx *context.Context) {
 			ctx.Request.Method = requestMethod
 		}
 		
+		//controllerName, actionName := beego.Controller.GetControllerAndAction
+		
+		
 		current_url := ctx.Request.URL.RequestURI()
+		
+		logs.Debug(php2go.Explode("/",current_url))
+		
 		if php2go.InArray(php2go.Strtolower(current_url),urlMapping) != true {
 			token := ctx.Input.Header(beego.AppConfig.String("jwt::token_name"))
 			allow, _ := util.CheckToken(token)
