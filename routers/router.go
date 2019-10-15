@@ -43,4 +43,11 @@ func init() {
 	beego.Router("/api/menu/create", &sys.MenuController{}, "post:Create")
 	beego.Router("/api/menu/update", &sys.MenuController{}, "post:Update")
 	beego.Router("/api/menu/delete", &sys.MenuController{}, "post:Delete")
+	
+	//字典管理
+	beego.Router("/api/dict/index", &sys.DictTypeController{}, "post:Index")
+	beego.Router("/api/dict/create", &sys.DictTypeController{}, "post:Create")
+	beego.Router("/api/dict/update", &sys.DictTypeController{}, "post:Update")
+	beego.Router("/api/dict/delete", &sys.DictTypeController{}, "post:Delete")
+	
 }

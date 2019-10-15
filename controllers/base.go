@@ -46,9 +46,9 @@ func (c *BaseController) JsonResult(code int, msg string, data ...interface{}) {
 	case 2:
 		c.Data["json"] = d.LayuiJson(code, msg, data[0], data[1])
 	case 1:
-		c.Data["json"] = d.LayuiJson(code, msg, data[0], 0)
+		c.Data["json"] = d.LayuiJson(code, msg, data[0], false)
 	default:
-		c.Data["json"] = d.LayuiJson(code, msg, 0, 0)
+		c.Data["json"] = d.LayuiJson(code, msg, 0, false)
 	}
 	c.ServeJSON()
 	c.StopRun()
