@@ -149,7 +149,7 @@ func (m *User) FindByMaps(offset, limit int, dataMap map[string]interface{},orde
 /*****************************************************************新增加的方法*****************************************************************/
 
 func (m *User) FindByUserName(user_name string) (user User, err error) {
-	err = Db.Select("id,user_name,password,salt").Where("user_name=?", user_name).First(&user).Error
+	err = Db.Select("id,login_name,user_name,password,salt").Where("user_name=?", user_name).First(&user).Error
 	return
 }
 

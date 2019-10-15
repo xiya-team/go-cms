@@ -6,6 +6,7 @@ import (
 	"github.com/astaxie/beego/context"
 	"github.com/astaxie/beego/logs"
 	"github.com/syyongx/php2go"
+	"go-cms/common"
 	"go-cms/pkg/e"
 	"go-cms/pkg/util"
 	"strings"
@@ -94,6 +95,8 @@ func RestfulHandler() func(ctx *context.Context) {
 				//if !ok && !ok2{
 				//	ctx.Redirect(302, "/login/index")
 				//}
+			}else{
+				common.UserId = code
 			}
 		}
 		

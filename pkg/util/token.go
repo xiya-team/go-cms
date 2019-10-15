@@ -101,7 +101,9 @@ func CheckToken(tokenString string) (b bool, t string,code int) {
 		return false,"非法请求，请重新登录",50008
 	}
 	
-	return true, "非法请求，请重新登录",50008
+	userId := GetUserIdByToken(tokenString)
+	
+	return true, "验证通过",userId
 }
 
 func GetUserIdByToken(tokenString string)  int{

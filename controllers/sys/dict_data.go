@@ -5,6 +5,7 @@ import (
 	"go-cms/controllers"
 	"go-cms/models"
 	"github.com/astaxie/beego/validation"
+	"go-cms/pkg/e"
 	"log"
 )
 
@@ -90,7 +91,6 @@ func (c *DictDataController) Update() {
 		}
 		//3
 		if _, err := model.Update(); err != nil {
-			logs.Debug(err.Error())
 			c.JsonResult(e.ERROR, "修改失败")
 		}
 		c.JsonResult(e.SUCCESS, "修改成功")
