@@ -49,5 +49,9 @@ func init() {
 	beego.Router("/api/dict/create", &sys.DictTypeController{}, "post:Create")
 	beego.Router("/api/dict/update", &sys.DictTypeController{}, "post:Update")
 	beego.Router("/api/dict/delete", &sys.DictTypeController{}, "post:Delete")
-	
+	//字典数据管理
+	beego.Router("/api/dictData/index", &sys.DictDataController{}, "post:Index")
+	beego.Router("/api/dictData/create", &sys.DictDataController{}, "post:Create")
+	beego.Router("/api/dictData/update", &sys.DictDataController{}, "post:Update")
+	beego.Router("/api/dictData/delete", &sys.DictDataController{}, "post:Delete")
 }
