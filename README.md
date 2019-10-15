@@ -98,19 +98,23 @@ git clone https://github.com/xiya-team/go-cms
 
 ```
 
-* 安装依赖
+* 包管理和安装依赖
 
-``` 
-go get github.com/astaxie/beego
+1、查看go版本 如使用go modules 强烈建议升级到go 1.13
 
-go get  github.com/beego/bee
+	> go version
+	go version go1.13.1 windows/amd64
 
-go get  github.com/jinzhu/gorm
+2、设置国内模块代理 
 
-go get github.com/dgrijalva/jwt-go
+	推荐使用 goproxy.cn  由七牛云提供(只需设置一次)
 
-go get github.com/go-sql-driver/mysql
-```
+	go env -w GOPROXY=https://goproxy.cn,direct
+
+3、运行或编译软件  自动下载相关包
+
+	go run main.go  
+  
 
 **Step 3 安装编译环境**
 

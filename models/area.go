@@ -1,6 +1,8 @@
 package models
 
-import "errors"
+import (
+	"errors"
+)
 
 type Area struct {
 	Model
@@ -12,6 +14,9 @@ type Area struct {
 	ParentId int      `json:"parent_id"form:"parent_id"gorm:"default:''"`
 	IsEnd    int      `json:"is_end"   form:"is_end"   gorm:"default:'1'"`
 	
+	StartTime   int64       `form:"start_time"   gorm:"-"`   // 忽略这个字段
+	EndTime     int64       `form:"end_time"     gorm:"-"`   // 忽略这个字段
+	Child    []*Area   `gorm:"-"`   // 忽略这个字段
 }
 
 
