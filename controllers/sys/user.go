@@ -225,8 +225,11 @@ func (c *UserController) Login() {
 
 		if (user.Password == has) {
 			token := util.CreateToken(user)
-			jsonData := make(map[string]interface{}, 1)
+			jsonData := make(map[string]interface{}, 4)
 			jsonData["token"] = token
+			jsonData["userId"] = user.Id
+			jsonData["userName"] = user.UserName
+			jsonData["nickname"] = user.LoginName
 			c.JsonResult(e.SUCCESS, "登录成功!", jsonData)
 		}else {
 			c.JsonResult(e.ERROR, "用户名或密码错误!")
@@ -249,10 +252,14 @@ func (c *UserController) CheckToken() {
 	token := c.Ctx.Input.Header("Authorization")
 
 	b, message , code := util.CheckToken(token)
-
+	
 	if !b {
+
 		c.JsonResult(code, message)
 	}
+	
+	jsonData := make(map[string]interface{}, 1)
+	jsonData["user_id"] = code
 
-	c.JsonResult(e.SUCCESS, "success")
+	c.JsonResult(e.SUCCESS, "success",jsonData)
 }
