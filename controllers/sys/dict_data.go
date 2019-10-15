@@ -26,9 +26,17 @@ func (c *DictDataController) Index() {
 		
 		dataMap := make(map[string]interface{}, 0)
 		
-		if !php2go.Empty(model.Status) {
-			dataMap["status"] = model.Status
+		if !php2go.Empty(model.DictId) {
+			dataMap["dict_id"] = model.DictId
 		}
+	
+	    if !php2go.Empty(model.DictLabel) {
+		    dataMap["dict_label"] = model.DictLabel
+	    }
+		
+	    if !php2go.Empty(model.Status) {
+		    dataMap["status"] = model.Status
+	    }
 		
 		if !php2go.Empty(model.StartTime) {
 			dataMap["start_time"] = model.StartTime
@@ -45,7 +53,6 @@ func (c *DictDataController) Index() {
 		}
 		c.JsonResult(e.SUCCESS, "ok", result, count)
 	}
-	c.TplName = c.ADMIN_TPL + "dictData/index.html"
 }
 
 func (c *DictDataController) Create() {
