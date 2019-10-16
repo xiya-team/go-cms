@@ -47,8 +47,8 @@ func (c *UserController) UserList() {
 	if req.Status == 1 || req.Status == 2 {
 		dataMap["status"] = req.Status
 	}
-	if req.LoginName != "" {
-		dataMap["login_name"] = req.LoginName
+	if req.Nickname != "" {
+		dataMap["nickname"] = req.Nickname
 	}
 	if req.UserName != "" {
 		dataMap["user_name"] = req.UserName
@@ -107,7 +107,7 @@ func (c *UserController) Create() {
 
 		salt := util.Krand(5, 2)
 		userModel.Salt = salt
-		userModel.LoginName = userModel.UserName
+		userModel.Nickname = userModel.UserName
 		userModel.Email = userModel.Email
 		userModel.Password = php2go.Md5(userModel.Password + salt)
 		userModel.CreatedAt = php2go.Time()
@@ -229,7 +229,7 @@ func (c *UserController) Login() {
 			jsonData["token"] = token
 			jsonData["userId"] = user.Id
 			jsonData["userName"] = user.UserName
-			jsonData["nickname"] = user.LoginName
+			jsonData["nickname"] = user.Nickname
 			c.JsonResult(e.SUCCESS, "登录成功!", jsonData)
 		}else {
 			c.JsonResult(e.ERROR, "用户名或密码错误!")
