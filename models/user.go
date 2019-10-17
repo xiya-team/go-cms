@@ -9,27 +9,27 @@ import (
 
 type User struct {
 	Model
-	Id          int    `json:"id"         form:"id"         gorm:"default:''"`
-	Nickname   string  `json:"nickname"   form:"nickname" gorm:"default:''" valid:"Required;MaxSize(20);MinSize(2)"`
-	UserName    string `json:"user_name"  form:"user_name"  gorm:"default:''" valid:"Required;MaxSize(20);MinSize(6)"`
-	UserType    int    `json:"user_type"  form:"user_type"  gorm:"default:'00'"`
-	Email       string `json:"email"      form:"email"      gorm:"default:''" valid:"Email"`
-	Phone       string `json:"phone"      form:"phone"      gorm:"default:''"`
-	Phonenumber string `json:"phonenumber"form:"phonenumber"gorm:"default:''"`
-	Sex         int    `json:"sex"        form:"sex"        gorm:"default:'1'"`
-	Avatar      string `json:"avatar"     form:"avatar"     gorm:"default:''"`
-	Password    string `json:"password"   form:"password"   gorm:"default:''" valid:"Required;MaxSize(33);MinSize(6)"`
-	Salt        string `json:"salt"       form:"salt"       gorm:"default:''"`
-	Status      int    `json:"status"     form:"status"     gorm:"default:'1'"`
-	DelFlag     int    `json:"del_flag"   form:"del_flag"   gorm:"default:'1'"`
-	LoginIp     string `json:"login_ip"   form:"login_ip"   gorm:"default:''"`
-	LoginDate   time.Time  `json:"login_date" form:"login_date" gorm:"default:''"`
-	CreateBy    string `json:"create_by"  form:"create_by"  gorm:"default:''"`
-	CreatedAt   time.Time  `json:"created_at" form:"created_at" gorm:"default:''"`
-	UpdateBy    string `json:"update_by"  form:"update_by"  gorm:"default:''"`
-	UpdatedAt   time.Time  `json:"updated_at" form:"updated_at" gorm:"default:''"`
-	DeletedAt   time.Time  `json:"deleted_at" form:"deleted_at" gorm:"default:''"`
-	Remark      string `json:"remark"     form:"remark"     gorm:"default:''"`
+	Id          int         `json:"id"         form:"id"         gorm:"default:''"`
+	Nickname   string       `json:"nickname"   form:"nickname"   gorm:"default:''" valid:"Required;MaxSize(20);MinSize(2)"`
+	UserName    string      `json:"user_name"  form:"user_name"  gorm:"default:''" valid:"Required;MaxSize(20);MinSize(6)"`
+	UserType    int         `json:"user_type"  form:"user_type"  gorm:"default:'00'"`
+	Email       string      `json:"email"      form:"email"      gorm:"default:''" valid:"Email"`
+	Phone       string      `json:"phone"      form:"phone"      gorm:"default:''"`
+	Phonenumber string      `json:"phonenumber"form:"phonenumber"gorm:"default:''"`
+	Sex         int         `json:"sex"        form:"sex"        gorm:"default:'1'"`
+	Avatar      string      `json:"avatar"     form:"avatar"     gorm:"default:''"`
+	Password    string      `json:"password"   form:"password"   gorm:"default:''" valid:"Required;MaxSize(33);MinSize(6)"`
+	Salt        string      `json:"salt"       form:"salt"       gorm:"default:''"`
+	Status      int         `json:"status"     form:"status"     gorm:"default:'1'"`
+	DelFlag     int         `json:"del_flag"   form:"del_flag"   gorm:"default:'1'"`
+	LoginIp     string      `json:"login_ip"   form:"login_ip"   gorm:"default:''"`
+	LoginDate   time.Time   `json:"login_date" form:"login_date" gorm:"default:''"`
+	CreateBy    string      `json:"create_by"  form:"create_by"  gorm:"default:''"`
+	CreatedAt   time.Time   `json:"created_at" form:"created_at" gorm:"default:''"`
+	UpdateBy    string      `json:"update_by"  form:"update_by"  gorm:"default:''"`
+	UpdatedAt   time.Time   `json:"updated_at" form:"updated_at" gorm:"default:''"`
+	DeletedAt   time.Time   `json:"deleted_at" form:"deleted_at" gorm:"default:''"`
+	Remark      string      `json:"remark"     form:"remark"     gorm:"default:''"`
 }
 
 func NewUser() (user *User) {

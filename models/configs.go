@@ -14,8 +14,8 @@ type Configs struct {
 	ConfigType  int         `json:"config_type" form:"config_type" gorm:"default:''"`
 	CreatedBy   int         `json:"created_by"  form:"created_by"  gorm:"default:''"`
 	UpdatedBy   int         `json:"updated_by"  form:"updated_by"  gorm:"default:''"`
-	CreatedAt   time.Time       `json:"created_at"  form:"created_at"  gorm:"default:''"`
-	UpdatedAt   time.Time       `json:"updated_at"  form:"updated_at"  gorm:"default:''"`
+	CreatedAt   time.Time   `json:"created_at"  form:"created_at"  gorm:"default:''"`
+	UpdatedAt   time.Time   `json:"updated_at"  form:"updated_at"  gorm:"default:''"`
 	DeletedAt   time.Time   `json:"deleted_at"  form:"deleted_at"  gorm:"default:''"`
 	Remark      string      `json:"remark"      form:"remark"      gorm:"default:''"`
 }
