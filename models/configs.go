@@ -103,7 +103,7 @@ func (m *Configs) FindById(id int) (configs Configs, err error) {
 	return
 }
 
-func (m *Configs) FindByMap(offset, limit int64, dataMap map[string]interface{},orderBy string) (res []Configs, total int, err error) {
+func (m *Configs) FindByMap(offset, limit int64, dataMap map[string]interface{},orderBy string) (res []Configs, total int64, err error) {
 	query := Db
 	if config_type,isExist:=dataMap["config_type"].(int);isExist{
 		query = query.Where("config_type = ?", config_type)

@@ -101,7 +101,7 @@ func (m *Menu) FindById(id int) (menu Menu, err error) {
 	return
 }
 
-func (m *Menu) FindByMap(offset, limit int64, dataMap map[string]interface{},orderBy string) (res []Menu, total int, err error) {
+func (m *Menu) FindByMap(offset, limit int64, dataMap map[string]interface{},orderBy string) (res []Menu, total int64, err error) {
 	query := Db
 	if visible,isExist:=dataMap["visible"].(int);isExist{
 		query = query.Where("visible = ?", visible)

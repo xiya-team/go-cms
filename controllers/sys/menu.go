@@ -58,7 +58,7 @@ func (c *MenuController) Index() {
 		if err != nil{
 			c.JsonResult(e.ERROR, "获取数据失败")
 		}
-		c.JsonResult(e.SUCCESS, "ok", result, count)
+		c.JsonResult(e.SUCCESS, "ok", result, count, model.Page, model.PageSize)
 	}
 }
 

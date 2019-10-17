@@ -98,7 +98,7 @@ func (m *Area) FindById(id int) (area Area, err error) {
 	return
 }
 
-func (m *Area) FindByMap(offset, limit int64, dataMap map[string]interface{},orderBy string) (res []Area, total int, err error) {
+func (m *Area) FindByMap(offset, limit int64, dataMap map[string]interface{},orderBy string) (res []Area, total int64, err error) {
 	query := Db
 	if status,isExist:=dataMap["status"].(int);isExist{
 		query = query.Where("status = ?", status)

@@ -69,11 +69,11 @@ func (c *CategoryController) Index() {
 		
 		var orderBy string = "created_at DESC"
 		
-		result, count,err := models.NewCategory().FindByMap((model.Page-1)*model.PageSize, model.PageSize, dataMap,orderBy)
+		result, count,err := model.FindByMap((model.Page-1)*model.PageSize, model.PageSize, dataMap,orderBy)
 		if err != nil{
 			c.JsonResult(e.ERROR, "获取数据失败")
 		}
-		c.JsonResult(e.SUCCESS, "ok", result, count)
+		c.JsonResult(e.SUCCESS, "ok", result, count, model.Page, model.PageSize)
 	}
 }
 
@@ -127,7 +127,7 @@ func (c *CategoryController) Update() {
 			c.JsonResult(e.ERROR, err.Error())
 		}
 		
-		post, err := models.NewCategory().FindById(model.Id)
+		post, err := model.FindById(model.Id)
 		if err != nil||php2go.Empty(post) {
 			c.JsonResult(e.ERROR, "没找到数据")
 		}
@@ -162,7 +162,7 @@ func (c *CategoryController) Delete() {
 			c.JsonResult(e.ERROR, err.Error())
 		}
 		
-		post, err := models.NewCategory().FindById(model.Id)
+		post, err := model.FindById(model.Id)
 		if err != nil||php2go.Empty(post) {
 			c.JsonResult(e.ERROR, "没找到数据")
 		}
