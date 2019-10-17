@@ -14,8 +14,6 @@ type Area struct {
 	ParentId int      `json:"parent_id"form:"parent_id"gorm:"default:''"`
 	IsEnd    int      `json:"is_end"   form:"is_end"   gorm:"default:'1'"`
 	
-	StartTime   int64       `form:"start_time"   gorm:"-"`   // 忽略这个字段
-	EndTime     int64       `form:"end_time"     gorm:"-"`   // 忽略这个字段
 	Child    []*Area   `gorm:"-"`   // 忽略这个字段
 }
 
@@ -100,7 +98,7 @@ func (m *Area) FindById(id int) (area Area, err error) {
 	return
 }
 
-func (m *Area) FindByMap(offset, limit int, dataMap map[string]interface{},orderBy string) (res []Area, total int, err error) {
+func (m *Area) FindByMap(offset, limit int64, dataMap map[string]interface{},orderBy string) (res []Area, total int64, err error) {
 	query := Db
 	if status,isExist:=dataMap["status"].(int);isExist{
 		query = query.Where("status = ?", status)

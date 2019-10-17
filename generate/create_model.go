@@ -99,7 +99,7 @@ func (m *Config) FindById(id int) (config Config, err error) {
 	return
 }
 
-func (m *Config) FindByMap(offset, limit int, dataMap map[string]interface{},orderBy string) (res []Config, total int, err error) {
+func (m *Config) FindByMap(offset, limit int64, dataMap map[string]interface{},orderBy string) (res []Config, total int64, err error) {
 	query := Db
 	if status,isExist:=dataMap["status"].(int);isExist{
 		query = query.Where("status = ?", status)

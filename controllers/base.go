@@ -43,12 +43,16 @@ func (c *BaseController) History(msg string, url string) {
 func (c *BaseController) JsonResult(code int, msg string, data ...interface{}) {
 	
 	switch len(data) {
+	case 4:
+		c.Data["json"] = d.LayuiJson(code, msg, data[0], data[1],data[2],data[3])
+	case 3:
+		c.Data["json"] = d.LayuiJson(code, msg, data[0], data[1],data[2],false)
 	case 2:
-		c.Data["json"] = d.LayuiJson(code, msg, data[0], data[1])
+		c.Data["json"] = d.LayuiJson(code, msg, data[0], data[1],false,false)
 	case 1:
-		c.Data["json"] = d.LayuiJson(code, msg, data[0], false)
+		c.Data["json"] = d.LayuiJson(code, msg, data[0], false,false,false)
 	default:
-		c.Data["json"] = d.LayuiJson(code, msg, 0, false)
+		c.Data["json"] = d.LayuiJson(code, msg, false, false,false,false)
 	}
 	c.ServeJSON()
 	c.StopRun()

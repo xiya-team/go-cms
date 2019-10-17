@@ -1,6 +1,7 @@
 package sys
 
 import (
+	"encoding/json"
 	"github.com/astaxie/beego/httplib"
 	"github.com/astaxie/beego/logs"
 	"github.com/tidwall/gjson"
@@ -12,10 +13,20 @@ type CaptchaController struct {
 	controllers.BaseController
 }
 
+type Captcha struct {
+	Ticket  string      `json:"ticket" form:"ticket"`
+	Randstr   string      `json:"randstr"  form:"randstr"`
+}
+
 func (c *CaptchaController) Check()  {
-	Ticket := c.GetString("ticket")
+	var captcha Captcha
+	data := c.Ctx.Input.RequestBody
+	//json数据封装到user对象中
+	err := json.Unmarshal(data, &captcha)
+	
+	Ticket := captcha.Ticket
+	Randstr := captcha.Randstr
 	UserIp := c.Ctx.Input.IP()
-	Randstr := c.GetString("randstr")
 	
 	req := httplib.Get("https://captcha.tencentcloudapi.com/")
 	req.Param("Action","DescribeCaptchaResult")
@@ -41,9 +52,14 @@ func (c *CaptchaController) Check()  {
 }
 
 func (c *CaptchaController) Hander(){
-	Ticket := c.GetString("ticket")
+	var captcha Captcha
+	data := c.Ctx.Input.RequestBody
+	//json数据封装到user对象中
+	err := json.Unmarshal(data, &captcha)
+	
+	Ticket := captcha.Ticket
+	Randstr := captcha.Randstr
 	UserIp := c.Ctx.Input.IP()
-	Randstr := c.GetString("randstr")
 	
 	req := httplib.Get("https://ssl.captcha.qq.com/ticket/verify")
 	req.Param("Ticket",Ticket)

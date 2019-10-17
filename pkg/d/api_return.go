@@ -2,6 +2,7 @@ package d
 
 import (
 	"go-cms/pkg/e"
+	"go-cms/pkg/util"
 	"time"
 )
 
@@ -28,16 +29,12 @@ func ReturnParamErrJson(data interface{}) (map[string]interface{}) {
 }
 
 //layui 后台返回需要的json格式
-func LayuiJson(code int, msg string, data, count interface{}) (jsonData map[string]interface{}) {
+func LayuiJson(code int, msg string, data, count , pageNo , pageSize  interface{}) (jsonData map[string]interface{}) {
 	jsonData = make(map[string]interface{}, 3)
 	jsonData["code"] = code
 	jsonData["msg"] = msg
 	if count !=false {
-		result := make(map[string]interface{}, 2)
-		result["count"] = count
-		result["list"] = data
-		
-		jsonData["data"] = result
+		jsonData["data"] = util.PageUtil(count.(int64) , pageNo.(int64) , pageSize.(int64) , data)
 	}else {
 		jsonData["data"] = data
 	}

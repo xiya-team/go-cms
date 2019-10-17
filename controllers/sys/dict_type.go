@@ -1,12 +1,12 @@
 package sys
 
 import (
-	"github.com/astaxie/beego/logs"
+	"github.com/astaxie/beego/validation"
 	"github.com/syyongx/php2go"
 	"go-cms/controllers"
+	"encoding/json"
 	"go-cms/models"
-	"github.com/astaxie/beego/validation"
-	"go-cms/pkg/e"
+    "go-cms/pkg/e"
 	"log"
 )
 
@@ -18,51 +18,73 @@ func (c *DictTypeController) Prepare() {
 
 }
 
+/**
+获取列表数据
+ */
 func (c *DictTypeController) Index() {
-    if c.Ctx.Input.IsPost() {
-		page, _ := c.GetInt("page",1)
-		limit, _ := c.GetInt("limit",10)
-		
+	if c.Ctx.Input.IsPost() {
 		model := models.NewDictType()
+		
+		data := c.Ctx.Input.RequestBody
+		//json数据封装到user对象中
+		err := json.Unmarshal(data, &model)
+		if err != nil {
+			c.JsonResult(e.ERROR, err.Error())
+		}
 		
 		dataMap := make(map[string]interface{}, 0)
 		
-		if !php2go.Empty(model.Status) {
-			dataMap["status"] = model.Status
+		if !php2go.Empty(model.DictName) {
+			dataMap["dict_name"] = model.DictName
 		}
-	
-	    if !php2go.Empty(model.DictName) {
-		    dataMap["dict_name"] = model.DictName
-	    }
-	
-	    if !php2go.Empty(model.DictType) {
-		    dataMap["dict_type"] = model.DictType
-	    }
 		
+		if !php2go.Empty(model.DictType) {
+			dataMap["dict_type"] = model.DictType
+		}
+
+		//开始时间
 		if !php2go.Empty(model.StartTime) {
 			dataMap["start_time"] = model.StartTime
 		}
+		
+		//结束时间
 		if !php2go.Empty(model.EndTime) {
 			dataMap["end_time"] = model.EndTime
 		}
 		
+		//状态
+		if !php2go.Empty(model.Status) {
+			dataMap["status"] = model.Status
+		}
+		
 		var orderBy string = "created_at DESC"
 		
-		result, count,err := models.NewDictType().FindByMap((page-1)*limit, limit, dataMap,orderBy)
+		result, count,err := models.NewDictType().FindByMap((model.Page-1)*model.PageSize, model.PageSize, dataMap,orderBy)
 		if err != nil{
 			c.JsonResult(e.ERROR, "获取数据失败")
 		}
-		c.JsonResult(e.SUCCESS, "ok", result, count)
+		c.JsonResult(e.SUCCESS, "ok", result, count, model.Page, model.PageSize)
 	}
 }
 
+/**
+创建数据
+*/
 func (c *DictTypeController) Create() {
 	if c.Ctx.Input.IsPost() {
 		model := models.NewDictType()
-		//1.压入数据
+        data := c.Ctx.Input.RequestBody
+		//1.压入数据 json数据封装到对象中
+		
+		err := json.Unmarshal(data, model)
+		if err != nil {
+			c.JsonResult(e.ERROR, err.Error())
+		}
+		
 		if err := c.ParseForm(model); err != nil {
 			c.JsonResult(e.ERROR, "赋值失败")
 		}
+
 		//2.验证
 		valid := validation.Validation{}
 		if b, _ := valid.Valid(model); !b {
@@ -71,6 +93,7 @@ func (c *DictTypeController) Create() {
 			}
 			c.JsonResult(e.ERROR, "验证失败")
 		}
+
 		//3.插入数据
 		if _, err := model.Create(); err != nil {
 			c.JsonResult(e.ERROR, "创建失败")
@@ -79,15 +102,26 @@ func (c *DictTypeController) Create() {
 	}
 }
 
+/**
+更新数据
+*/
 func (c *DictTypeController) Update() {
-	if c.Ctx.Input.IsPost() {
-		id, _ := c.GetInt("id")
-		model, _ := models.NewDictType().FindById(id)
-		//1
-		if err := c.ParseForm(&model); err != nil {
-			c.JsonResult(e.ERROR, "赋值失败")
+	if c.Ctx.Input.IsPut() {
+		model := models.NewDictType()
+		data := c.Ctx.Input.RequestBody
+		//json数据封装到对象中
+		
+		err := json.Unmarshal(data, model)
+		
+		if err != nil {
+			c.JsonResult(e.ERROR, err.Error())
 		}
-		//2
+		
+		post, err := models.NewDictType().FindById(model.Id)
+		if err != nil||php2go.Empty(post) {
+			c.JsonResult(e.ERROR, "没找到数据")
+		}
+		
 		valid := validation.Validation{}
 		if b, _ := valid.Valid(model); !b {
 			for _, err := range valid.Errors {
@@ -95,32 +129,49 @@ func (c *DictTypeController) Update() {
 			}
 			c.JsonResult(e.ERROR, "验证失败")
 		}
-		//3
+		
 		if _, err := model.Update(); err != nil {
-			logs.Debug(err.Error())
 			c.JsonResult(e.ERROR, "修改失败")
 		}
 		c.JsonResult(e.SUCCESS, "修改成功")
 	}
 }
 
+/**
+删除数据
+*/
 func (c *DictTypeController) Delete() {
-    model := models.NewDictType()
-	id, _ := c.GetInt("id")
-	model.Id = id
-	if err := model.Delete(); err != nil {
-		c.JsonResult(e.ERROR, "删除失败")
+    if c.Ctx.Input.IsDelete() {
+		model := models.NewDictType()
+		data := c.Ctx.Input.RequestBody
+		//json数据封装到user对象中
+		
+		err := json.Unmarshal(data, model)
+		
+		if err != nil {
+			c.JsonResult(e.ERROR, err.Error())
+		}
+		
+		post, err := models.NewDictType().FindById(model.Id)
+		if err != nil||php2go.Empty(post) {
+			c.JsonResult(e.ERROR, "没找到数据")
+		}
+		
+		if err := model.Delete(); err != nil {
+			c.JsonResult(e.ERROR, "删除失败")
+		}
+		c.JsonResult(e.SUCCESS, "删除成功")
 	}
-	c.JsonResult(e.SUCCESS, "删除成功")
 }
 
 func (c *DictTypeController) BatchDelete() {
+	model := models.NewDictType()
+
 	var ids []int
 	if err := c.Ctx.Input.Bind(&ids, "ids"); err != nil {
 		c.JsonResult(e.ERROR, "赋值失败")
 	}
-	
-	model := models.NewDictType()
+
 	if err := model.DelBatch(ids); err != nil {
 		c.JsonResult(e.ERROR, "删除失败")
 	}

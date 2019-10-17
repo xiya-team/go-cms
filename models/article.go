@@ -106,7 +106,7 @@ func (m *Article) FindById(id int) (article Article, err error) {
 	return
 }
 
-func (m *Article) FindByMap(offset, limit int, dataMap map[string]interface{},orderBy string) (res []Article, total int, err error) {
+func (m *Article) FindByMap(offset, limit int64, dataMap map[string]interface{},orderBy string) (res []Article, total int64, err error) {
 	query := Db
 	if status,isExist:=dataMap["status"].(int);isExist{
 		query = query.Where("status = ?", status)

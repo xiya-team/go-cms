@@ -1,9 +1,12 @@
 package sys
 
 import (
-	"go-cms/controllers"
-	"go-cms/models"
 	"github.com/astaxie/beego/validation"
+	"github.com/syyongx/php2go"
+	"go-cms/controllers"
+	"encoding/json"
+	"go-cms/models"
+    "go-cms/pkg/e"
 	"log"
 )
 
@@ -15,92 +18,150 @@ func (c *UserPostController) Prepare() {
 
 }
 
+/**
+获取列表数据
+ */
 func (c *UserPostController) Index() {
-	if c.Ctx.Input.IsAjax() {
-		page, _ := c.GetInt("page")
-		limit, _ := c.GetInt("limit")
-		key := c.GetString("key", "")
+	if c.Ctx.Input.IsPost() {
+		model := models.NewUserPost()
+		
+		data := c.Ctx.Input.RequestBody
+		//json数据封装到user对象中
+		err := json.Unmarshal(data, &model)
+		if err != nil {
+			c.JsonResult(e.ERROR, err.Error())
+		}
+		
+		dataMap := make(map[string]interface{}, 0)
 
-		result, count := models.NewUserPost().Pagination((page-1)*limit, limit, key)
-		c.JsonResult(0, "ok", result, count)
+		//开始时间
+		if !php2go.Empty(model.StartTime) {
+			dataMap["start_time"] = model.StartTime
+		}
+		
+		//结束时间
+		if !php2go.Empty(model.EndTime) {
+			dataMap["end_time"] = model.EndTime
+		}
+		
+		var orderBy string = "created_at DESC"
+		
+		result, count,err := models.NewUserPost().FindByMap((model.Page-1)*model.PageSize, model.PageSize, dataMap,orderBy)
+		if err != nil{
+			c.JsonResult(e.ERROR, "获取数据失败")
+		}
+		c.JsonResult(e.SUCCESS, "ok", result, count, model.Page, model.PageSize)
 	}
-	c.TplName = c.ADMIN_TPL + "userPost/index.html"
 }
 
+/**
+创建数据
+*/
 func (c *UserPostController) Create() {
 	if c.Ctx.Input.IsPost() {
-		userPostModel := models.NewUserPost()
-		//1.压入数据
-		if err := c.ParseForm(userPostModel); err != nil {
-			c.JsonResult(1001, "赋值失败")
+		model := models.NewUserPost()
+        data := c.Ctx.Input.RequestBody
+		//1.压入数据 json数据封装到对象中
+		
+		err := json.Unmarshal(data, model)
+		if err != nil {
+			c.JsonResult(e.ERROR, err.Error())
 		}
+		
+		if err := c.ParseForm(model); err != nil {
+			c.JsonResult(e.ERROR, "赋值失败")
+		}
+
 		//2.验证
 		valid := validation.Validation{}
-		if b, _ := valid.Valid(userPostModel); !b {
+		if b, _ := valid.Valid(model); !b {
 			for _, err := range valid.Errors {
 				log.Println(err.Key, err.Message)
 			}
-			c.JsonResult(1001, "验证失败")
+			c.JsonResult(e.ERROR, "验证失败")
 		}
+
 		//3.插入数据
-		if _, err := userPostModel.Create(); err != nil {
-			c.JsonResult(1001, "创建失败")
+		if _, err := model.Create(); err != nil {
+			c.JsonResult(e.ERROR, "创建失败")
 		}
-		c.JsonResult(0, "添加成功")
+		c.JsonResult(e.SUCCESS, "添加成功")
 	}
-
-	c.Data["vo"] = models.UserPost{}
-	c.TplName = c.ADMIN_TPL + "userPost/create.html"
 }
 
+/**
+更新数据
+*/
 func (c *UserPostController) Update() {
-	id, _ := c.GetInt("id")
-	userPost, _ := models.NewUserPost().FindById(id)
-
-	if c.Ctx.Input.IsPost() {
-		//1
-		if err := c.ParseForm(&userPost); err != nil {
-			c.JsonResult(1001, "赋值失败")
+	if c.Ctx.Input.IsPut() {
+		model := models.NewUserPost()
+		data := c.Ctx.Input.RequestBody
+		//json数据封装到对象中
+		
+		err := json.Unmarshal(data, model)
+		
+		if err != nil {
+			c.JsonResult(e.ERROR, err.Error())
 		}
-		//2
+		
+		post, err := models.NewUserPost().FindById(model.Id)
+		if err != nil||php2go.Empty(post) {
+			c.JsonResult(e.ERROR, "没找到数据")
+		}
+		
 		valid := validation.Validation{}
-		if b, _ := valid.Valid(userPost); !b {
+		if b, _ := valid.Valid(model); !b {
 			for _, err := range valid.Errors {
 				log.Println(err.Key, err.Message)
 			}
-			c.JsonResult(1001, "验证失败")
+			c.JsonResult(e.ERROR, "验证失败")
 		}
-		//3
-		if _, err := userPost.Update(); err != nil {
-			c.JsonResult(1001, "修改失败")
+		
+		if _, err := model.Update(); err != nil {
+			c.JsonResult(e.ERROR, "修改失败")
 		}
-		c.JsonResult(0, "修改成功")
+		c.JsonResult(e.SUCCESS, "修改成功")
 	}
-
-	c.Data["vo"] = userPost
-	c.TplName = c.ADMIN_TPL + "userPost/update.html"
 }
 
+/**
+删除数据
+*/
 func (c *UserPostController) Delete() {
-	userPostModel := models.NewUserPost()
-	id, _ := c.GetInt("id")
-	userPostModel.Id = id
-	if err := userPostModel.Delete(); err != nil {
-		c.JsonResult(1001, "删除失败")
+    if c.Ctx.Input.IsDelete() {
+		model := models.NewUserPost()
+		data := c.Ctx.Input.RequestBody
+		//json数据封装到user对象中
+		
+		err := json.Unmarshal(data, model)
+		
+		if err != nil {
+			c.JsonResult(e.ERROR, err.Error())
+		}
+		
+		post, err := models.NewUserPost().FindById(model.Id)
+		if err != nil||php2go.Empty(post) {
+			c.JsonResult(e.ERROR, "没找到数据")
+		}
+		
+		if err := model.Delete(); err != nil {
+			c.JsonResult(e.ERROR, "删除失败")
+		}
+		c.JsonResult(e.SUCCESS, "删除成功")
 	}
-	c.JsonResult(0, "删除成功")
 }
 
 func (c *UserPostController) BatchDelete() {
+	model := models.NewUserPost()
+
 	var ids []int
 	if err := c.Ctx.Input.Bind(&ids, "ids"); err != nil {
-		c.JsonResult(1001, "赋值失败")
+		c.JsonResult(e.ERROR, "赋值失败")
 	}
 
-	userPostModel := models.NewUserPost()
-	if err := userPostModel.DelBatch(ids); err != nil {
-		c.JsonResult(1001, "删除失败")
+	if err := model.DelBatch(ids); err != nil {
+		c.JsonResult(e.ERROR, "删除失败")
 	}
-	c.JsonResult(0, "删除成功")
+	c.JsonResult(e.SUCCESS, "删除成功")
 }
 

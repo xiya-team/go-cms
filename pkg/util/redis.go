@@ -7,10 +7,11 @@ import (
 )
 
 func NewRedisClient() *redis.Client{
+	index,_:=  beego.AppConfig.Int("redis::index")
 	redisClient := redis.NewClient(&redis.Options{
 		Addr:     beego.AppConfig.String("redis::addr"),
 		Password: beego.AppConfig.String("redis::password"), // no password set //foobared
-		DB:       1,  // use default DB
+		DB:       index ,  // use default DB
 	})
 	
 	pong, err := redisClient.Ping().Result()

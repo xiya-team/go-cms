@@ -10,7 +10,7 @@ import (
 type User struct {
 	Model
 	Id          int    `json:"id"         form:"id"         gorm:"default:''"`
-	LoginName   string `json:"login_name" form:"login_name" gorm:"default:''" valid:"Required;MaxSize(20);MinSize(2)"`
+	Nickname   string  `json:"nickname"   form:"nickname" gorm:"default:''" valid:"Required;MaxSize(20);MinSize(2)"`
 	UserName    string `json:"user_name"  form:"user_name"  gorm:"default:''" valid:"Required;MaxSize(20);MinSize(6)"`
 	UserType    int    `json:"user_type"  form:"user_type"  gorm:"default:'00'"`
 	Email       string `json:"email"      form:"email"      gorm:"default:''" valid:"Email"`
@@ -112,13 +112,13 @@ func (m *User) FindById(id int) (user User, err error) {
 	return
 }
 
-func (m *User) FindByMaps(offset, limit int, dataMap map[string]interface{},orderBy string) (user []User, total int, err error) {
+func (m *User) FindByMap(offset, limit int64, dataMap map[string]interface{},orderBy string) (user []User, total int64, err error) {
 	query := Db
 	if status,isExist:=dataMap["status"].(int);isExist == true{
 		query = query.Where("status = ?", status)
 	}
-	if loginName,ok:=dataMap["login_name"].(string);ok{
-		query = query.Where("login_name LIKE ?", "%"+loginName+"%")
+	if nickname,ok:=dataMap["nickname"].(string);ok{
+		query = query.Where("nickname LIKE ?", "%"+nickname+"%")
 	}
 	
 	if userName,ok:=dataMap["user_name"].(string);ok{
@@ -149,7 +149,7 @@ func (m *User) FindByMaps(offset, limit int, dataMap map[string]interface{},orde
 /*****************************************************************新增加的方法*****************************************************************/
 
 func (m *User) FindByUserName(user_name string) (user User, err error) {
-	err = Db.Select("id,login_name,user_name,password,salt").Where("user_name=?", user_name).First(&user).Error
+	err = Db.Select("id,nickname,user_name,password,salt").Where("user_name=?", user_name).First(&user).Error
 	return
 }
 

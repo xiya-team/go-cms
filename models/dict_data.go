@@ -19,9 +19,6 @@ type DictData struct {
 	UpdateBy  string    `json:"update_by" form:"update_by" gorm:"default:''"`
 	UpdatedAt int       `json:"updated_at"form:"updated_at"gorm:"default:''"`
 	Remark    string    `json:"remark"    form:"remark"    gorm:"default:''"`
-	
-	StartTime   int64       `form:"start_time"   gorm:"-"`   // 忽略这个字段
-	EndTime     int64       `form:"end_time"     gorm:"-"`   // 忽略这个字段
 }
 
 
@@ -105,7 +102,7 @@ func (m *DictData) FindById(id int) (dictData DictData, err error) {
 	return
 }
 
-func (m *DictData) FindByMap(offset, limit int, dataMap map[string]interface{},orderBy string) (res []DictData, total int, err error) {
+func (m *DictData) FindByMap(offset, limit int64, dataMap map[string]interface{},orderBy string) (res []DictData, total int64, err error) {
 	query := Db
 	if status,isExist:=dataMap["status"].(int);isExist{
 		query = query.Where("status = ?", status)
