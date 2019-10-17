@@ -20,9 +20,7 @@ func (c *DictTypeController) Prepare() {
 
 func (c *DictTypeController) Index() {
     if c.Ctx.Input.IsPost() {
-		page, _ := c.GetInt("page",1)
-		limit, _ := c.GetInt("limit",10)
-		
+
 		model := models.NewDictType()
 		
 		dataMap := make(map[string]interface{}, 0)
@@ -47,8 +45,8 @@ func (c *DictTypeController) Index() {
 		}
 		
 		var orderBy string = "created_at DESC"
-		
-		result, count,err := models.NewDictType().FindByMap((page-1)*limit, limit, dataMap,orderBy)
+	
+	    result, count,err := model.FindByMap((model.Page-1)*model.PageSize, model.PageSize, dataMap,orderBy)
 		if err != nil{
 			c.JsonResult(e.ERROR, "获取数据失败")
 		}

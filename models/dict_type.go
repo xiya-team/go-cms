@@ -17,9 +17,6 @@ type DictType struct {
 	UpdatedAt int       `json:"updated_at"form:"updated_at"gorm:"default:''"`
 	DeletedAt time.Time   `json:"deleted_at"  form:"deleted_at"  gorm:"default:''"`
 	Remark    string    `json:"remark"    form:"remark"    gorm:"default:''"`
-	
-	StartTime   int64       `form:"start_time"   gorm:"-"`   // 忽略这个字段
-	EndTime     int64       `form:"end_time"     gorm:"-"`   // 忽略这个字段
 }
 
 
@@ -103,7 +100,7 @@ func (m *DictType) FindById(id int) (dictType DictType, err error) {
 	return
 }
 
-func (m *DictType) FindByMap(offset, limit int, dataMap map[string]interface{},orderBy string) (res []DictType, total int, err error) {
+func (m *DictType) FindByMap(offset, limit int64, dataMap map[string]interface{},orderBy string) (res []DictType, total int, err error) {
 	query := Db
 	if status,isExist:=dataMap["status"].(int);isExist{
 		query = query.Where("status = ?", status)

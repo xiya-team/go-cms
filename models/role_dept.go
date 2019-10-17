@@ -91,7 +91,7 @@ func (m *RoleDept) FindById(id int) (roleDept RoleDept, err error) {
 	return
 }
 
-func (m *RoleDept) FindByMap(offset, limit int, dataMap map[string]interface{},orderBy string) (res []RoleDept, total int, err error) {
+func (m *RoleDept) FindByMap(offset, limit int64, dataMap map[string]interface{},orderBy string) (res []RoleDept, total int, err error) {
 	query := Db
 	if status,isExist:=dataMap["status"].(int);isExist{
 		query = query.Where("status = ?", status)

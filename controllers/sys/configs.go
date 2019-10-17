@@ -20,27 +20,25 @@ func (c *ConfigsController) Prepare() {
 
 func (c *ConfigsController) Index() {
 	if c.Ctx.Input.IsPost() {
-		page, _ := c.GetInt("page",1)
-		limit, _ := c.GetInt("limit",10)
-		
-		configs := models.NewConfigs()
+
+		model := models.NewConfigs()
 		
 		dataMap := make(map[string]interface{}, 0)
 		
-		if !php2go.Empty(configs.ConfigType) {
-			dataMap["config_type"] = configs.ConfigType
+		if !php2go.Empty(model.ConfigType) {
+			dataMap["config_type"] = model.ConfigType
 		}
 		
-		if !php2go.Empty(configs.StartTime) {
-			dataMap["start_time"] = configs.StartTime
+		if !php2go.Empty(model.StartTime) {
+			dataMap["start_time"] = model.StartTime
 		}
-		if !php2go.Empty(configs.EndTime) {
-			dataMap["end_time"] = configs.EndTime
+		if !php2go.Empty(model.EndTime) {
+			dataMap["end_time"] = model.EndTime
 		}
 		
 		var orderBy string = "created_at DESC"
 		
-		result, count,err := models.NewConfigs().FindByMap((page-1)*limit, limit, dataMap,orderBy)
+		result, count,err := model.FindByMap((model.Page-1)*model.PageSize, model.PageSize, dataMap,orderBy)
 		if err != nil{
 			c.JsonResult(e.ERROR, "获取数据失败")
 		}

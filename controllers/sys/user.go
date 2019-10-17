@@ -17,12 +17,6 @@ import (
 	"time"
 )
 
-type PaginationRequest struct {
-	PageCount int   `form:"page_count" json:"page_count"`
-	Page      int   `form:"page" json:"page"`
-	StartTime int64 `form:"start_time" json:"start_time"`
-	EndTime   int64 `form:"end_time" json:"end_time"`
-}
 type UserController struct {
 	controllers.BaseController
 }
@@ -32,7 +26,6 @@ func (c *UserController) Prepare() {
 }
 func (c *UserController) UserList() {
 	req := struct {
-		PaginationRequest
 		models.User
 	}{}
 	type RespUser struct {
@@ -62,7 +55,7 @@ func (c *UserController) UserList() {
 	if req.Phone != "" {
 		dataMap["phone"] = req.Phone
 	}
-	page, pageCount := util.InitPageCount(req.Page, req.PageCount)
+	page, pageCount := util.InitPageCount(req.Page, req.PageSize)
 	var orderBy string = "created_at DESC"
 	user, total, err := models.NewUser().FindByMaps(page, pageCount, dataMap, orderBy)
 	if err != nil {
@@ -100,9 +93,12 @@ func (c *UserController) UserInfo() {
 func (c *UserController) Create() {
 	if c.Ctx.Input.IsPost() {
 		userModel := models.NewUser()
-		//1.压入数据
-		if err := c.ParseForm(userModel); err != nil {
-			c.JsonResult(e.ERROR, "赋值失败")
+		
+		data := c.Ctx.Input.RequestBody
+		//json数据封装到user对象中
+		err := json.Unmarshal(data, &userModel)
+		if err != nil {
+			c.JsonResult(e.ERROR, err.Error())
 		}
 
 		salt := util.Krand(5, 2)

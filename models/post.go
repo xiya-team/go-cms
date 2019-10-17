@@ -11,7 +11,7 @@ type Post struct {
 	PostCode  string    `json:"post_code" form:"post_code" gorm:"default:''"`
 	PostName  string    `json:"post_name" form:"post_name" gorm:"default:''"`
 	PostSort  int       `json:"post_sort" form:"post_sort" gorm:"default:''"`
-	Status    int    `json:"status"    form:"status"    gorm:"default:''"`
+	Status    int       `json:"status"    form:"status"    gorm:"default:''"`
 	CreateBy  string    `json:"create_by" form:"create_by" gorm:"default:''"`
 	CreatedAt int       `json:"created_at"form:"created_at"gorm:"default:''"`
 	UpdateBy  string    `json:"update_by" form:"update_by" gorm:"default:''"`
@@ -101,7 +101,7 @@ func (m *Post) FindById(id int) (post Post, err error) {
 	return
 }
 
-func (m *Post) FindByMap(offset, limit int, dataMap map[string]interface{},orderBy string) (res []Post, total int, err error) {
+func (m *Post) FindByMap(offset, limit int64, dataMap map[string]interface{},orderBy string) (res []Post, total int, err error) {
 	query := Db
 	if status,isExist:=dataMap["status"].(int);isExist{
 		query = query.Where("status = ?", status)

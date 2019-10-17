@@ -112,7 +112,7 @@ func (m *User) FindById(id int) (user User, err error) {
 	return
 }
 
-func (m *User) FindByMaps(offset, limit int, dataMap map[string]interface{},orderBy string) (user []User, total int, err error) {
+func (m *User) FindByMaps(offset, limit int64, dataMap map[string]interface{},orderBy string) (user []User, total int, err error) {
 	query := Db
 	if status,isExist:=dataMap["status"].(int);isExist == true{
 		query = query.Where("status = ?", status)

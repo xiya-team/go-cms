@@ -1,6 +1,7 @@
 package sys
 
 import (
+	"encoding/json"
 	"github.com/astaxie/beego/logs"
 	"github.com/syyongx/php2go"
 	"go-cms/controllers"
@@ -20,8 +21,6 @@ func (c *MenuController) Prepare() {
 
 func (c *MenuController) Index() {
     if c.Ctx.Input.IsPost() {
-		page, _ := c.GetInt("page",1)
-		limit, _ := c.GetInt("limit",10)
 		
 		model := models.NewMenu()
 		
@@ -43,8 +42,8 @@ func (c *MenuController) Index() {
 		}
 		
 		var orderBy string = "created_at DESC"
-		
-		result, count,err := models.NewMenu().FindByMap((page-1)*limit, limit, dataMap,orderBy)
+	
+	    result, count,err := model.FindByMap((model.Page-1)*model.PageSize, model.PageSize, dataMap,orderBy)
 		if err != nil{
 			c.JsonResult(e.ERROR, "获取数据失败")
 		}
@@ -55,10 +54,13 @@ func (c *MenuController) Index() {
 func (c *MenuController) Create() {
 	if c.Ctx.Input.IsPost() {
 		model := models.NewMenu()
-		//1.压入数据
-		if err := c.ParseForm(model); err != nil {
-			c.JsonResult(e.ERROR, "赋值失败")
+		data := c.Ctx.Input.RequestBody
+		//json数据封装到user对象中
+		err := json.Unmarshal(data, &model)
+		if err != nil {
+			c.JsonResult(e.ERROR, err.Error())
 		}
+		
 		//2.验证
 		valid := validation.Validation{}
 		if b, _ := valid.Valid(model); !b {
@@ -76,7 +78,7 @@ func (c *MenuController) Create() {
 }
 
 func (c *MenuController) Update() {
-	if c.Ctx.Input.IsPost() {
+	if c.Ctx.Input.IsPut() {
 		id, _ := c.GetInt("id")
 		model, _ := models.NewMenu().FindById(id)
 		//1

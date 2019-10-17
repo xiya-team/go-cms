@@ -18,9 +18,6 @@ type Menu struct {
 	UpdateBy  string    `json:"update_by" form:"update_by" gorm:"default:''"`
 	UpdatedAt int       `json:"updated_at"form:"updated_at"gorm:"default:''"`
 	Remark    string    `json:"remark"    form:"remark"    gorm:"default:''"`
-	
-	StartTime   int64       `form:"start_time"   gorm:"-"`   // 忽略这个字段
-	EndTime     int64       `form:"end_time"     gorm:"-"`   // 忽略这个字段
 }
 
 
@@ -104,7 +101,7 @@ func (m *Menu) FindById(id int) (menu Menu, err error) {
 	return
 }
 
-func (m *Menu) FindByMap(offset, limit int, dataMap map[string]interface{},orderBy string) (res []Menu, total int, err error) {
+func (m *Menu) FindByMap(offset, limit int64, dataMap map[string]interface{},orderBy string) (res []Menu, total int, err error) {
 	query := Db
 	if visible,isExist:=dataMap["visible"].(int);isExist{
 		query = query.Where("visible = ?", visible)
