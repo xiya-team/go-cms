@@ -1,6 +1,9 @@
 package models
 
-import "errors"
+import (
+	"errors"
+	"time"
+)
 
 type Role struct {
 	Model
@@ -12,9 +15,9 @@ type Role struct {
 	Status    string    `json:"status"    form:"status"    gorm:"default:''"`
 	DelFlag   string    `json:"del_flag"  form:"del_flag"  gorm:"default:'0'"`
 	CreateBy  string    `json:"create_by" form:"create_by" gorm:"default:''"`
-	CreatedAt int       `json:"created_at"form:"created_at"gorm:"default:''"`
+	CreatedAt time.Time       `json:"created_at"form:"created_at"gorm:"default:''"`
 	UpdateBy  string    `json:"update_by" form:"update_by" gorm:"default:''"`
-	UpdatedAt int       `json:"updated_at"form:"updated_at"gorm:"default:''"`
+	UpdatedAt time.Time       `json:"updated_at"form:"updated_at"gorm:"default:''"`
 	Remark    string    `json:"remark"    form:"remark"    gorm:"default:''"`
 	
 }

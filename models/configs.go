@@ -2,7 +2,6 @@ package models
 
 import (
 	"errors"
-	"github.com/syyongx/php2go"
 	"time"
 )
 
@@ -15,8 +14,8 @@ type Configs struct {
 	ConfigType  int         `json:"config_type" form:"config_type" gorm:"default:''"`
 	CreatedBy   int         `json:"created_by"  form:"created_by"  gorm:"default:''"`
 	UpdatedBy   int         `json:"updated_by"  form:"updated_by"  gorm:"default:''"`
-	CreatedAt   int64       `json:"created_at"  form:"created_at"  gorm:"default:''"`
-	UpdatedAt   int64       `json:"updated_at"  form:"updated_at"  gorm:"default:''"`
+	CreatedAt   time.Time       `json:"created_at"  form:"created_at"  gorm:"default:''"`
+	UpdatedAt   time.Time       `json:"updated_at"  form:"updated_at"  gorm:"default:''"`
 	DeletedAt   time.Time   `json:"deleted_at"  form:"deleted_at"  gorm:"default:''"`
 	Remark      string      `json:"remark"      form:"remark"      gorm:"default:''"`
 }
@@ -38,7 +37,7 @@ func (m *Configs) Pagination(offset, limit int, key string) (res []Configs, coun
 
 func (m *Configs) Create() (newAttr Configs, err error) {
 	
-	m.CreatedAt = php2go.Time()
+	m.CreatedAt = time.Now()
     tx := Db.Begin()
 	err = tx.Create(m).Error
 	

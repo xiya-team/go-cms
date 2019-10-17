@@ -12,9 +12,9 @@ type DictType struct {
 	DictType  string    `json:"dict_type" form:"dict_type" gorm:"default:''"`
 	Status    string    `json:"status"    form:"status"    gorm:"default:'0'"`
 	CreateBy  string    `json:"create_by" form:"create_by" gorm:"default:''"`
-	CreatedAt int       `json:"created_at"form:"created_at"gorm:"default:''"`
+	CreatedAt time.Time       `json:"created_at"form:"created_at"gorm:"default:''"`
 	UpdateBy  string    `json:"update_by" form:"update_by" gorm:"default:''"`
-	UpdatedAt int       `json:"updated_at"form:"updated_at"gorm:"default:''"`
+	UpdatedAt time.Time       `json:"updated_at"form:"updated_at"gorm:"default:''"`
 	DeletedAt time.Time   `json:"deleted_at"  form:"deleted_at"  gorm:"default:''"`
 	Remark    string    `json:"remark"    form:"remark"    gorm:"default:''"`
 }

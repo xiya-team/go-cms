@@ -13,8 +13,8 @@ type AdminLog struct {
 	Description string    `json:"description"form:"description"gorm:"default:''"`
 	UserId     int        `json:"user_id"    form:"user_id"    gorm:"default:'0'"`
 	Ip         string     `json:"ip"         form:"ip"         gorm:"default:'0'"`
-	CreatedAt  int64      `json:"created_at" form:"created_at" gorm:"default:'0'"`
-	UpdatedAt  int64      `json:"updated_at" form:"updated_at" gorm:"default:'0'"`
+	CreatedAt  time.Time  `json:"created_at" form:"created_at" gorm:"default:'0'"`
+	UpdatedAt  time.Time  `json:"updated_at" form:"updated_at" gorm:"default:'0'"`
 	DeletedAt  time.Time  `json:"deleted_at" form:"deleted_at" gorm:"default:'0'"`
 	
 }

@@ -19,8 +19,8 @@ type Category struct {
 	Keywords   string     `json:"keywords"   form:"keywords"   gorm:"default:''"`
 	Description string    `json:"description"form:"description"gorm:"default:''"`
 	Content    string     `json:"content"    form:"content"    gorm:"default:''"`
-	CreatedAt  int        `json:"created_at" form:"created_at" gorm:"default:''"`
-	UpdatedAt  int        `json:"updated_at" form:"updated_at" gorm:"default:''"`
+	CreatedAt  time.Time        `json:"created_at" form:"created_at" gorm:"default:''"`
+	UpdatedAt  time.Time        `json:"updated_at" form:"updated_at" gorm:"default:''"`
 	DeletedAt  time.Time  `json:"deleted_at" form:"deleted_at" gorm:"default:''"`
 	Weigh      int        `json:"weigh"      form:"weigh"      gorm:"default:'0'"`
 	Status     int        `json:"status"     form:"status"     gorm:"default:'1'"`

@@ -23,11 +23,11 @@ type User struct {
 	Status      int    `json:"status"     form:"status"     gorm:"default:'1'"`
 	DelFlag     int    `json:"del_flag"   form:"del_flag"   gorm:"default:'1'"`
 	LoginIp     string `json:"login_ip"   form:"login_ip"   gorm:"default:''"`
-	LoginDate   int64  `json:"login_date" form:"login_date" gorm:"default:''"`
+	LoginDate   time.Time  `json:"login_date" form:"login_date" gorm:"default:''"`
 	CreateBy    string `json:"create_by"  form:"create_by"  gorm:"default:''"`
-	CreatedAt   int64  `json:"created_at" form:"created_at" gorm:"default:''"`
+	CreatedAt   time.Time  `json:"created_at" form:"created_at" gorm:"default:''"`
 	UpdateBy    string `json:"update_by"  form:"update_by"  gorm:"default:''"`
-	UpdatedAt   int64  `json:"updated_at" form:"updated_at" gorm:"default:''"`
+	UpdatedAt   time.Time  `json:"updated_at" form:"updated_at" gorm:"default:''"`
 	DeletedAt   time.Time  `json:"deleted_at" form:"deleted_at" gorm:"default:''"`
 	Remark      string `json:"remark"     form:"remark"     gorm:"default:''"`
 }
