@@ -8,12 +8,12 @@ type PageData struct {
 
 // Page ...
 type Page struct {
-	PageNo     int64 `json:"page_no"`
-	PageSize   int64 `json:"page_size"`
-	TotalPage  int64 `json:"tatal_page"`
-	TotalCount int64 `json:"tatal_count"`
-	FirstPage  bool  `json:"first_page"`
-	LastPage   bool  `json:"last_page"`
+	PageNo     int64   `json:"page_no"`
+	PageSize   int64   `json:"page_size"`
+	TotalPage  int64   `json:"tatal_page"`
+	TotalCount int64   `json:"tatal_count"`
+	IsFirstPage  bool  `json:"is_first_page"`
+	IsLastPage   bool  `json:"is_last_page"`
 }
 
 // PageUtil ...
@@ -29,12 +29,12 @@ func PageUtil(count int64, pageNo int64, pageSize int64, list interface{}) PageD
 	}
 
 	page := Page{
-		PageNo:     pageNo,
-		PageSize:   pageSize,
-		TotalPage:  tp,
-		TotalCount: count,
-		FirstPage:  pageNo == 1,
-		LastPage:   pageNo == tp,
+		PageNo:       pageNo,
+		PageSize:     pageSize,
+		TotalPage:    tp,
+		TotalCount:   count,
+		IsFirstPage:  pageNo == 1,
+		IsLastPage:   pageNo == tp,
 	}
 
 	return PageData{Page: page, List: list}

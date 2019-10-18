@@ -196,6 +196,8 @@ bee run
 * [Vue](https://github.com/vuejs/vue)
 * [D2Admin](https://github.com/d2-projects/d2-admin)
 * 其他相关开源项目
+* [Uber Go 语言代码风格指南](https://github.com/uber-go/guide)
+
 
 <a href="https://github.com/d2-projects/d2-admin" target="_blank"><img src="https://raw.githubusercontent.com/FairyEver/d2-admin/master/doc/image/d2-admin@2x.png" width="200"></a>
 

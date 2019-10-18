@@ -14,8 +14,8 @@ import (
 var Db *gorm.DB
 
 type Model struct {
-	StartTime   int64       `json:"start_time" form:"start_time"   gorm:"-"`   // 忽略这个字段
-	EndTime     int64       `json:"end_time"   form:"end_time"     gorm:"-"`   // 忽略这个字段
+	StartTime   time.Time   `json:"start_time" form:"start_time"   gorm:"-"`   // 忽略这个字段
+	EndTime     time.Time   `json:"end_time"   form:"end_time"     gorm:"-"`   // 忽略这个字段
 	Page        int64       `json:"page"       form:"page"         gorm:"-"`   // 忽略这个字段
 	PageSize    int64       `json:"page_size"  form:"page_size"    gorm:"-"`   // 忽略这个字段
 }
@@ -162,7 +162,7 @@ func CreateAdminLogCallback(scope *gorm.Scope) {
 func updateTimeStampForCreateCallback(scope *gorm.Scope) {
 	
 	if !scope.HasError() {
-		nowTime := time.Now().Unix()
+		nowTime := time.Now()
 		if createAtField, ok := scope.FieldByName("CreatedAt"); ok {
 			if createAtField.IsBlank {
 				createAtField.Set(nowTime)
@@ -181,7 +181,7 @@ func updateTimeStampForCreateCallback(scope *gorm.Scope) {
 func updateTimeStampForUpdateCallback(scope *gorm.Scope) {
 	if updatedAtField, ok := scope.FieldByName("UpdatedAt"); ok {
 		if updatedAtField.IsBlank {
-			updatedAtField.Set(time.Now().Unix())
+			updatedAtField.Set(time.Now())
 		}
 	}
 }
