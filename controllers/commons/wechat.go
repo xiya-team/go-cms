@@ -9,22 +9,22 @@ import (
 	"strconv"
 	"time"
 	
-	"github.com/chanxuehong/wechat/mp/core"
-	"github.com/chanxuehong/wechat/mp/jssdk"
-	"github.com/chanxuehong/wechat/mp/menu"
-	"github.com/chanxuehong/wechat/mp/message/callback/request"
-	"github.com/chanxuehong/wechat/mp/message/callback/response"
-	mpoauth2 "github.com/chanxuehong/wechat/mp/oauth2"
-	"github.com/chanxuehong/wechat/oauth2"
-	"github.com/chanxuehong/wechat/util"
+	"gopkg.in/chanxuehong/wechat.v2/mp/core"
+	"gopkg.in/chanxuehong/wechat.v2/mp/jssdk"
+	"gopkg.in/chanxuehong/wechat.v2/mp/menu"
+	"gopkg.in/chanxuehong/wechat.v2/mp/message/callback/request"
+	"gopkg.in/chanxuehong/wechat.v2/mp/message/callback/response"
+	mpoauth2 "gopkg.in/chanxuehong/wechat.v2/mp/oauth2"
+	"gopkg.in/chanxuehong/wechat.v2/oauth2"
+	"gopkg.in/chanxuehong/wechat.v2/util"
 )
 
 const (
-	wxAppId         = "" //your appId
-	wxAppSecret     = "" //your appSecret
-	wxOriId         = "" //原始ID
-	wxToken         = "" //token
-	wxEncodedAESKey = ""
+	wxAppId         = "wx1626a5379b07dfc6" //your appId
+	wxAppSecret     = "f382d85a5831e74668ae30c68c47a7bf" //your appSecret
+	wxOriId         = "gh_b1e73d822fc3" //原始ID
+	wxToken         = "SLAxrwvfxKS5Rq9FisYC2WGScKydIvpd" //token
+	wxEncodedAESKey = "WWWJopR6VoDa7h4QfBGJsXmjMzUNq1aDrI2kQELHCyW"
 )
 
 var (
@@ -54,7 +54,7 @@ func init() {
 	mux.EventHandleFunc(menu.EventTypeClick, menuClickEventHandler)
 
 	msgHandler = mux
-	//msgServer = core.NewServer(wxOriId, wxAppId, wxToken, wxEncodedAESKey, msgHandler, nil)
+	msgServer = core.NewServer(wxOriId, wxAppId, wxToken, wxEncodedAESKey, msgHandler, nil)
 }
 
 func textMsgHandler(ctx *core.Context) {

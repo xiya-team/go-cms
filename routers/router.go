@@ -2,6 +2,7 @@ package routers
 
 import (
 	"github.com/astaxie/beego"
+	"go-cms/controllers/commons"
 	"go-cms/controllers/sys"
 )
 
@@ -54,4 +55,7 @@ func init() {
 	beego.Router("/api/dictData/create", &sys.DictDataController{}, "post:Create")
 	beego.Router("/api/dictData/update", &sys.DictDataController{}, "put:Update")
 	beego.Router("/api/dictData/delete", &sys.DictDataController{}, "delete:Delete")
+	
+	//微信
+	beego.Router("/api/wechat/wxcallbackhandler", &commons.WechatController{}, "*:WxCallbackHandler")
 }
