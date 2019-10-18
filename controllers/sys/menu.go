@@ -1,12 +1,12 @@
 package sys
 
 import (
+	"encoding/json"
 	"github.com/astaxie/beego/validation"
 	"github.com/syyongx/php2go"
 	"go-cms/controllers"
-	"encoding/json"
 	"go-cms/models"
-    "go-cms/pkg/e"
+	"go-cms/pkg/e"
 	"log"
 )
 
@@ -173,3 +173,87 @@ func (c *MenuController) BatchDelete() {
 	c.JsonResult(e.SUCCESS, "删除成功")
 }
 
+func (c *MenuController) Menus()  {
+	model := models.NewMenu()
+	data := c.Ctx.Input.RequestBody
+	//json数据封装到user对象中
+	
+	err := json.Unmarshal(data, model)
+	
+	if err != nil {
+		c.JsonResult(e.ERROR, err.Error())
+	}
+	
+	
+	if php2go.Empty(model.ParentId){
+		menuData,_ := model.FindAll()
+		c.JsonResult(e.SUCCESS, "删除成功",constructMenuTrees(menuData,0))
+	}else {
+		menuData,_ := model.FindAllByParentId()
+		c.JsonResult(e.SUCCESS, "删除成功",constructMenuTrees(menuData,0))
+	}
+	
+	
+	
+	
+
+}
+
+
+type Item struct {
+	MenuName     string `json:"menu_name"`
+	ID           int    `json:"id"`
+	Url          string `json:"url"`
+	Icon         string `json:"icon"`
+	Active       string `json:"active"`
+	ChildrenList []Item `json:"children_list"`
+}
+
+
+func constructMenuTrees(menus []models.Menu, parentId int) []Item {
+	
+	branch := make([]Item, 0)
+	
+	for  _,menu := range menus {
+		if menu.ParentId == parentId{
+			childList := constructMenuTrees(menus, menu.Id)
+			
+			child := Item{
+				MenuName:     menu.MenuName,
+				ID:           menu.Id,
+				Url:          menu.Url,
+				Icon:         menu.Icon,
+				Active:       "",
+				ChildrenList: childList,
+			}
+			branch = append(branch, child)
+		}
+	}
+	
+	return branch
+}
+
+func constructMenuTree(menus []map[string]interface{}, parentId int64) []Item {
+	
+	branch := make([]Item, 0)
+	
+	for j := 0; j < len(menus); j++ {
+		if parentId == menus[j]["parent_id"].(int64) {
+			
+			childList := constructMenuTree(menus, menus[j]["id"].(int64))
+			
+			child := Item{
+				MenuName:         menus[j]["menu_name"].(string),
+				ID:           menus[j]["id"].(int),
+				Url:          menus[j]["url"].(string),
+				Icon:         menus[j]["icon"].(string),
+				Active:       "",
+				ChildrenList: childList,
+			}
+			
+			branch = append(branch, child)
+		}
+	}
+	
+	return branch
+}

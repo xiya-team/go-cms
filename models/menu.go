@@ -132,3 +132,17 @@ func (m *Menu) FindByMap(offset, limit int64, dataMap map[string]interface{},ord
 	return
 }
 
+func (m *Menu) FindAll() (res []Menu, err error) {
+	query := Db
+	err = query.Find(&res).Error
+	return
+}
+
+func (m *Menu) FindAllByParentId(parentId int) (res []Menu, err error)   {
+	query := Db
+	
+	query = query.Where("parent_id <= ?", parentId)
+	
+	err = query.Find(&res).Error
+	return
+}
