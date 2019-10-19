@@ -59,5 +59,5 @@ func init() {
 	beego.Router("/api/dictData/delete", &sys.DictDataController{}, "delete:Delete")
 	
 	//微信
-	beego.Router("/api/wechat/wxcallbackhandler", &commons.WechatController{}, "*:WxCallbackHandler")
+	beego.Router("/api/wechat/signature", &commons.WechatController{}, "*:Signature")
 }

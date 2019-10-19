@@ -35,7 +35,7 @@ func OutResponse(code int, data interface{}, msg string) Response {
 var supportMethod = [6]string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"}
 
 //配置不需要登录的url
-var urlMapping = []string{"user::login","captcha::check","wechat::wxcallbackhandler"}
+var urlMapping = []string{"user::login","captcha::check","wechat::signature"}
 
 // 支持伪造restful风格的http请求
 // _method = "DELETE" 即将http的POST请求改为DELETE请求
