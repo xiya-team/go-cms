@@ -141,8 +141,8 @@ func (m *Menu) FindAll() (res []Menu, err error) {
 func (m *Menu) FindAllByParentId(parentId int) (res []Menu, err error)   {
 	query := Db
 	
-	query = query.Where("parent_id <= ?", parentId)
-	
+	query = query.Where("parent_id = ?", parentId)
 	err = query.Find(&res).Error
+
 	return
 }

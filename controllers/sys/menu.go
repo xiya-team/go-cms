@@ -189,7 +189,7 @@ func (c *MenuController) Menus()  {
 		menuData,_ := model.FindAll()
 		c.JsonResult(e.SUCCESS, "删除成功",constructMenuTrees(menuData,0))
 	}else {
-		menuData,_ := model.FindAllByParentId()
+		menuData,_ := model.FindAllByParentId(model.ParentId)
 		c.JsonResult(e.SUCCESS, "删除成功",constructMenuTrees(menuData,0))
 	}
 	
