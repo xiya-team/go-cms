@@ -2,6 +2,7 @@ package models
 
 import (
 	"errors"
+	"go-cms/pkg/vo"
 	"time"
 )
 
@@ -145,4 +146,31 @@ func (m *Menu) FindAllByParentId(parentId int) (res []Menu, err error)   {
 	err = query.Find(&res).Error
 
 	return
+}
+
+func (m *Menu) FindTopMenu() (res []Menu, err error) {
+	query := Db
+	query = query.Where("parent_id=?",0)
+	err = query.Find(&res).Error
+	return
+}
+
+
+func (m *Menu)FindMenus(pid int) []*vo.TreeList {
+	query := Db
+	var menu []Menu
+	query = query.Where("parent_id=?",pid)
+	_ = query.Find(&menu).Error
+	treeList := []*vo.TreeList{}
+	for _, v := range menu{
+		child := v.FindMenus(v.Id)
+		node := &vo.TreeList{
+			Id:v.Id,
+			MenuName:v.MenuName,
+			ParentId:v.ParentId,
+		}
+		node.Children = child
+		treeList = append(treeList, node)
+	}
+	return treeList
 }

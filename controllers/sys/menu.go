@@ -7,6 +7,7 @@ import (
 	"go-cms/controllers"
 	"go-cms/models"
 	"go-cms/pkg/e"
+	"go-cms/pkg/vo"
 	"log"
 )
 
@@ -192,33 +193,46 @@ func (c *MenuController) Menus()  {
 		menuData,_ := model.FindAllByParentId(model.ParentId)
 		c.JsonResult(e.SUCCESS, "删除成功",constructMenuTrees(menuData,0))
 	}
-	
-	
-	
-	
 
 }
 
-
-type Item struct {
-	MenuName     string `json:"menu_name"`
-	ID           int    `json:"id"`
-	Url          string `json:"url"`
-	Icon         string `json:"icon"`
-	Active       string `json:"active"`
-	ChildrenList []Item `json:"children_list"`
+func (c *MenuController) FindTopMenu()  {
+	model := models.NewMenu()
+	menus,err := model.FindTopMenu()
+	if err != nil{
+		c.JsonResult(e.ERROR, err.Error())
+	}
+	c.JsonResult(e.SUCCESS, "获取成功",menus)
 }
 
+func (c *MenuController) FindMenus()  {
+	model := models.NewMenu()
 
-func constructMenuTrees(menus []models.Menu, parentId int) []Item {
+	data := c.Ctx.Input.RequestBody
+	//json数据封装到user对象中
+
+	err := json.Unmarshal(data, model)
+
+	if err != nil {
+		c.JsonResult(e.ERROR, err.Error())
+	}
+
+	menus := model.FindMenus(model.ParentId)
+	if err != nil{
+		c.JsonResult(e.ERROR, err.Error())
+	}
+	c.JsonResult(e.SUCCESS, "获取成功",menus)
+}
+
+func constructMenuTrees(menus []models.Menu, parentId int) []vo.MenuItem {
 	
-	branch := make([]Item, 0)
+	branch := make([]vo.MenuItem, 0)
 	
 	for  _,menu := range menus {
 		if menu.ParentId == parentId{
 			childList := constructMenuTrees(menus, menu.Id)
 			
-			child := Item{
+			child := vo.MenuItem{
 				MenuName:     menu.MenuName,
 				ID:           menu.Id,
 				Url:          menu.Url,
@@ -226,31 +240,6 @@ func constructMenuTrees(menus []models.Menu, parentId int) []Item {
 				Active:       "",
 				ChildrenList: childList,
 			}
-			branch = append(branch, child)
-		}
-	}
-	
-	return branch
-}
-
-func constructMenuTree(menus []map[string]interface{}, parentId int64) []Item {
-	
-	branch := make([]Item, 0)
-	
-	for j := 0; j < len(menus); j++ {
-		if parentId == menus[j]["parent_id"].(int64) {
-			
-			childList := constructMenuTree(menus, menus[j]["id"].(int64))
-			
-			child := Item{
-				MenuName:         menus[j]["menu_name"].(string),
-				ID:           menus[j]["id"].(int),
-				Url:          menus[j]["url"].(string),
-				Icon:         menus[j]["icon"].(string),
-				Active:       "",
-				ChildrenList: childList,
-			}
-			
 			branch = append(branch, child)
 		}
 	}
