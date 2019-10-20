@@ -148,11 +148,23 @@ func (m *Menu) FindAllByParentId(parentId int) (res []Menu, err error)   {
 	return
 }
 
-func (m *Menu) FindTopMenu() (res []Menu, err error) {
+func (m *Menu) FindTopMenu() []*vo.TreeList {
+	var menu []Menu
 	query := Db
 	query = query.Where("parent_id=?",0)
-	err = query.Find(&res).Error
-	return
+	_ = query.Find(&menu).Error
+
+	treeList := []*vo.TreeList{}
+	for _, v := range menu{
+		node := &vo.TreeList{
+			Id:v.Id,
+			MenuName:v.MenuName,
+			ParentId:v.ParentId,
+		}
+		treeList = append(treeList, node)
+	}
+
+	return treeList
 }
 
 

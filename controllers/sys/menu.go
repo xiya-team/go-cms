@@ -196,20 +196,10 @@ func (c *MenuController) Menus()  {
 
 }
 
-func (c *MenuController) FindTopMenu()  {
-	model := models.NewMenu()
-	menus,err := model.FindTopMenu()
-	if err != nil{
-		c.JsonResult(e.ERROR, err.Error())
-	}
-	c.JsonResult(e.SUCCESS, "获取成功",menus)
-}
-
 func (c *MenuController) FindMenus()  {
 	model := models.NewMenu()
 
 	data := c.Ctx.Input.RequestBody
-	//json数据封装到user对象中
 
 	err := json.Unmarshal(data, model)
 
@@ -217,7 +207,13 @@ func (c *MenuController) FindMenus()  {
 		c.JsonResult(e.ERROR, err.Error())
 	}
 
-	menus := model.FindMenus(model.ParentId)
+	var menus []*vo.TreeList
+	if php2go.Empty(model.ParentId) {
+		menus = model.FindTopMenu()
+	}else {
+		menus = model.FindMenus(model.ParentId)
+	}
+
 	if err != nil{
 		c.JsonResult(e.ERROR, err.Error())
 	}
@@ -225,7 +221,7 @@ func (c *MenuController) FindMenus()  {
 }
 
 func constructMenuTrees(menus []models.Menu, parentId int) []vo.MenuItem {
-	
+
 	branch := make([]vo.MenuItem, 0)
 	
 	for  _,menu := range menus {

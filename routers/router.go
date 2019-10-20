@@ -46,7 +46,6 @@ func init() {
 	beego.Router("/api/menu/delete", &sys.MenuController{}, "delete:Delete")
 
 	beego.Router("/api/menu/menus", &sys.MenuController{}, "*:Menus")
-	beego.Router("/api/menu/find_top_menu", &sys.MenuController{}, "post:FindTopMenu")
 	beego.Router("/api/menu/find_menus", &sys.MenuController{}, "post:FindMenus")
 
 	//字典管理
