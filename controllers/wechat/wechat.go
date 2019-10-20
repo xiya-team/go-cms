@@ -1,4 +1,4 @@
-package commons
+package wechat
 
 
 import (
@@ -23,7 +23,7 @@ const (
 	wxAppId         = "wx1626a5379b07dfc6" //your appId
 	wxAppSecret     = "f382d85a5831e74668ae30c68c47a7bf" //your appSecret
 	wxOriId         = "gh_b1e73d822fc3" //原始ID
-	wxToken         = "SLAxrwvfxKS5Rq9FisYC2WGScKydIvpd" //token
+	wxToken         = "Dswq1322s1dfsf31s2af321231rew" //token
 	wxEncodedAESKey = "WWWJopR6VoDa7h4QfBGJsXmjMzUNq1aDrI2kQELHCyW"
 )
 
