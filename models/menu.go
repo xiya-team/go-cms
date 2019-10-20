@@ -178,7 +178,9 @@ func (m *Menu) FindTopMenu() []*vo.TreeList {
 	return treeList
 }
 
-
+/**
+ * 生成树型数据
+ */
 func (m *Menu)FindMenus(pid int) []*vo.TreeList {
 	query := Db
 	var menu []Menu
