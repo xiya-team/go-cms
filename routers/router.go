@@ -23,30 +23,30 @@ func init() {
 	beego.Router("/api/user/list", &sys.UserController{}, "post:Index") // 获取用户列表
 	beego.Router("/api/user/check_token", &sys.UserController{}, "post:CheckToken")
 	beego.Router("/api/user/logout", &sys.UserController{}, "post:Logout")
-	
+
 	//验证码校验
 	beego.Router("/api/captcha/check", &sys.CaptchaController{}, "post:Hander")
-	
+
 	//参数设置
 	beego.Router("/api/configs/index", &sys.ConfigsController{}, "*:Index")
 	beego.Router("/api/configs/create", &sys.ConfigsController{}, "post:Create")
 	beego.Router("/api/configs/update", &sys.ConfigsController{}, "put:Update")
 	beego.Router("/api/configs/delete", &sys.ConfigsController{}, "delete:Delete")
-	
+
 	//岗位管理
 	beego.Router("/api/post/index", &sys.PostController{}, "*:Index")
 	beego.Router("/api/post/create", &sys.PostController{}, "post:Create")
 	beego.Router("/api/post/update", &sys.PostController{}, "put:Update")
 	beego.Router("/api/post/delete", &sys.PostController{}, "delete:Delete")
-	
+
 	//菜单管理
 	beego.Router("/api/menu/index", &sys.MenuController{}, "*:Index")
 	beego.Router("/api/menu/create", &sys.MenuController{}, "post:Create")
 	beego.Router("/api/menu/update", &sys.MenuController{}, "put:Update")
 	beego.Router("/api/menu/delete", &sys.MenuController{}, "delete:Delete")
-	
+
 	beego.Router("/api/menu/menus", &sys.MenuController{}, "*:Menus")
-	
+
 	//字典管理
 	beego.Router("/api/dict/index", &sys.DictTypeController{}, "*:Index")
 	beego.Router("/api/dict/create", &sys.DictTypeController{}, "post:Create")
@@ -57,7 +57,7 @@ func init() {
 	beego.Router("/api/dictData/create", &sys.DictDataController{}, "post:Create")
 	beego.Router("/api/dictData/update", &sys.DictDataController{}, "put:Update")
 	beego.Router("/api/dictData/delete", &sys.DictDataController{}, "delete:Delete")
-	
+
 	//微信
-	beego.Router("/api/wechat/signature", &commons.WechatController{}, "*:Signature")
+	beego.Router("/api/wx/connect", &commons.WxConnectController{})
 }

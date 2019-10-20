@@ -22,8 +22,6 @@ func page_not_found(rw http.ResponseWriter, r *http.Request) {
 func init() {
 	// 中间件注册
 	middlewares.CorsHandler()
-	
-	beego.InsertFilter("*", beego.BeforeRouter, middlewares.RestfulHandler())
 }
 
 func main() {
@@ -43,7 +41,7 @@ func main() {
 		beego.BConfig.WebConfig.DirectoryIndex = true
 		beego.BConfig.WebConfig.StaticDir["/swagger"] = "swagger"
 	}
-	
+
 	//log
 	logs.SetLogger(logs.AdapterFile, `{"filename":"project.log","level":7,"maxlines":0,"maxsize":0,"daily":true,"maxdays":10,"color":true}`)
 	//输出文件名，行号
@@ -52,6 +50,6 @@ func main() {
 	logs.Async(1e3)
 	//404
 	beego.ErrorHandler("404", page_not_found)
-	
+
 	beego.Run()
 }
