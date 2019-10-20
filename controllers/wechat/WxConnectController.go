@@ -3,14 +3,14 @@ package wechat
 import (
 	"crypto/sha1"
 	"fmt"
-	"github.com/astaxie/beego"
+	"go-cms/controllers"
 	"io"
 	"sort"
 	"strings"
 )
 
 type WxConnectController struct {
-	beego.Controller
+	controllers.BaseController
 }
 
 const Token = "Dswq1322s1dfsf31s2af321231rew"

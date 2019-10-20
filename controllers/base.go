@@ -14,11 +14,10 @@ type BaseController struct {
 	beego.Controller
 }
 
+//配置不需要登录的url
+var urlMapping = []string{"user::login","captcha::check","wechat::connect"}
 
 func (c *BaseController) Prepare() {
-
-	//配置不需要登录的url
-	var urlMapping = []string{"user::login","captcha::check","wechat::connect"}
 
 	current_url := c.Ctx.Request.URL.RequestURI()
 	controllerName, actionName := getControllerAndAction(current_url)
