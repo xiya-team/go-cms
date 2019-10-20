@@ -227,13 +227,12 @@ func constructMenuTrees(menus []models.Menu, parentId int) []vo.MenuItem {
 	for  _,menu := range menus {
 		if menu.ParentId == parentId{
 			childList := constructMenuTrees(menus, menu.Id)
-			
+
 			child := vo.MenuItem{
 				MenuName:     menu.MenuName,
-				ID:           menu.Id,
+				Id:           menu.Id,
 				Url:          menu.Url,
 				Icon:         menu.Icon,
-				Active:       "",
 				ChildrenList: childList,
 			}
 			branch = append(branch, child)
