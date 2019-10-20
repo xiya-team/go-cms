@@ -153,12 +153,23 @@ func (m *Menu) FindTopMenu() []*vo.TreeList {
 	query := Db
 	query = query.Where("parent_id=?",0)
 	_ = query.Find(&menu).Error
-
+	
 	treeList := []*vo.TreeList{}
 	for _, v := range menu{
 		node := &vo.TreeList{
 			Id:v.Id,
 			MenuName:v.MenuName,
+			OrderNum:v.OrderNum,
+			MenuType:v.MenuType,
+			Visible:v.Visible,
+			CreateBy:v.CreateBy,
+			CreatedAt:v.CreatedAt,
+			UpdateBy:v.UpdateBy,
+			Icon:v.Icon,
+			UpdatedAt:v.UpdatedAt,
+			Perms:v.Perms,
+			Remark:v.Remark,
+			Url:v.Url,
 			ParentId:v.ParentId,
 		}
 		treeList = append(treeList, node)
