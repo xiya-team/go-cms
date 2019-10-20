@@ -3,7 +3,7 @@ package routers
 import (
 	"github.com/astaxie/beego"
 	"go-cms/controllers/sys"
-	"go-cms/controllers/wechat"
+	"go-cms/controllers/wx"
 )
 
 func init() {
@@ -60,5 +60,5 @@ func init() {
 	beego.Router("/api/dictData/delete", &sys.DictDataController{}, "delete:Delete")
 
 	//微信
-	beego.Router("/api/wechat/connect", &wechat.WxConnectController{})
+	beego.Router("/api/wechat/connect", &wx.WxConnectController{})
 }
