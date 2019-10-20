@@ -1,4 +1,4 @@
-package commons
+package wechat
 
 import (
 	"crypto/sha1"

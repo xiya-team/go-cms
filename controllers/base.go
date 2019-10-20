@@ -18,7 +18,7 @@ type BaseController struct {
 func (c *BaseController) Prepare() {
 
 	//配置不需要登录的url
-	var urlMapping = []string{"user::login","captcha::check","wx::connect"}
+	var urlMapping = []string{"user::login","captcha::check","wechat::connect"}
 
 	current_url := c.Ctx.Request.URL.RequestURI()
 	controllerName, actionName := getControllerAndAction(current_url)
