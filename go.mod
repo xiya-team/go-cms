@@ -7,7 +7,7 @@ require (
 	github.com/astaxie/beego v1.12.0
 	github.com/axgle/mahonia v0.0.0-20180208002826-3358181d7394
 	github.com/baiyubin/aliyun-sts-go-sdk v0.0.0-20180326062324-cfa1a18b161f // indirect
-	github.com/chanxuehong/wechat v0.0.0-20190521093015-fafb751f9916
+	github.com/chanxuehong/wechat v0.0.0-20190521093015-fafb751f9916 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-redis/redis v6.15.6+incompatible
 	github.com/gorilla/websocket v1.4.1
@@ -23,7 +23,6 @@ require (
 	github.com/smartystreets/goconvey v0.0.0-20190731233626-505e41936337
 	github.com/syyongx/php2go v0.9.4
 	github.com/tidwall/gjson v1.3.2
-	golang.org/x/text v0.3.1-0.20180807135948-17ff2d5776d2
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
 	gopkg.in/chanxuehong/wechat.v2 v2.0.0-20190402080805-fa408c6cc20d
 	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df
