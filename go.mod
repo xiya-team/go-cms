@@ -20,7 +20,7 @@ require (
 	github.com/qinxin0720/alisms-go v1.0.1
 	github.com/satori/go.uuid v1.2.0 // indirect
 	github.com/shiena/ansicolor v0.0.0-20151119151921-a422bbe96644 // indirect
-	github.com/silenceper/wechat v2.0.0+incompatible // indirect
+	github.com/silenceper/wechat v2.0.0+incompatible
 	github.com/smartystreets/goconvey v0.0.0-20190731233626-505e41936337
 	github.com/syyongx/php2go v0.9.4
 	github.com/tidwall/gjson v1.3.2
