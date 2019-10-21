@@ -60,5 +60,6 @@ func init() {
 	beego.Router("/api/dictData/delete", &sys.DictDataController{}, "delete:Delete")
 
 	//微信
-	beego.Router("/api/wechat/connect", &wx.WxConnectController{})
+	//beego.Router("/api/wechat/connect", &wx.WxConnectController{})
+	beego.Router("/api/wechat/connect", &wx.WxConfigController{},"*:Get")
 }
