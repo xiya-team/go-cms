@@ -184,16 +184,14 @@ func (c *MenuController) Menus()  {
 	if err != nil {
 		c.JsonResult(e.ERROR, err.Error())
 	}
-	
-	
+
 	if php2go.Empty(model.ParentId){
 		menuData,_ := model.FindAll()
-		c.JsonResult(e.SUCCESS, "删除成功",constructMenuTrees(menuData,0))
+		c.JsonResult(e.SUCCESS, "获取成功",constructMenuTrees(menuData,0))
 	}else {
 		menuData,_ := model.FindAllByParentId(model.ParentId)
-		c.JsonResult(e.SUCCESS, "删除成功",constructMenuTrees(menuData,0))
+		c.JsonResult(e.SUCCESS, "获取成功",constructMenuTrees(menuData,0))
 	}
-
 }
 
 func (c *MenuController) FindMenus()  {

@@ -59,6 +59,12 @@ func init() {
 	beego.Router("/api/dictData/update", &sys.DictDataController{}, "put:Update")
 	beego.Router("/api/dictData/delete", &sys.DictDataController{}, "delete:Delete")
 
+	//部门管理
+	beego.Router("/api/dept/findall", &sys.DeptController{}, "*:FindAll")
+	beego.Router("/api/dept/create", &sys.DeptController{}, "post:Create")
+	beego.Router("/api/dept/update", &sys.DeptController{}, "put:Update")
+	beego.Router("/api/dept/delete", &sys.DeptController{}, "delete:Delete")
+
 	//微信
 	//beego.Router("/api/wechat/connect", &wx.WxConnectController{})
 	beego.Router("/api/wechat/connect", &wx.WxConfigController{},"*:Get")

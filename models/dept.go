@@ -134,3 +134,18 @@ func (m *Dept) FindByMap(offset, limit int64, dataMap map[string]interface{},ord
 	return
 }
 
+
+func (m *Dept) FindAll() (res []Dept, err error) {
+	query := Db
+	err = query.Find(&res).Error
+	return
+}
+
+func (m *Dept) FindAllByParentId(parentId int) (res []Dept, err error)   {
+	query := Db
+
+	query = query.Where("parent_id = ?", parentId)
+	err = query.Find(&res).Error
+
+	return
+}
