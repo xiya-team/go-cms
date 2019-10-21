@@ -5,11 +5,9 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/context"
 	"github.com/astaxie/beego/logs"
-	"github.com/syyongx/php2go"
 	"go-cms/common"
 	"go-cms/pkg/e"
 	"go-cms/pkg/util"
-	"strings"
 	"time"
 )
 
@@ -33,9 +31,6 @@ func OutResponse(code int, data interface{}, msg string) Response {
 }
 
 var supportMethod = [6]string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"}
-
-//配置不需要登录的url
-var urlMapping = []string{"user::login","captcha::check"}
 
 // 支持伪造restful风格的http请求
 // _method = "DELETE" 即将http的POST请求改为DELETE请求
@@ -74,40 +69,27 @@ func RestfulHandler() func(ctx *context.Context) {
 		if requestMethod != "" && ctx.Input.IsPost() {
 			ctx.Request.Method = requestMethod
 		}
-		
-		current_url := ctx.Request.URL.RequestURI()
-		
-		controllerName, actionName := getControllerAndAction(current_url)
-		
-		if php2go.InArray(php2go.Strtolower(controllerName+"::"+actionName),urlMapping) != true {
-			token := ctx.Input.Header(beego.AppConfig.String("jwt::token_name"))
-			allow, message,code := util.CheckToken(token)
-			if(allow == false){
-				ctx.Output.Header("Content-Type", "application/json")
-				resBody, err := json.Marshal(OutResponse(code, nil, message))
-				ctx.Output.Body(resBody)
-				if err != nil {
-					panic(err)
-				}
-				
-				//_, ok := ctx.Input.Session("uid").(string)
-				//ok2 := strings.Contains(ctx.Request.RequestURI, "/login")
-				//if !ok && !ok2{
-				//	ctx.Redirect(302, "/login/index")
-				//}
-			}else{
-				common.UserId = code
+
+		token := ctx.Input.Header(beego.AppConfig.String("jwt::token_name"))
+		allow, message,code := util.CheckToken(token)
+		if(allow == false){
+			ctx.Output.Header("Content-Type", "application/json")
+			resBody, err := json.Marshal(OutResponse(code, nil, message))
+			ctx.Output.Body(resBody)
+			if err != nil {
+				panic(err)
 			}
+
+			//_, ok := ctx.Input.Session("uid").(string)
+			//ok2 := strings.Contains(ctx.Request.RequestURI, "/login")
+			//if !ok && !ok2{
+			//	ctx.Redirect(302, "/login/index")
+			//}
+		}else{
+			common.UserId = code
 		}
 		
 	}
 	return restfulHandler
 }
 
-func getControllerAndAction(url string)  (controllerName, actionName string){
-	newStr := strings.ReplaceAll(strings.TrimLeft(url,"/api"),"/","|")
-	
-	tmp :=strings.Split(newStr, "|")
-	
-	return tmp[0],tmp[1]
-}

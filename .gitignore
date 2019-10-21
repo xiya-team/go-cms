@@ -19,3 +19,4 @@ conf/app.conf
 project.log
 project.*
 vendor
+.vscode

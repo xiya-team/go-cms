@@ -2,6 +2,7 @@ package models
 
 import (
 	"errors"
+	"go-cms/pkg/vo"
 	"time"
 )
 
@@ -132,3 +133,80 @@ func (m *Menu) FindByMap(offset, limit int64, dataMap map[string]interface{},ord
 	return
 }
 
+func (m *Menu) FindAll() (res []Menu, err error) {
+	query := Db
+	err = query.Find(&res).Error
+	return
+}
+
+func (m *Menu) FindAllByParentId(parentId int) (res []Menu, err error)   {
+	query := Db
+	
+	query = query.Where("parent_id = ?", parentId)
+	err = query.Find(&res).Error
+
+	return
+}
+
+func (m *Menu) FindTopMenu() []*vo.TreeList {
+	var menu []Menu
+	query := Db
+	query = query.Where("parent_id=?",0)
+	_ = query.Find(&menu).Error
+
+	treeList := []*vo.TreeList{}
+	for _, v := range menu{
+		node := &vo.TreeList{
+			Id:v.Id,
+			MenuName:v.MenuName,
+			OrderNum:v.OrderNum,
+			MenuType:v.MenuType,
+			Visible:v.Visible,
+			CreateBy:v.CreateBy,
+			CreatedAt:v.CreatedAt,
+			UpdateBy:v.UpdateBy,
+			Icon:v.Icon,
+			UpdatedAt:v.UpdatedAt,
+			Perms:v.Perms,
+			Remark:v.Remark,
+			Url:v.Url,
+			ParentId:v.ParentId,
+		}
+		treeList = append(treeList, node)
+	}
+
+	return treeList
+}
+
+/**
+ * 生成树型数据
+ */
+func (m *Menu)FindMenus(pid int) []*vo.TreeList {
+	query := Db
+	var menu []Menu
+	query = query.Where("parent_id=?",pid)
+	_ = query.Find(&menu).Error
+	treeList := []*vo.TreeList{}
+	for _, v := range menu{
+		child := v.FindMenus(v.Id)
+		node := &vo.TreeList{
+			Id:v.Id,
+			MenuName:v.MenuName,
+			OrderNum:v.OrderNum,
+			MenuType:v.MenuType,
+			Visible:v.Visible,
+			CreateBy:v.CreateBy,
+			CreatedAt:v.CreatedAt,
+			UpdateBy:v.UpdateBy,
+			Icon:v.Icon,
+			UpdatedAt:v.UpdatedAt,
+			Perms:v.Perms,
+			Remark:v.Remark,
+			Url:v.Url,
+			ParentId:v.ParentId,
+		}
+		node.Children = child
+		treeList = append(treeList, node)
+	}
+	return treeList
+}

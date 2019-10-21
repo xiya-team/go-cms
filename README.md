@@ -154,13 +154,15 @@ location /api {
 }
 ```
 
-* 运行项目 
+>运行项目 
 
-``` 
-sudo  service nginx start
+[gowatch](https://gitee.com/silenceper/gowatch)
+```
+go get github.com/silenceper/gowatch
 
-bee run 
+gowatch //安装 gowatch 后才可以使用这个命令，不然只能使用
 
+go run main.go // go 命令
 ```
 
 ### linux/mac 环境 快速运行

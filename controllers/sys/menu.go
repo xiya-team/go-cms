@@ -1,12 +1,13 @@
 package sys
 
 import (
+	"encoding/json"
 	"github.com/astaxie/beego/validation"
 	"github.com/syyongx/php2go"
 	"go-cms/controllers"
-	"encoding/json"
 	"go-cms/models"
-    "go-cms/pkg/e"
+	"go-cms/pkg/e"
+	"go-cms/pkg/vo"
 	"log"
 )
 
@@ -173,3 +174,70 @@ func (c *MenuController) BatchDelete() {
 	c.JsonResult(e.SUCCESS, "删除成功")
 }
 
+func (c *MenuController) Menus()  {
+	model := models.NewMenu()
+	data := c.Ctx.Input.RequestBody
+	//json数据封装到user对象中
+	
+	err := json.Unmarshal(data, model)
+	
+	if err != nil {
+		c.JsonResult(e.ERROR, err.Error())
+	}
+	
+	
+	if php2go.Empty(model.ParentId){
+		menuData,_ := model.FindAll()
+		c.JsonResult(e.SUCCESS, "删除成功",constructMenuTrees(menuData,0))
+	}else {
+		menuData,_ := model.FindAllByParentId(model.ParentId)
+		c.JsonResult(e.SUCCESS, "删除成功",constructMenuTrees(menuData,0))
+	}
+
+}
+
+func (c *MenuController) FindMenus()  {
+	model := models.NewMenu()
+
+	data := c.Ctx.Input.RequestBody
+
+	err := json.Unmarshal(data, model)
+
+	if err != nil {
+		c.JsonResult(e.ERROR, err.Error())
+	}
+
+	var menus []*vo.TreeList
+	if php2go.Empty(model.ParentId) {
+		menus = model.FindTopMenu()
+	}else {
+		menus = model.FindMenus(model.ParentId)
+	}
+
+	if err != nil{
+		c.JsonResult(e.ERROR, err.Error())
+	}
+	c.JsonResult(e.SUCCESS, "获取成功",menus)
+}
+
+func constructMenuTrees(menus []models.Menu, parentId int) []vo.MenuItem {
+
+	branch := make([]vo.MenuItem, 0)
+	
+	for  _,menu := range menus {
+		if menu.ParentId == parentId{
+			childList := constructMenuTrees(menus, menu.Id)
+
+			child := vo.MenuItem{
+				MenuName:     menu.MenuName,
+				Id:           menu.Id,
+				Url:          menu.Url,
+				Icon:         menu.Icon,
+				ChildrenList: childList,
+			}
+			branch = append(branch, child)
+		}
+	}
+	
+	return branch
+}
