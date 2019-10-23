@@ -227,10 +227,20 @@ func constructMenuTrees(menus []models.Menu, parentId int) []vo.MenuItem {
 			childList := constructMenuTrees(menus, menu.Id)
 
 			child := vo.MenuItem{
-				MenuName:     menu.MenuName,
-				Id:           menu.Id,
-				Url:          menu.Url,
-				Icon:         menu.Icon,
+				Id:menu.Id,
+				MenuName:menu.MenuName,
+				OrderNum:menu.OrderNum,
+				MenuType:menu.MenuType,
+				Visible:menu.Visible,
+				CreateBy:menu.CreateBy,
+				CreatedAt:menu.CreatedAt,
+				UpdateBy:menu.UpdateBy,
+				Icon:menu.Icon,
+				UpdatedAt:menu.UpdatedAt,
+				Perms:menu.Perms,
+				Remark:menu.Remark,
+				Url:menu.Url,
+				ParentId:menu.ParentId,
 				ChildrenList: childList,
 			}
 			branch = append(branch, child)
