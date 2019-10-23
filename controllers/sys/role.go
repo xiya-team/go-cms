@@ -1,6 +1,7 @@
 package sys
 
 import (
+	"github.com/astaxie/beego/logs"
 	"github.com/astaxie/beego/validation"
 	"github.com/syyongx/php2go"
 	"go-cms/controllers"
@@ -8,6 +9,7 @@ import (
 	"go-cms/models"
     "go-cms/pkg/e"
 	"log"
+	"strings"
 )
 
 type RoleController struct {
@@ -48,8 +50,21 @@ func (c *RoleController) Index() {
 		if !php2go.Empty(model.Status) {
 			dataMap["status"] = model.Status
 		}
-		
-		var orderBy string = "created_at DESC"
+
+		if !php2go.Empty(model.Page) {
+			model.Page = 1
+		}
+
+		if !php2go.Empty(model.PageSize) {
+			model.PageSize = 10
+		}
+
+		var orderBy string
+		if !php2go.Empty(model.OrderColumnName) && !php2go.Empty(model.OrderType){
+			orderBy = strings.Join([]string{model.OrderColumnName,model.OrderType}," ")
+		}else {
+			orderBy = "created_at DESC"
+		}
 		
 		result, count,err := models.NewRole().FindByMap((model.Page-1)*model.PageSize, model.PageSize, dataMap,orderBy)
 		if err != nil{
@@ -88,6 +103,7 @@ func (c *RoleController) Create() {
 
 		//3.插入数据
 		if _, err := model.Create(); err != nil {
+			logs.Debug(err.Error())
 			c.JsonResult(e.ERROR, "创建失败")
 		}
 		c.JsonResult(e.SUCCESS, "添加成功")
