@@ -11,12 +11,12 @@ type Role struct {
 	RoleName  string    `json:"role_name" form:"role_name" gorm:"default:''"`
 	RoleKey   string    `json:"role_key"  form:"role_key"  gorm:"default:''"`
 	RoleSort  int       `json:"role_sort" form:"role_sort" gorm:"default:''"`
-	DataScope string    `json:"data_scope"form:"data_scope"gorm:"default:'1'"`
-	Status    string    `json:"status"    form:"status"    gorm:"default:''"`
-	DelFlag   string    `json:"del_flag"  form:"del_flag"  gorm:"default:'0'"`
-	CreateBy  string    `json:"create_by" form:"create_by" gorm:"default:''"`
+	DataScope int    	`json:"data_scope"form:"data_scope"gorm:"default:'1'"`
+	Status    int    	`json:"status"    form:"status"    gorm:"default:''"`
+	DelFlag   int    	`json:"del_flag"  form:"del_flag"  gorm:"default:'0'"`
+	CreateBy  int    	`json:"create_by" form:"create_by" gorm:"default:''"`
 	CreatedAt time.Time `json:"created_at"form:"created_at"gorm:"default:''"`
-	UpdateBy  string    `json:"update_by" form:"update_by" gorm:"default:''"`
+	UpdateBy  int    	`json:"update_by" form:"update_by" gorm:"default:''"`
 	UpdatedAt time.Time `json:"updated_at"form:"updated_at"gorm:"default:''"`
 	Remark    string    `json:"remark"    form:"remark"    gorm:"default:''"`
 	
