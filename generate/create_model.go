@@ -26,9 +26,9 @@ func NewConfig() (config *Config) {
 func (m *Config) Pagination(offset, limit int, key string) (res []Config, count int) {
 	query := Db
 	if key != "" {
-		query = query.Where("name like ?", "%"+key+"%")
+		query = query.Select("*").Where("name like ?", "%"+key+"%")
 	}
-	query.Offset(offset).Limit(limit).Order("id desc").Find(&res)
+	query.Select("*").Offset(offset).Limit(limit).Order("id desc").Find(&res)
 	query.Model(Config{}).Count(&count)
 	return
 }
@@ -95,7 +95,7 @@ func (m *Config) DelBatch(ids []int) (err error) {
 }
 
 func (m *Config) FindById(id int) (config Config, err error) {
-	err = Db.Where("id=?", id).First(&config).Error
+	err = Db.Select("*").Where("id=?", id).First(&config).Error
 	return
 }
 
@@ -120,7 +120,7 @@ func (m *Config) FindByMap(offset, limit int64, dataMap map[string]interface{},o
 	}
 
 	// 获取取指page，指定pagesize的记录
-	err = query.Offset(offset).Limit(limit).Find(&res).Error
+	err = query.Select("*").Offset(offset).Limit(limit).Find(&res).Error
 	if err == nil{
 		err = query.Model(&m).Count(&total).Error
 	}
