@@ -14,12 +14,12 @@ import (
 var Db *gorm.DB
 
 type Model struct {
-	StartTime   time.Time   `json:"-" form:"start_time"   		gorm:"-"`   // 忽略这个字段
-	EndTime     time.Time   `json:"-" form:"end_time"     		gorm:"-"`   // 忽略这个字段
-	Page        int64       `json:"-" form:"page"         		gorm:"-"`   // 忽略这个字段
-	PageSize    int64       `json:"-" form:"page_size"    		gorm:"-"`   // 忽略这个字段
-	OrderColumnName  string `json:"-" form:"order_column_name"  gorm:"-"`   // 忽略这个字段
-	OrderType     string    `json:"-" form:"order_type"         gorm:"-"`   // 忽略这个字段
+	StartTime   time.Time   `json:"-" form:"start_time" gorm:"-"`   // 忽略这个字段
+	EndTime     time.Time   `json:"-" form:"end_time" gorm:"-"`   // 忽略这个字段
+	Page        int64       `json:"-" form:"page" gorm:"-"`   // 忽略这个字段
+	PageSize    int64       `json:"-" form:"page_size" gorm:"-"`   // 忽略这个字段
+	OrderColumnName  string `json:"-" form:"order_column_name" gorm:"-"`   // 忽略这个字段
+	OrderType     string    `json:"-" form:"order_type" gorm:"-"`   // 忽略这个字段
 }
 
 const (
