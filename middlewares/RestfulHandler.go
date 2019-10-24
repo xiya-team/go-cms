@@ -76,7 +76,7 @@ func RestfulHandler() func(ctx *context.Context) {
 		current_url := ctx.Request.URL.RequestURI()
 		controllerName, actionName := getControllerAndAction(current_url)
 		is_pass := php2go.InArray(php2go.Strtolower(controllerName+"::"+actionName),urlMapping)
-		if is_pass == true {
+		if is_pass == false {
 			token := ctx.Input.Header(beego.AppConfig.String("jwt::token_name"))
 			allow, message,code := util.CheckToken(token)
 			if(allow == false){
@@ -105,7 +105,7 @@ func getControllerAndAction(url string)  (controllerName, actionName string){
 
 	tmp :=strings.Split(newStr, "|")
 	var tow = ""
-	if len(tmp) >2 {
+	if len(tmp) >= 2 {
 		tow = tmp[1]
 	}
 	return tmp[0],tow
