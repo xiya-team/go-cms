@@ -34,7 +34,7 @@ func (m *DictData) Pagination(offset, limit int, key string) (res []DictData, co
 	if key != "" {
 		query = query.Where("name like ?", "%"+key+"%")
 	}
-	query.Offset(offset).Limit(limit).Order("id desc").Find(&res)
+	query.Select("*").Offset(offset).Limit(limit).Order("id desc").Find(&res)
 	query.Model(DictData{}).Count(&count)
 	return
 }
@@ -131,7 +131,7 @@ func (m *DictData) FindByMap(offset, limit int64, dataMap map[string]interface{}
 	}
 
 	// 获取取指page，指定pagesize的记录
-	err = query.Offset(offset).Limit(limit).Find(&res).Error
+	err = query.Select("*").Offset(offset).Limit(limit).Find(&res).Error
 	if err == nil{
 		err = query.Model(&m).Count(&total).Error
 	}

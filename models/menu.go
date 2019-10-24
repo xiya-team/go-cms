@@ -34,7 +34,7 @@ func (m *Menu) Pagination(offset, limit int, key string) (res []Menu, count int)
 	if key != "" {
 		query = query.Where("name like ?", "%"+key+"%")
 	}
-	query.Offset(offset).Limit(limit).Order("id desc").Find(&res)
+	query.Select("*").Offset(offset).Limit(limit).Order("id desc").Find(&res)
 	query.Model(Menu{}).Count(&count)
 	return
 }
@@ -101,7 +101,7 @@ func (m *Menu) DelBatch(ids []int) (err error) {
 }
 
 func (m *Menu) FindById(id int) (menu Menu, err error) {
-	err = Db.Where("id=?", id).First(&menu).Error
+	err = Db.Select("*").Where("id=?", id).First(&menu).Error
 	return
 }
 

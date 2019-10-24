@@ -58,11 +58,11 @@ func (c *DictTypeController) Index() {
 			dataMap["status"] = model.Status
 		}
 
-		if !php2go.Empty(model.Page) {
+		if php2go.Empty(model.Page) {
 			model.Page = 1
 		}
 
-		if !php2go.Empty(model.PageSize) {
+		if php2go.Empty(model.PageSize) {
 			model.PageSize = 10
 		}
 

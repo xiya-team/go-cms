@@ -52,7 +52,15 @@ func (c *MenuController) Index() {
 		if !php2go.Empty(model.EndTime) {
 			dataMap["end_time"] = model.EndTime
 		}
-		
+
+		if php2go.Empty(model.Page) {
+			model.Page = 1
+		}
+
+		if php2go.Empty(model.PageSize) {
+			model.PageSize = 10
+		}
+
 		var orderBy string = "created_at DESC"
 		
 		result, count,err := models.NewMenu().FindByMap((model.Page-1)*model.PageSize, model.PageSize, dataMap,orderBy)
