@@ -8,10 +8,13 @@ import (
 	"go-cms/pkg/d"
 	"go-cms/pkg/e"
 	"strings"
+	"time"
 )
 
 type BaseController struct {
 	beego.Controller
+	StartTime        int64
+	HandlerSeconds   float64
 }
 
 //配置不需要登录的url
@@ -26,7 +29,10 @@ func (c *BaseController) Prepare() {
 	if(is_pass){
 		beego.InsertFilter("*", beego.BeforeRouter, middlewares.RestfulHandler())
 	}
-	
+
+	// 启动时间
+	c.StartTime = time.Now().UnixNano()
+
 	//if user := c.GetSession("loginUser"); user != nil {
 	//	UserId = user.(*models.User).Id
 	//}
@@ -39,6 +45,11 @@ func (c *BaseController) Prepare() {
 		if controller == "UserController" && action == "Login" && c.GetSession("loginUser") != nil {
 			c.History("已登录", "/admin")
 		}*/
+}
+
+func (c *BaseController) Finish() {
+	handlerSecond := float64(time.Now().UnixNano()-c.StartTime) / float64(1e9)
+	c.HandlerSeconds = handlerSecond
 }
 
 func (c *BaseController) History(msg string, url string) {

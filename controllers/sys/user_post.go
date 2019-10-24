@@ -47,10 +47,18 @@ func (c *UserPostController) Index() {
 
 		if php2go.Empty(model.Page) {
 			model.Page = 1
+		}else{
+			if model.Page <= 0 {
+				model.Page = 1
+			}
 		}
 
 		if php2go.Empty(model.PageSize) {
 			model.PageSize = 10
+		}else {
+			if model.Page <= 0 {
+				model.Page = 10
+			}
 		}
 
 		var orderBy string

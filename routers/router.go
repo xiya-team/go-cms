@@ -2,6 +2,7 @@ package routers
 
 import (
 	"github.com/astaxie/beego"
+	"go-cms/controllers/commons"
 	"go-cms/controllers/sys"
 	"go-cms/controllers/wx"
 )
@@ -71,6 +72,9 @@ func init() {
 	beego.Router("/api/role/create", &sys.RoleController{}, "post:Create")
 	beego.Router("/api/role/update", &sys.RoleController{}, "put:Update")
 	beego.Router("/api/role/delete", &sys.RoleController{}, "delete:Delete")
+
+	//上传图片
+	beego.Router("/api/upload/image", &commons.UploadController{}, "post:Image")
 
 	//微信
 	//beego.Router("/api/wechat/connect", &wx.WxConnectController{})
