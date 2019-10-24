@@ -18,7 +18,7 @@ type User struct {
 	Phonenumber string      `json:"phonenumber"form:"phonenumber"gorm:"default:''"`
 	Sex         int         `json:"sex"        form:"sex"        gorm:"default:'1'"`
 	Avatar      string      `json:"avatar"     form:"avatar"     gorm:"default:''"`
-	Password    string      `json:"-"          form:"password"   gorm:"default:''" valid:"Required;MaxSize(33);MinSize(6)"`
+	Password    string      `json:"password"   form:"password"   gorm:"default:''" valid:"Required;MaxSize(33);MinSize(6)"`
 	Salt        string      `json:"salt"       form:"salt"       gorm:"default:''"`
 	Status      int         `json:"status"     form:"status"     gorm:"default:'1'"`
 	DelFlag     int         `json:"del_flag"   form:"del_flag"   gorm:"default:'1'"`
