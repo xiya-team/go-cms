@@ -14,7 +14,7 @@ type Menu struct {
 	OrderNum  int       `json:"order_num" form:"order_num" gorm:"default:'0'"`
 	Url       string    `json:"url"       form:"url"       gorm:"default:'#'"`
 	MenuType  int       `json:"menu_type" form:"menu_type" gorm:"default:''"`
-	Visible   string    `json:"visible"   form:"visible"   gorm:"default:'0'"`
+	Visible   int       `json:"visible"   form:"visible"   gorm:"default:'0'"`
 	Perms     string    `json:"perms"     form:"perms"     gorm:"default:''"`
 	Icon      string    `json:"icon"      form:"icon"      gorm:"default:'#'"`
 	CreateBy  string    `json:"create_by" form:"create_by" gorm:"default:''"`
@@ -34,7 +34,7 @@ func (m *Menu) Pagination(offset, limit int, key string) (res []Menu, count int)
 	if key != "" {
 		query = query.Where("name like ?", "%"+key+"%")
 	}
-	query.Offset(offset).Limit(limit).Order("id desc").Find(&res)
+	query.Select("*").Offset(offset).Limit(limit).Order("id desc").Find(&res)
 	query.Model(Menu{}).Count(&count)
 	return
 }
@@ -101,7 +101,7 @@ func (m *Menu) DelBatch(ids []int) (err error) {
 }
 
 func (m *Menu) FindById(id int) (menu Menu, err error) {
-	err = Db.Where("id=?", id).First(&menu).Error
+	err = Db.Select("*").Where("id=?", id).First(&menu).Error
 	return
 }
 

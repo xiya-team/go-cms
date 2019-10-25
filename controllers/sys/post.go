@@ -8,6 +8,7 @@ import (
 	"go-cms/models"
     "go-cms/pkg/e"
 	"log"
+	"strings"
 )
 
 type PostController struct {
@@ -56,8 +57,29 @@ func (c *PostController) Index() {
 		if !php2go.Empty(model.Status) {
 			dataMap["status"] = model.Status
 		}
-		
-		var orderBy string = "created_at DESC"
+
+		if php2go.Empty(model.Page) {
+			model.Page = 1
+		}else{
+			if model.Page <= 0 {
+				model.Page = 1
+			}
+		}
+
+		if php2go.Empty(model.PageSize) {
+			model.PageSize = 10
+		}else {
+			if model.Page <= 0 {
+				model.Page = 10
+			}
+		}
+
+		var orderBy string
+		if !php2go.Empty(model.OrderColumnName) && !php2go.Empty(model.OrderType){
+			orderBy = strings.Join([]string{model.OrderColumnName,model.OrderType}," ")
+		}else {
+			orderBy = "created_at DESC"
+		}
 		
 		result, count,err := models.NewPost().FindByMap((model.Page-1)*model.PageSize, model.PageSize, dataMap,orderBy)
 		if err != nil{

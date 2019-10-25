@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/context"
 	"github.com/astaxie/beego/logs"
 	"go-cms/generate"
 	"go-cms/middlewares"
@@ -11,6 +12,8 @@ import (
 	"net/http"
 	"runtime"
 )
+
+var Ctx *context.Context
 
 func page_not_found(rw http.ResponseWriter, r *http.Request) {
 	t, _ := template.New("404.html").ParseFiles(beego.BConfig.WebConfig.ViewsPath + "/404.html")
@@ -22,6 +25,7 @@ func page_not_found(rw http.ResponseWriter, r *http.Request) {
 func init() {
 	// 中间件注册
 	middlewares.CorsHandler()
+	beego.InsertFilter("*", beego.BeforeRouter, middlewares.RestfulHandler())
 }
 
 func main() {

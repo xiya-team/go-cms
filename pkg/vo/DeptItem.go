@@ -2,20 +2,21 @@ package vo
 
 import "time"
 
-type TreeList struct {
+type DeptItem struct {
 	Id        int       `json:"id"        form:"id"        gorm:"default:''"`
-	MenuName  string    `json:"menu_name" form:"menu_name" gorm:"default:''"`
 	ParentId  int       `json:"parent_id" form:"parent_id" gorm:"default:'0'"`
+	Ancestors string    `json:"ancestors" form:"ancestors" gorm:"default:''"`
+	DeptName  string    `json:"dept_name" form:"dept_name" gorm:"default:''"`
 	OrderNum  int       `json:"order_num" form:"order_num" gorm:"default:'0'"`
-	Url       string    `json:"url"       form:"url"       gorm:"default:'#'"`
-	MenuType  int       `json:"menu_type" form:"menu_type" gorm:"default:''"`
-	Visible   int    `json:"visible"   form:"visible"   gorm:"default:'0'"`
-	Perms     string    `json:"perms"     form:"perms"     gorm:"default:''"`
-	Icon      string    `json:"icon"      form:"icon"      gorm:"default:'#'"`
+	Leader    string    `json:"leader"    form:"leader"    gorm:"default:''"`
+	Phone     string    `json:"phone"     form:"phone"     gorm:"default:''"`
+	Email     string    `json:"email"     form:"email"     gorm:"default:''"`
+	Status    string    `json:"status"    form:"status"    gorm:"default:'0'"`
+	DelFlag   string    `json:"del_flag"  form:"del_flag"  gorm:"default:'0'"`
 	CreateBy  string    `json:"create_by" form:"create_by" gorm:"default:''"`
 	CreatedAt time.Time `json:"created_at"form:"created_at"gorm:"default:''"`
 	UpdateBy  string    `json:"update_by" form:"update_by" gorm:"default:''"`
 	UpdatedAt time.Time `json:"updated_at"form:"updated_at"gorm:"default:''"`
 	Remark    string    `json:"remark"    form:"remark"    gorm:"default:''"`
-	Children []*TreeList`json:"children"`
+	ChildrenList []DeptItem `json:"children_list"`
 }

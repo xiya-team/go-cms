@@ -4,29 +4,21 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/validation"
 	"github.com/syyongx/php2go"
-	"go-cms/middlewares"
 	"go-cms/pkg/d"
 	"go-cms/pkg/e"
-	"strings"
+	"time"
 )
 
 type BaseController struct {
 	beego.Controller
+	StartTime        int64
+	HandlerSeconds   float64
 }
 
-//配置不需要登录的url
-var urlMapping = []string{"user::login","captcha::check","wechat::connect"}
-
 func (c *BaseController) Prepare() {
+	// 启动时间
+	c.StartTime = time.Now().UnixNano()
 
-	current_url := c.Ctx.Request.URL.RequestURI()
-	controllerName, actionName := getControllerAndAction(current_url)
-	is_pass := php2go.InArray(php2go.Strtolower(controllerName+"::"+actionName),urlMapping)
-
-	if(is_pass){
-		beego.InsertFilter("*", beego.BeforeRouter, middlewares.RestfulHandler())
-	}
-	
 	//if user := c.GetSession("loginUser"); user != nil {
 	//	UserId = user.(*models.User).Id
 	//}
@@ -39,6 +31,11 @@ func (c *BaseController) Prepare() {
 		if controller == "UserController" && action == "Login" && c.GetSession("loginUser") != nil {
 			c.History("已登录", "/admin")
 		}*/
+}
+
+func (c *BaseController) Finish() {
+	handlerSecond := float64(time.Now().UnixNano()-c.StartTime) / float64(1e9)
+	c.HandlerSeconds = handlerSecond
 }
 
 func (c *BaseController) History(msg string, url string) {
@@ -120,15 +117,4 @@ func (c *BaseController) ValidatorAuto(frontendData interface{}) {
 func (c *BaseController) RedirectTo(url string) {
 	c.Redirect(url, 302)
 	c.StopRun()
-}
-
-func getControllerAndAction(url string)  (controllerName, actionName string){
-	newStr := strings.ReplaceAll(strings.TrimLeft(url,"/api"),"/","|")
-
-	tmp :=strings.Split(newStr, "|")
-	var tow = ""
-	if len(tmp) >2 {
-		tow = tmp[1]
-	}
-	return tmp[0],tow
 }

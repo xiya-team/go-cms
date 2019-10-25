@@ -2,6 +2,7 @@ package routers
 
 import (
 	"github.com/astaxie/beego"
+	"go-cms/controllers/commons"
 	"go-cms/controllers/sys"
 	"go-cms/controllers/wx"
 )
@@ -58,6 +59,22 @@ func init() {
 	beego.Router("/api/dictData/create", &sys.DictDataController{}, "post:Create")
 	beego.Router("/api/dictData/update", &sys.DictDataController{}, "put:Update")
 	beego.Router("/api/dictData/delete", &sys.DictDataController{}, "delete:Delete")
+
+	//部门管理
+	beego.Router("/api/dept/findall", &sys.DeptController{}, "*:FindAll")
+	beego.Router("/api/dept/create", &sys.DeptController{}, "post:Create")
+	beego.Router("/api/dept/update", &sys.DeptController{}, "put:Update")
+	beego.Router("/api/dept/delete", &sys.DeptController{}, "delete:Delete")
+
+
+	//角色管理
+	beego.Router("/api/role/index", &sys.RoleController{}, "*:Index")
+	beego.Router("/api/role/create", &sys.RoleController{}, "post:Create")
+	beego.Router("/api/role/update", &sys.RoleController{}, "put:Update")
+	beego.Router("/api/role/delete", &sys.RoleController{}, "delete:Delete")
+
+	//上传图片
+	beego.Router("/api/upload/image", &commons.UploadController{}, "post:Image")
 
 	//微信
 	//beego.Router("/api/wechat/connect", &wx.WxConnectController{})

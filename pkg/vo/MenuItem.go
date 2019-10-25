@@ -9,7 +9,7 @@ type MenuItem struct {
 	OrderNum  int       `json:"order_num" form:"order_num" gorm:"default:'0'"`
 	Url       string    `json:"url"       form:"url"       gorm:"default:'#'"`
 	MenuType  int       `json:"menu_type" form:"menu_type" gorm:"default:''"`
-	Visible   string    `json:"visible"   form:"visible"   gorm:"default:'0'"`
+	Visible   int       `json:"visible"   form:"visible"   gorm:"default:'0'"`
 	Perms     string    `json:"perms"     form:"perms"     gorm:"default:''"`
 	Icon      string    `json:"icon"      form:"icon"      gorm:"default:'#'"`
 	CreateBy  string    `json:"create_by" form:"create_by" gorm:"default:''"`
