@@ -2,6 +2,7 @@ package models
 
 import (
 	"errors"
+	"github.com/jinzhu/gorm"
 	"time"
 )
 
@@ -137,3 +138,9 @@ func (m *Article) FindByMap(offset, limit int64, dataMap map[string]interface{},
 	return
 }
 
+/**
+ * 增加访问数
+ */
+func (db *Article) AllVisitCount(id int) error {
+	return Db.Model(&Article{}).Where("id = ?", id).UpdateColumn("visit", gorm.Expr("visit + 1")).Error
+}
