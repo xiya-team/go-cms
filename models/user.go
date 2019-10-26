@@ -3,7 +3,10 @@ package models
 import (
 	"errors"
 	"github.com/astaxie/beego/validation"
+	"github.com/syyongx/php2go"
 	"log"
+	"strconv"
+	"strings"
 	"time"
 )
 
@@ -22,6 +25,7 @@ type User struct {
 	Salt        string      `json:"salt"       form:"salt"       gorm:"default:''"`
 	Status      int         `json:"status"     form:"status"     gorm:"default:'1'"`
 	DelFlag     int         `json:"del_flag"   form:"del_flag"   gorm:"default:'1'"`
+	DeptId     int          `json:"dept_id"    form:"dept_id"     gorm:"default:''"`
 	LoginIp     string      `json:"login_ip"   form:"login_ip"   gorm:"default:''"`
 	LoginDate   time.Time   `json:"login_date" form:"login_date" gorm:"default:''"`
 	CreateBy    string      `json:"create_by"  form:"create_by"  gorm:"default:''"`
@@ -30,6 +34,8 @@ type User struct {
 	UpdatedAt   time.Time   `json:"updated_at" form:"updated_at" gorm:"default:''"`
 	DeletedAt   time.Time   `json:"deleted_at" form:"deleted_at" gorm:"default:''"`
 	Remark      string      `json:"remark"     form:"remark"     gorm:"default:''"`
+	UserPost    string      `json:"role_post"  form:"role_post"  gorm:"-"`   // 忽略这个字段
+	UserRole    string      `json:"role_role"  form:"role_role"  gorm:"-"`   // 忽略这个字段
 }
 
 func NewUser() (user *User) {
@@ -51,6 +57,38 @@ func (m *User) Create() (newAttr User, err error) {
 
 	err = Db.Create(m).Error
 
+	up := NewUserPost()
+	if !php2go.Empty(m.UserPost) {
+		err = tx.Model(&up).Where("user_id=?", m.Id).Delete(up).Error
+		if err == nil{
+			s := strings.Split(m.UserPost, ",")
+			for _, value := range s {
+				post_id, _ := strconv.Atoi(value)
+				user_post := UserPost{
+					UserId:m.Id,
+					PostId:post_id,
+				}
+				err = tx.Model(&up).Create(user_post).Error
+			}
+		}
+	}
+
+	ur := NewUserRole()
+	if !php2go.Empty(m.UserRole) {
+		err = tx.Model(&ur).Where("role_id=?", m.Id).Delete(ur).Error
+		if err == nil{
+			s := strings.Split(m.UserRole, ",")
+			for _, value := range s {
+				role_id, _ := strconv.Atoi(value)
+				user_role := UserRole{
+					UserId:m.Id,
+					RoleId:role_id,
+				}
+				err = tx.Model(&ur).Create(user_role).Error
+			}
+		}
+	}
+
 	if err != nil {
 		tx.Rollback()
 	} else {
@@ -64,6 +102,39 @@ func (m *User) Create() (newAttr User, err error) {
 func (m *User) Update() (newAttr User, err error) {
 	tx := Db.Begin()
 	if m.Id > 0 {
+
+		up := NewUserPost()
+		if !php2go.Empty(m.UserPost) {
+			err = tx.Model(&up).Where("user_id=?", m.Id).Delete(up).Error
+			if err == nil{
+				s := strings.Split(m.UserPost, ",")
+				for _, value := range s {
+					post_id, _ := strconv.Atoi(value)
+					user_post := UserPost{
+						UserId:m.Id,
+						PostId:post_id,
+					}
+					err = tx.Model(&up).Create(user_post).Error
+				}
+			}
+		}
+
+		ur := NewUserRole()
+		if !php2go.Empty(m.UserRole) {
+			err = tx.Model(&ur).Where("user_id=?", m.Id).Delete(ur).Error
+			if err == nil{
+				s := strings.Split(m.UserRole, ",")
+				for _, value := range s {
+					role_id, _ := strconv.Atoi(value)
+					user_role := UserRole{
+						UserId:m.Id,
+						RoleId:role_id,
+					}
+					err = tx.Model(&ur).Create(user_role).Error
+				}
+			}
+		}
+
 		err = tx.Model(&m).Where("id=?", m.Id).Updates(m).Error
 	} else {
 		err = errors.New("id参数错误")
@@ -109,6 +180,29 @@ func (m *User) DelBatch(ids []int) (err error) {
 
 func (m *User) FindById(id int) (user User, err error) {
 	err = Db.Where("id=?", id).First(&user).Error
+
+	up := NewUserPost()
+	user_posts := []UserPost{}
+	err = Db.Model(&up).Where("user_id=?", m.Id).Find(&user_posts).Error
+	if err == nil {
+		var user_post []string
+		for _, value := range user_posts {
+			user_post = append(user_post,strconv.Itoa(value.PostId))
+		}
+		user.UserPost = strings.Join(user_post,",")
+	}
+
+	ur := NewUserRole()
+	user_roles := []UserRole{}
+	err = Db.Model(&ur).Where("user_id=?", m.Id).Find(&user_roles).Error
+	if err == nil {
+		var user_role []string
+		for _, value := range user_roles {
+			user_role=append(user_role,strconv.Itoa(value.RoleId))
+		}
+		user.UserRole = strings.Join(user_role,",")
+	}
+
 	return
 }
 
