@@ -8,7 +8,6 @@ import (
 	"go-cms/generate"
 	"go-cms/middlewares"
 	_ "go-cms/routers"
-	"html/template"
 	"net/http"
 	"runtime"
 )
@@ -16,10 +15,11 @@ import (
 var Ctx *context.Context
 
 func page_not_found(rw http.ResponseWriter, r *http.Request) {
-	t, _ := template.New("404.html").ParseFiles(beego.BConfig.WebConfig.ViewsPath + "/404.html")
-	data := make(map[string]interface{})
-	data["content"] = "page not found"
-	t.Execute(rw, data)
+	//ctx.Redirect(302, "/api/common/page_not_found")
+	//t, _ := template.New("404.html").ParseFiles(beego.BConfig.WebConfig.ViewsPath + "/404.html")
+	//data := make(map[string]interface{})
+	//data["content"] = "page not found"
+	//t.Execute(rw, data)
 }
 
 func init() {

@@ -34,7 +34,7 @@ func OutResponse(code int, data interface{}, msg string) Response {
 
 var supportMethod = [6]string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"}
 //配置不需要登录的url
-var urlMapping = []string{"user::login","captcha::check","wechat::connect"}
+var urlMapping = []string{"common:page_not_found","user:login","captcha:check","wechat:connect"}
 // 支持伪造restful风格的http请求
 // _method = "DELETE" 即将http的POST请求改为DELETE请求
 func RestfulHandler() func(ctx *context.Context) {
@@ -75,7 +75,7 @@ func RestfulHandler() func(ctx *context.Context) {
 
 		current_url := ctx.Request.URL.RequestURI()
 		controllerName, actionName := getControllerAndAction(current_url)
-		is_pass := php2go.InArray(php2go.Strtolower(controllerName+"::"+actionName),urlMapping)
+		is_pass := php2go.InArray(php2go.Strtolower(controllerName+":"+actionName),urlMapping)
 		if is_pass == false {
 			token := ctx.Input.Header(beego.AppConfig.String("jwt::token_name"))
 			allow, message,code := util.CheckToken(token)

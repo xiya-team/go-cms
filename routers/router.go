@@ -16,6 +16,7 @@ func init() {
 	//	),
 	//)
 	//beego.AddNamespace(ns)
+	beego.Router("/api/common/page_not_found", &commons.CommonController{}, "*:PageNotFound")
 
 	//用户相关
 	beego.Router("/api/user/login", &sys.UserController{}, "post:Login")

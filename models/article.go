@@ -2,6 +2,7 @@ package models
 
 import (
 	"errors"
+	"github.com/jinzhu/gorm"
 	"time"
 )
 
@@ -109,6 +110,11 @@ func (m *Article) FindById(id int) (article Article, err error) {
 	return
 }
 
+func (db *Article) TakeById(id int) (res Article, err error) {
+	err = Db.Where("id = ?", id).Take(&res).Error
+	return
+}
+
 func (m *Article) FindByMap(offset, limit int64, dataMap map[string]interface{},orderBy string) (res []Article, total int64, err error) {
 	query := Db
 	if status,isExist:=dataMap["status"].(int);isExist{
@@ -118,10 +124,10 @@ func (m *Article) FindByMap(offset, limit int64, dataMap map[string]interface{},
 		query = query.Where("name LIKE ?", "%"+name+"%")
 	}
 
-	if startTime,ok:=dataMap["start_time"].(int64);ok{
+	if startTime,ok:=dataMap["start_time"].(string);ok{
 		query = query.Where("created_at > ?", startTime)
 	}
-	if endTime,ok:=dataMap["end_time"].(int64);ok{
+	if endTime,ok:=dataMap["end_time"].(string);ok{
 		query = query.Where("created_at <= ?", endTime)
 	}
 
@@ -137,3 +143,9 @@ func (m *Article) FindByMap(offset, limit int64, dataMap map[string]interface{},
 	return
 }
 
+/**
+ * 增加访问数
+ */
+func (db *Article) AllVisitCount(id int) error {
+	return Db.Model(&Article{}).Where("id = ?", id).UpdateColumn("visit", gorm.Expr("visit + 1")).Error
+}

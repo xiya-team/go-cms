@@ -114,10 +114,10 @@ func (m *DictType) FindByMap(offset, limit int64, dataMap map[string]interface{}
 		query = query.Where("dict_type LIKE ?", "%"+dictType+"%")
 	}
 
-	if startTime,ok:=dataMap["start_time"].(int64);ok{
+	if startTime,ok:=dataMap["start_time"].(string);ok{
 		query = query.Where("created_at > ?", startTime)
 	}
-	if endTime,ok:=dataMap["end_time"].(int64);ok{
+	if endTime,ok:=dataMap["end_time"].(string);ok{
 		query = query.Where("created_at <= ?", endTime)
 	}
 

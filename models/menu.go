@@ -114,10 +114,10 @@ func (m *Menu) FindByMap(offset, limit int64, dataMap map[string]interface{},ord
 		query = query.Where("menu_name LIKE ?", "%"+menuName+"%")
 	}
 
-	if startTime,ok:=dataMap["start_time"].(int64);ok{
+	if startTime,ok:=dataMap["start_time"].(string);ok{
 		query = query.Where("created_at > ?", startTime)
 	}
-	if endTime,ok:=dataMap["end_time"].(int64);ok{
+	if endTime,ok:=dataMap["end_time"].(string);ok{
 		query = query.Where("created_at <= ?", endTime)
 	}
 

@@ -124,10 +124,10 @@ func (m *User) FindByMap(offset, limit int64, dataMap map[string]interface{},ord
 	if userName,ok:=dataMap["user_name"].(string);ok{
 		query = query.Where("user_name LIKE ?", "%"+userName+"%")
 	}
-	if startTime,ok:=dataMap["start_time"].(int64);ok{
+	if startTime,ok:=dataMap["start_time"].(string);ok{
 		query = query.Where("created_at > ?", startTime)
 	}
-	if endTime,ok:=dataMap["end_time"].(int64);ok{
+	if endTime,ok:=dataMap["end_time"].(string);ok{
 		query = query.Where("created_at <= ?", endTime)
 	}
 	if phone,ok:=dataMap["phone"].(string);ok{
