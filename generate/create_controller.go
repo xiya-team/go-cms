@@ -137,16 +137,18 @@ func (c *CategoryController) Create() {
 更新数据
 */
 func (c *CategoryController) Update() {
+    model := models.NewCategory()
+	data := c.Ctx.Input.RequestBody
+	//json数据封装到对象中
+	
+	err := json.Unmarshal(data, model)
+	
+	if err != nil {
+		c.JsonResult(e.ERROR, err.Error())
+	}
+
 	if c.Ctx.Input.IsPut() {
-		model := models.NewCategory()
-		data := c.Ctx.Input.RequestBody
-		//json数据封装到对象中
 		
-		err := json.Unmarshal(data, model)
-		
-		if err != nil {
-			c.JsonResult(e.ERROR, err.Error())
-		}
 		
 		post, err := model.FindById(model.Id)
 		if err != nil||php2go.Empty(post) {
@@ -165,6 +167,15 @@ func (c *CategoryController) Update() {
 			c.JsonResult(e.ERROR, "修改失败")
 		}
 		c.JsonResult(e.SUCCESS, "修改成功")
+	}
+
+	//get
+	if c.Ctx.Input.IsPost() {
+		res,err := model.FindById(model.Id)
+		if err != nil{
+			c.JsonResult(e.ERROR, "获取失败")
+		}
+		c.JsonResult(e.SUCCESS, "获取成功",res)
 	}
 }
 

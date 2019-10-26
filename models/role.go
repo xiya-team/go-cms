@@ -22,7 +22,7 @@ type Role struct {
 	UpdateBy  int    	`json:"update_by" form:"update_by" gorm:"default:''"`
 	UpdatedAt time.Time `json:"updated_at"form:"updated_at"gorm:"default:''"`
 	Remark    string    `json:"remark"    form:"remark"    gorm:"default:''"`
-	RoleMenu  string    `json:"role_menu,omitempty" form:"role_menu" gorm:"-" valid:"Required"`   // 忽略这个字段
+	RoleMenu  string    `json:"role_menu" form:"role_menu" gorm:"-" valid:"Required"`   // 忽略这个字段
 }
 
 
@@ -136,6 +136,18 @@ func (m *Role) DelBatch(ids []int) (err error) {
 
 func (m *Role) FindById(id int) (role Role, err error) {
 	err = Db.Where("id=?", id).First(&role).Error
+
+	rm := NewRoleMenu()
+	role_menus := []RoleMenu{}
+	err = Db.Model(&rm).Where("role_id=?", m.Id).Find(&role_menus).Error
+	if err == nil {
+		var role_menu []string
+		for _, value := range role_menus {
+			role_menu=append(role_menu,strconv.Itoa(value.MenuId))
+		}
+		role.RoleMenu = strings.Join(role_menu,",")
+	}
+
 	return
 }
 

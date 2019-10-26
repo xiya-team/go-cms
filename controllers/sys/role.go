@@ -122,17 +122,15 @@ func (c *RoleController) Create() {
 更新数据
 */
 func (c *RoleController) Update() {
+	model := models.NewRole()
+	data := c.Ctx.Input.RequestBody
+	//json数据封装到对象中
+	err := json.Unmarshal(data, model)
+	if err != nil {
+		c.JsonResult(e.ERROR, err.Error())
+	}
+	//save
 	if c.Ctx.Input.IsPut() {
-		model := models.NewRole()
-		data := c.Ctx.Input.RequestBody
-		//json数据封装到对象中
-		
-		err := json.Unmarshal(data, model)
-		
-		if err != nil {
-			c.JsonResult(e.ERROR, err.Error())
-		}
-		
 		post, err := models.NewRole().FindById(model.Id)
 		if err != nil||php2go.Empty(post) {
 			c.JsonResult(e.ERROR, "没找到数据")
@@ -152,6 +150,14 @@ func (c *RoleController) Update() {
 			c.JsonResult(e.ERROR, "修改失败")
 		}
 		c.JsonResult(e.SUCCESS, "修改成功")
+	}
+	//get
+	if c.Ctx.Input.IsPost() {
+		role,err := model.FindById(model.Id)
+		if err != nil{
+			c.JsonResult(e.ERROR, "获取失败")
+		}
+		c.JsonResult(e.SUCCESS, "获取成功",role)
 	}
 }
 
