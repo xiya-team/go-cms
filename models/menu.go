@@ -2,6 +2,7 @@ package models
 
 import (
 	"errors"
+	"github.com/syyongx/php2go"
 	"go-cms/pkg/vo"
 	"time"
 )
@@ -74,7 +75,13 @@ func (m *Menu) Update() (newAttr Menu, err error) {
 func (m *Menu) Delete() (err error) {
     tx := Db.Begin()
 	if m.Id > 0 {
-		err = tx.Model(&m).Delete(m).Error
+		model := NewMenu()
+		menu,_:=model.FindByParentId(m.Id)
+		if php2go.Empty(menu) {
+			err = tx.Model(&m).Delete(m).Error
+		} else {
+			err = errors.New("菜单下有子菜单不能删除！")
+		}
 	} else {
 		err = errors.New("id参数错误")
 	}
@@ -83,6 +90,11 @@ func (m *Menu) Delete() (err error) {
 	}else {
 		tx.Commit()
 	}
+	return
+}
+
+func (m *Menu) FindByParentId(parent_id int) (menu Menu, err error) {
+	err = Db.Select("*").Where("parent_id=?", parent_id).First(&menu).Error
 	return
 }
 
