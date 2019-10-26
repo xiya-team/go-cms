@@ -5,7 +5,6 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
-	"go-cms/common"
 	"log"
 	"sync"
 	"time"
@@ -14,12 +13,12 @@ import (
 var Db *gorm.DB
 
 type Model struct {
-	StartTime   time.Time   `json:"-" gorm:"-" form:"start_time"`   // 忽略这个字段
-	EndTime     time.Time   `json:"-" gorm:"-" form:"end_time"`   // 忽略这个字段
-	Page        int64       `json:"-" gorm:"-" form:"page"`   // 忽略这个字段
-	PageSize    int64       `json:"-" gorm:"-" form:"page_size"`   // 忽略这个字段
-	OrderColumnName  string `json:"-" gorm:"-" form:"order_column_name"`   // 忽略这个字段
-	OrderType     string    `json:"-" gorm:"-" form:"order_type"`   // 忽略这个字段
+	StartTime   string      `json:"start_time,omitempty" gorm:"-" form:"start_time"`   // 忽略这个字段
+	EndTime     string      `json:"end_time,omitempty" gorm:"-" form:"end_time"`   // 忽略这个字段
+	Page        int64       `json:"page,omitempty" gorm:"-" form:"page"`   // 忽略这个字段
+	PageSize    int64       `json:"page_size,omitempty" gorm:"-" form:"page_size"`   // 忽略这个字段
+	OrderColumnName  string `json:"order_column_name,omitempty" gorm:"-" form:"order_column_name"`   // 忽略这个字段
+	OrderType     string    `json:"order_type,omitempty" gorm:"-" form:"order_type"`   // 忽略这个字段
 }
 
 func NewModel() (model *Model) {
@@ -115,14 +114,14 @@ func init() {
 		Db.DB().SetMaxIdleConns(10)
 		Db.DB().SetMaxOpenConns(100)
 		
-		Db.Callback().Create().Replace("gorm:update_time_stamp",updateTimeStampForCreateCallback)
-		Db.Callback().Update().Replace("gorm:update_time_stamp",updateTimeStampForUpdateCallback)
-		Db.Callback().Delete().Replace("gorm:update_time_stamp",updateTimeStampForDeleteCallback)
+		Db.Callback().Create().Replace("gorm:created_at_stamp",updateTimeStampForCreateCallback)
+		Db.Callback().Update().Replace("gorm:updated_at_stamp",updateTimeStampForUpdateCallback)
+		Db.Callback().Delete().Replace("gorm:updated_at_stamp",updateTimeStampForDeleteCallback)
 		
-		Db.Callback().Create().Register("create_admin_log", CreateAdminLogCallback)
-		Db.Callback().Update().Register("update_admin_log", UpdateAdminLogCallback)
+		//Db.Callback().Create().Register("create_admin_log", CreateAdminLogCallback)
+		//Db.Callback().Update().Register("update_admin_log", UpdateAdminLogCallback)
 		//Db.Callback().Update().Remove("gorm:xxx")
-		Db.Callback().Delete().Register("delete_admin_log", DeleteAdminLogCallback)
+		//Db.Callback().Delete().Register("delete_admin_log", DeleteAdminLogCallback)
 	})
 	
 }
@@ -142,26 +141,29 @@ func GetMysqlMsg() (mysqlMsg map[string]string) {
 }
 
 func CreateAdminLogCallback(scope *gorm.Scope) {
-	if scope.TableName() != "cms_admin_log" {
-		//adminLogModel := NewAdminLog()
-		//adminLogModel.CreatedAt = php2go.Time()
-		//adminLogModel.UpdatedAt = php2go.Time()
-		////adminLogModel.Ip = common.Ctx.Input.IP()
-		//adminLogModel.Ip = "127.0.0.1"
-		//adminLogModel.UserId = common.UserId
-		//adminLogModel.Route = ""
-		//adminLogModel.Method = ""
-		//adminLogModel.Description = fmt.Sprintf("%s添加了表%s 的%s", common.UserId, scope.TableName(), fmt.Sprintf("%+v", scope.Value))
-		//adminLogModel.Create()
-		//
-		//Db.Create(&AdminLog{
-		//	Route: common.Ctx.Request.URL.String(),
-		//	UserId:      common.UserId,
-		//	Ip:          common.Ctx.Input.IP(),
-		//	Method:      common.Ctx.Request.Method,
-		//	Description: fmt.Sprintf("%s添加了表%s 的%s", common.UserId, scope.TableName(), fmt.Sprintf("%+v", scope.Value)),
-		//})
-	}
+	//if scope.TableName() != "cms_admin_log" {
+	//	adminLogModel := NewAdminLog()
+	//	adminLogModel.CreatedAt = time.Now()
+	//	adminLogModel.UpdatedAt = time.Now()
+	//	//if php2go.Empty(common.Ctx.Input.IP()) {
+	//		adminLogModel.Ip = "127.0.0.1"
+	//	//}else {
+	//	//	adminLogModel.Ip = common.Ctx.Input.IP()
+	//	//}
+	//	adminLogModel.UserId = common.UserId
+	//	adminLogModel.Route = ""
+	//	adminLogModel.Method = ""
+	//	adminLogModel.Description = fmt.Sprintf("%s添加了表%s 的%s", common.UserId, scope.TableName(), fmt.Sprintf("%+v", scope.Value))
+	//	adminLogModel.Create()
+	//
+	//	Db.Create(&AdminLog{
+	//		Route: common.Ctx.Request.URL.String(),
+	//		UserId:      common.UserId,
+	//		Ip:          common.Ctx.Input.IP(),
+	//		Method:      common.Ctx.Request.Method,
+	//		Description: fmt.Sprintf("%s添加了表%s 的%s", common.UserId, scope.TableName(), fmt.Sprintf("%+v", scope.Value)),
+	//	})
+	//}
 	return
 }
 
@@ -202,15 +204,15 @@ func updateTimeStampForDeleteCallback(scope *gorm.Scope) {
 }
 
 func UpdateAdminLogCallback(scope *gorm.Scope) {
-	if common.Ctx != nil {
-		//Db.Create(&AdminLog{
-			//Route: common.Ctx.Request.URL.String(),
-			//UserId:      common.UserId,
-			//Ip:          common.Ctx.Input.IP(),
-			//Method:      common.Ctx.Request.Method,
-			//Description: fmt.Sprintf("%s修改了表%s 的%s", common.UserId, scope.TableName(), fmt.Sprintf("%+v", scope.Value)),
-		//})
-	}
+	//if common.Ctx != nil {
+	//	Db.Create(&AdminLog{
+	//		Route: common.Ctx.Request.URL.String(),
+	//		UserId:      common.UserId,
+	//		Ip:          common.Ctx.Input.IP(),
+	//		Method:      common.Ctx.Request.Method,
+	//		Description: fmt.Sprintf("%s修改了表%s 的%s", common.UserId, scope.TableName(), fmt.Sprintf("%+v", scope.Value)),
+	//	})
+	//}
 	return
 }
 
