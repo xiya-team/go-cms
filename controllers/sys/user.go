@@ -50,6 +50,10 @@ func (c *UserController) Index() {
 		if !php2go.Empty(model.Phone) {
 			dataMap["phone"] = model.Phone
 		}
+
+		if !php2go.Empty(model.DeptId) {
+			dataMap["dept_id"] = model.DeptId
+		}
 		
 		//开始时间
 		if !php2go.Empty(model.StartTime) {

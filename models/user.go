@@ -211,6 +211,11 @@ func (m *User) FindByMap(offset, limit int64, dataMap map[string]interface{},ord
 	if status,isExist:=dataMap["status"].(int);isExist == true{
 		query = query.Where("status = ?", status)
 	}
+
+	if dept_id,isExist:=dataMap["dept_id"].(int);isExist == true{
+		query = query.Where("dept_id = ?", dept_id)
+	}
+
 	if nickname,ok:=dataMap["nickname"].(string);ok{
 		query = query.Where("nickname LIKE ?", "%"+nickname+"%")
 	}
