@@ -3,6 +3,7 @@ module go-cms
 go 1.13
 
 require (
+	github.com/MohamedBassem/gormgen v0.0.0-20170106210914-58063791c180 // indirect
 	github.com/aliyun/aliyun-oss-go-sdk v2.0.3+incompatible
 	github.com/astaxie/beego v1.12.0
 	github.com/axgle/mahonia v0.0.0-20180208002826-3358181d7394
@@ -28,6 +29,7 @@ require (
 	golang.org/x/net v0.0.0-20191014212845-da9a3fd4c582 // indirect
 	golang.org/x/sys v0.0.0-20191018095205-727590c5006e // indirect
 	golang.org/x/text v0.3.1-0.20180807135948-17ff2d5776d2
+	golang.org/x/tools v0.0.0-20191026034945-b2104f82a97d // indirect
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
 	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df
 	qiniupkg.com/x v7.0.8+incompatible // indirect
