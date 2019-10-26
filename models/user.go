@@ -13,7 +13,7 @@ import (
 type User struct {
 	Model
 	Id          int         `json:"id"         form:"id"         gorm:"default:''"`
-	Nickname   string       `json:"nickname"   form:"nickname"   gorm:"default:''" valid:"Required;MaxSize(20);MinSize(2)"`
+	Nickname    string      `json:"nickname"   form:"nickname"   gorm:"default:''" valid:"Required;MaxSize(20);MinSize(2)"`
 	UserName    string      `json:"user_name"  form:"user_name"  gorm:"default:''" valid:"Required;MaxSize(20);MinSize(6)"`
 	UserType    int         `json:"user_type"  form:"user_type"  gorm:"default:'00'"`
 	Email       string      `json:"email"      form:"email"      gorm:"default:''" valid:"Email"`
@@ -25,7 +25,7 @@ type User struct {
 	Salt        string      `json:"salt"       form:"salt"       gorm:"default:''"`
 	Status      int         `json:"status"     form:"status"     gorm:"default:'1'"`
 	DelFlag     int         `json:"del_flag"   form:"del_flag"   gorm:"default:'1'"`
-	DeptId     int          `json:"dept_id"    form:"dept_id"     gorm:"default:''"`
+	DeptId      int         `json:"dept_id"    form:"dept_id"    gorm:"default:''"`
 	LoginIp     string      `json:"login_ip"   form:"login_ip"   gorm:"default:''"`
 	LoginDate   time.Time   `json:"login_date" form:"login_date" gorm:"default:''"`
 	CreateBy    string      `json:"create_by"  form:"create_by"  gorm:"default:''"`
