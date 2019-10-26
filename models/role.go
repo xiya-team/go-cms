@@ -2,6 +2,9 @@ package models
 
 import (
 	"errors"
+	"github.com/syyongx/php2go"
+	"strconv"
+	"strings"
 	"time"
 )
 
@@ -19,7 +22,7 @@ type Role struct {
 	UpdateBy  int    	`json:"update_by" form:"update_by" gorm:"default:''"`
 	UpdatedAt time.Time `json:"updated_at"form:"updated_at"gorm:"default:''"`
 	Remark    string    `json:"remark"    form:"remark"    gorm:"default:''"`
-	
+	RoleMenu  string    `json:"role_menu,omitempty" form:"role_menu" gorm:"-" valid:"Required"`   // 忽略这个字段
 }
 
 
@@ -40,6 +43,23 @@ func (m *Role) Pagination(offset, limit int, key string) (res []Role, count int)
 func (m *Role) Create() (newAttr Role, err error) {
 
     tx := Db.Begin()
+
+	rm := NewRoleMenu()
+	if !php2go.Empty(m.RoleMenu) {
+		err = tx.Model(&rm).Where("role_id=?", m.Id).Delete(rm).Error
+		if err == nil{
+			s := strings.Split(m.RoleMenu, ",")
+			for _, value := range s {
+				menu_id, _ := strconv.Atoi(value)
+				role_menu := RoleMenu{
+					RoleId:m.Id,
+					MenuId:menu_id,
+				}
+				err = tx.Model(&rm).Create(role_menu).Error
+			}
+		}
+	}
+
 	err = tx.Create(m).Error
 	
 	if err != nil{
@@ -55,6 +75,22 @@ func (m *Role) Create() (newAttr Role, err error) {
 func (m *Role) Update() (newAttr Role, err error) {
     tx := Db.Begin()
 	if m.Id > 0 {
+		rm := NewRoleMenu()
+		if !php2go.Empty(m.RoleMenu) {
+			err = tx.Model(&rm).Where("role_id=?", m.Id).Delete(rm).Error
+			if err == nil{
+				s := strings.Split(m.RoleMenu, ",")
+				for _, value := range s {
+					menu_id, _ := strconv.Atoi(value)
+					role_menu := RoleMenu{
+						RoleId:m.Id,
+						MenuId:menu_id,
+					}
+					err = tx.Model(&rm).Create(role_menu).Error
+				}
+			}
+		}
+
 		err = tx.Model(&m).Where("id=?", m.Id).Updates(m).Error
 	} else {
 		err = errors.New("id参数错误")

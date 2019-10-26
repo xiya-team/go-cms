@@ -140,12 +140,14 @@ func (c *RoleController) Update() {
 		
 		valid := validation.Validation{}
 		if b, _ := valid.Valid(model); !b {
+			var err_msg string;
 			for _, err := range valid.Errors {
+				err_msg = err.Key+","+err.Message
 				log.Println(err.Key, err.Message)
 			}
-			c.JsonResult(e.ERROR, "验证失败")
+			c.JsonResult(e.ERROR, "验证失败:"+ err_msg)
 		}
-		
+
 		if _, err := model.Update(); err != nil {
 			c.JsonResult(e.ERROR, "修改失败")
 		}
