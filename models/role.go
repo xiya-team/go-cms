@@ -22,7 +22,8 @@ type Role struct {
 	UpdateBy  int    	`json:"update_by" form:"update_by" gorm:"default:''"`
 	UpdatedAt time.Time `json:"updated_at"form:"updated_at"gorm:"default:''"`
 	Remark    string    `json:"remark"    form:"remark"    gorm:"default:''"`
-	RoleMenu  string    `json:"role_menu,omitempty" form:"role_menu" gorm:"-" valid:"Required"`   // 忽略这个字段
+	RoleMenu  string    `json:"role_menu" form:"role_menu" gorm:"-"`   // 忽略这个字段
+	RoleDept  string    `json:"role_dept" form:"role_dept" gorm:"-"`   // 忽略这个字段
 }
 
 
@@ -60,6 +61,22 @@ func (m *Role) Create() (newAttr Role, err error) {
 		}
 	}
 
+	rd := NewRoleDept()
+	if !php2go.Empty(m.RoleDept) {
+		err = tx.Model(&rd).Where("role_id=?", m.Id).Delete(rd).Error
+		if err == nil{
+			s := strings.Split(m.RoleDept, ",")
+			for _, value := range s {
+				dept_id, _ := strconv.Atoi(value)
+				role_dept := RoleDept{
+					RoleId:m.Id,
+					DeptId:dept_id,
+				}
+				err = tx.Model(&rd).Create(role_dept).Error
+			}
+		}
+	}
+
 	err = tx.Create(m).Error
 	
 	if err != nil{
@@ -87,6 +104,22 @@ func (m *Role) Update() (newAttr Role, err error) {
 						MenuId:menu_id,
 					}
 					err = tx.Model(&rm).Create(role_menu).Error
+				}
+			}
+		}
+
+		rd := NewRoleDept()
+		if !php2go.Empty(m.RoleDept) {
+			err = tx.Model(&rd).Where("role_id=?", m.Id).Delete(rd).Error
+			if err == nil{
+				s := strings.Split(m.RoleDept, ",")
+				for _, value := range s {
+					dept_id, _ := strconv.Atoi(value)
+					role_dept := RoleDept{
+						RoleId:m.Id,
+						DeptId:dept_id,
+					}
+					err = tx.Model(&rd).Create(role_dept).Error
 				}
 			}
 		}
@@ -136,6 +169,29 @@ func (m *Role) DelBatch(ids []int) (err error) {
 
 func (m *Role) FindById(id int) (role Role, err error) {
 	err = Db.Where("id=?", id).First(&role).Error
+
+	rm := NewRoleMenu()
+	role_menus := []RoleMenu{}
+	err = Db.Model(&rm).Where("role_id=?", m.Id).Find(&role_menus).Error
+	if err == nil {
+		var role_menu []string
+		for _, value := range role_menus {
+			role_menu=append(role_menu,strconv.Itoa(value.MenuId))
+		}
+		role.RoleMenu = strings.Join(role_menu,",")
+	}
+
+	rd := NewRoleDept()
+	role_depts := []RoleDept{}
+	err = Db.Model(&rd).Where("role_id=?", m.Id).Find(&role_depts).Error
+	if err == nil {
+		var role_dept []string
+		for _, value := range role_depts {
+			role_dept = append(role_dept,strconv.Itoa(value.DeptId))
+		}
+		role.RoleDept = strings.Join(role_dept,",")
+	}
+
 	return
 }
 

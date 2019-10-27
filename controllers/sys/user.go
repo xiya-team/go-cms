@@ -50,6 +50,10 @@ func (c *UserController) Index() {
 		if !php2go.Empty(model.Phone) {
 			dataMap["phone"] = model.Phone
 		}
+
+		if !php2go.Empty(model.DeptId) {
+			dataMap["dept_id"] = model.DeptId
+		}
 		
 		//开始时间
 		if !php2go.Empty(model.StartTime) {
@@ -138,21 +142,63 @@ func (c *UserController) Create() {
 	}
 }
 
+func (c *UserController) Password()  {
+	model := models.NewUser()
+	data := c.Ctx.Input.RequestBody
+	//json数据封装到对象中
+
+	err := json.Unmarshal(data, model)
+
+	if err != nil {
+		c.JsonResult(e.ERROR, err.Error())
+	}
+
+	if c.Ctx.Input.IsPut() {
+		post, err := model.FindById(model.Id)
+		if err != nil||php2go.Empty(post) {
+			c.JsonResult(e.ERROR, "没找到数据")
+		}
+
+		valid := validation.Validation{}
+		if b, _ := valid.Valid(model); !b {
+			for _, err := range valid.Errors {
+				log.Println(err.Key, err.Message)
+			}
+			c.JsonResult(e.ERROR, "验证失败")
+		}
+
+		if php2go.Md5(model.Password + post.Salt) != post.Password{
+			c.JsonResult(e.ERROR, "验证失败，原密码错误。")
+		}
+
+		if !php2go.Empty(model.NewPassword) {
+			salt := util.Krand(5, 2)
+			model.Salt = salt
+			model.Password = php2go.Md5(model.NewPassword + salt)
+		}
+
+		if _, err := model.Update(); err != nil {
+			c.JsonResult(e.ERROR, "修改失败")
+		}
+		c.JsonResult(e.SUCCESS, "修改成功")
+	}
+}
+
 /**
 更新数据
 */
 func (c *UserController) Update() {
+	model := models.NewUser()
+	data := c.Ctx.Input.RequestBody
+	//json数据封装到对象中
+
+	err := json.Unmarshal(data, model)
+
+	if err != nil {
+		c.JsonResult(e.ERROR, err.Error())
+	}
+
 	if c.Ctx.Input.IsPut() {
-		model := models.NewUser()
-		data := c.Ctx.Input.RequestBody
-		//json数据封装到对象中
-		
-		err := json.Unmarshal(data, model)
-		
-		if err != nil {
-			c.JsonResult(e.ERROR, err.Error())
-		}
-		
 		post, err := model.FindById(model.Id)
 		if err != nil||php2go.Empty(post) {
 			c.JsonResult(e.ERROR, "没找到数据")
@@ -176,6 +222,15 @@ func (c *UserController) Update() {
 			c.JsonResult(e.ERROR, "修改失败")
 		}
 		c.JsonResult(e.SUCCESS, "修改成功")
+	}
+
+	//get
+	if c.Ctx.Input.IsPost() {
+		res,err := model.FindById(model.Id)
+		if err != nil{
+			c.JsonResult(e.ERROR, "获取失败")
+		}
+		c.JsonResult(e.SUCCESS, "获取成功",res)
 	}
 }
 
