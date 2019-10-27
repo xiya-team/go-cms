@@ -23,6 +23,7 @@ func init() {
 	beego.Router("/api/user/check_token", &sys.UserController{}, "post:CheckToken")
 	beego.Router("/api/user/logout", &sys.UserController{}, "post:Logout")
 
+	beego.Router("/api/user/logout", &sys.UserController{}, "post:Logout")
 	beego.Router("/api/user/index", &sys.UserController{}, "post:Index")        //获取用户列表
 	beego.Router("/api/user/create", &sys.UserController{}, "post:Create")	  //用户添加
 	beego.Router("/api/user/update", &sys.UserController{}, "post,put:Update")  //用户修改
