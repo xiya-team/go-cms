@@ -34,8 +34,8 @@ type User struct {
 	UpdatedAt   time.Time   `json:"updated_at" form:"updated_at" gorm:"default:''"`
 	DeletedAt   time.Time   `json:"deleted_at" form:"deleted_at" gorm:"default:''"`
 	Remark      string      `json:"remark"     form:"remark"     gorm:"default:''"`
-	UserPost    string      `json:"role_post"  form:"role_post"  gorm:"-"`   // 忽略这个字段
-	UserRole    string      `json:"role_role"  form:"role_role"  gorm:"-"`   // 忽略这个字段
+	UserPost    string      `json:"user_post"  form:"user_post"  gorm:"-"`   // 忽略这个字段
+	UserRole    string      `json:"user_role"  form:"user_role"  gorm:"-"`   // 忽略这个字段
 	NewPassword string      `json:"new_password" form:"new_password" gorm:"-"`   // 忽略这个字段
 }
 

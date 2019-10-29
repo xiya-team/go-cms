@@ -148,7 +148,13 @@ func (c *MenuController) Update() {
 			}
 			c.JsonResult(e.ERROR, "验证失败")
 		}
+
+		if model.ParentId == post.ParentId {
+			c.JsonResult(e.ERROR, "菜单的父级不能是自己！")
+		}
+
 		
+
 		if _, err := model.Update(); err != nil {
 			c.JsonResult(e.ERROR, "修改失败")
 		}
