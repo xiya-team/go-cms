@@ -3,6 +3,7 @@ package models
 import (
 	"errors"
 	"github.com/syyongx/php2go"
+	"github.com/wxnacy/wgo/arrays"
 	"go-cms/pkg/vo"
 	"time"
 )
@@ -222,4 +223,22 @@ func (m *Menu)FindMenus(pid int) []*vo.TreeList {
 		treeList = append(treeList, node)
 	}
 	return treeList
+}
+
+
+func (m *Menu)FindAllChildren(pid int)  []int {
+	var ids []int;
+	menuData,_ := m.FindAll()
+
+	for _, menu := range menuData {
+		if pid == menu.ParentId{
+			ids = append(ids, menu.Id)
+		} else {
+			is_exist := arrays.Contains(ids, menu.ParentId)
+			if is_exist != 0 {
+				ids = append(ids, menu.Id)
+			}
+		}
+	}
+	return ids
 }

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/astaxie/beego/validation"
 	"github.com/syyongx/php2go"
+	"github.com/wxnacy/wgo/arrays"
 	"go-cms/controllers"
 	"go-cms/models"
 	"go-cms/pkg/e"
@@ -143,6 +144,16 @@ func (c *DeptController) Update() {
 				log.Println(err.Key, err.Message)
 			}
 			c.JsonResult(e.ERROR, "验证失败")
+		}
+
+		if model.ParentId == post.Id {
+			c.JsonResult(e.ERROR, "部门的父级不能是自己！")
+		}
+
+		ids := model.FindAllChildren(post.Id)
+		is_exist := arrays.Contains(ids, model.ParentId)
+		if is_exist != 0 {
+			c.JsonResult(e.ERROR, "部门的父级不能是自己的子集！")
 		}
 		
 		if _, err := model.Update(); err != nil {
