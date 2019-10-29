@@ -165,15 +165,15 @@ func (m *Dept) FindAllByParentId(parentId int) (res []Dept, err error)   {
 
 func (m *Dept)FindAllChildren(pid int)  []int {
 	var ids []int;
-	menuData,_ := m.FindAll()
+	deptData,_ := m.FindAll()
 
-	for _, menu := range menuData {
-		if pid == menu.ParentId{
-			ids = append(ids, menu.Id)
+	for _, dept := range deptData {
+		if pid == dept.Id{
+			ids = append(ids, dept.Id)
 		} else {
-			is_exist := arrays.Contains(ids, menu.ParentId)
+			is_exist := arrays.Contains(ids, dept.ParentId)
 			if is_exist != 0 {
-				ids = append(ids, menu.Id)
+				ids = append(ids, dept.Id)
 			}
 		}
 	}

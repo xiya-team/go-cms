@@ -231,7 +231,7 @@ func (m *Menu)FindAllChildren(pid int)  []int {
 	menuData,_ := m.FindAll()
 
 	for _, menu := range menuData {
-		if pid == menu.ParentId{
+		if pid == menu.Id{
 			ids = append(ids, menu.Id)
 		} else {
 			is_exist := arrays.Contains(ids, menu.ParentId)
