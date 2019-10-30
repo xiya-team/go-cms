@@ -1,12 +1,14 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/context"
 	"github.com/astaxie/beego/logs"
 	"go-cms/generate"
 	"go-cms/middlewares"
+	"go-cms/pkg/e"
 	_ "go-cms/routers"
 	"net/http"
 	"runtime"
@@ -15,11 +17,15 @@ import (
 var Ctx *context.Context
 
 func page_not_found(rw http.ResponseWriter, r *http.Request) {
+	data :=middlewares.Response{Code:e.ERROR,Msg:"404"}
+	result,_:=json.Marshal(data)
+
 	//ctx.Redirect(302, "/api/common/page_not_found")
 	//t, _ := template.New("404.html").ParseFiles(beego.BConfig.WebConfig.ViewsPath + "/404.html")
 	//data := make(map[string]interface{})
 	//data["content"] = "page not found"
 	//t.Execute(rw, data)
+	rw.Write(result)
 }
 
 func init() {
