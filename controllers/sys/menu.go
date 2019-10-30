@@ -115,6 +115,7 @@ func (c *MenuController) Create() {
 		}
 
 		//3.插入数据
+		model.CreateBy = common.UserId
 		if _, err := model.Create(); err != nil {
 			c.JsonResult(e.ERROR, "创建失败")
 		}
@@ -160,6 +161,7 @@ func (c *MenuController) Update() {
 		if is_exist != -1 {
 			c.JsonResult(e.ERROR, "菜单的父级不能是自己的子集！")
 		}
+
 		model.UpdateBy = common.UserId
 		if _, err := model.Update(); err != nil {
 			c.JsonResult(e.ERROR, "修改失败")
