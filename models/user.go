@@ -28,9 +28,9 @@ type User struct {
 	DeptId      int         `json:"dept_id"    form:"dept_id"    gorm:"default:''"`
 	LoginIp     string      `json:"login_ip"   form:"login_ip"   gorm:"default:''"`
 	LoginDate   time.Time   `json:"login_date" form:"login_date" gorm:"default:''"`
-	CreateBy    string      `json:"create_by"  form:"create_by"  gorm:"default:''"`
+	CreateBy    int         `json:"create_by"  form:"create_by"  gorm:"default:''"`
 	CreatedAt   time.Time   `json:"created_at" form:"created_at" gorm:"default:''"`
-	UpdateBy    string      `json:"update_by"  form:"update_by"  gorm:"default:''"`
+	UpdateBy    int         `json:"update_by"  form:"update_by"  gorm:"default:''"`
 	UpdatedAt   time.Time   `json:"updated_at" form:"updated_at" gorm:"default:''"`
 	DeletedAt   time.Time   `json:"deleted_at" form:"deleted_at" gorm:"default:''"`
 	Remark      string      `json:"remark"     form:"remark"     gorm:"default:''"`

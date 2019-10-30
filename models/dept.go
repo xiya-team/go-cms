@@ -18,9 +18,9 @@ type Dept struct {
 	Email     string    `json:"email"     form:"email"     gorm:"default:''"`
 	Status    int       `json:"status"    form:"status"    gorm:"default:'0'"`
 	DelFlag   int       `json:"del_flag"  form:"del_flag"  gorm:"default:'0'"`
-	CreateBy  string    `json:"create_by" form:"create_by" gorm:"default:''"`
+	CreateBy  int       `json:"create_by" form:"create_by" gorm:"default:''"`
 	CreatedAt time.Time `json:"created_at"form:"created_at"gorm:"default:''"`
-	UpdateBy  string    `json:"update_by" form:"update_by" gorm:"default:''"`
+	UpdateBy  int       `json:"update_by" form:"update_by" gorm:"default:''"`
 	UpdatedAt time.Time `json:"updated_at"form:"updated_at"gorm:"default:''"`
 	Remark    string    `json:"remark"    form:"remark"    gorm:"default:''"`
 	
