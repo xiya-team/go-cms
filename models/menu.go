@@ -19,9 +19,9 @@ type Menu struct {
 	IsFrame   int       `json:"is_frame"  form:"is_frame"  gorm:"default:'0'"`
 	Perms     string    `json:"perms"     form:"perms"     gorm:"default:''"`
 	Icon      string    `json:"icon"      form:"icon"      gorm:"default:'#'"`
-	CreateBy  string    `json:"create_by" form:"create_by" gorm:"default:''"`
+	CreateBy  int       `json:"create_by" form:"create_by" gorm:"default:''"`
 	CreatedAt time.Time `json:"created_at"form:"created_at"gorm:"default:''"`
-	UpdateBy  string    `json:"update_by" form:"update_by" gorm:"default:''"`
+	UpdateBy  int       `json:"update_by" form:"update_by" gorm:"default:''"`
 	UpdatedAt time.Time `json:"updated_at"form:"updated_at"gorm:"default:''"`
 	Remark    string    `json:"remark"    form:"remark"    gorm:"default:''"`
 }

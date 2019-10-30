@@ -5,6 +5,7 @@ import (
 	"github.com/astaxie/beego/validation"
 	"github.com/syyongx/php2go"
 	"github.com/wxnacy/wgo/arrays"
+	"go-cms/common"
 	"go-cms/controllers"
 	"go-cms/models"
 	"go-cms/pkg/e"
@@ -159,7 +160,7 @@ func (c *MenuController) Update() {
 		if is_exist != -1 {
 			c.JsonResult(e.ERROR, "菜单的父级不能是自己的子集！")
 		}
-
+		model.UpdateBy = common.UserId
 		if _, err := model.Update(); err != nil {
 			c.JsonResult(e.ERROR, "修改失败")
 		}

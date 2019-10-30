@@ -343,7 +343,6 @@ func (c *UserController) Logout()  {
 }
 
 func (c *UserController) CheckToken() {
-	
 	token := c.Ctx.Input.Header("Authorization")
 	
 	b, message , code := util.CheckToken(token)
