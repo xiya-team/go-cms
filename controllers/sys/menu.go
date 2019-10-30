@@ -156,7 +156,7 @@ func (c *MenuController) Update() {
 
 		ids := model.FindAllChildren(post.Id)
 		is_exist := arrays.Contains(ids, model.ParentId)
-		if is_exist != 0 {
+		if is_exist != -1 {
 			c.JsonResult(e.ERROR, "菜单的父级不能是自己的子集！")
 		}
 

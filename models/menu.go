@@ -235,7 +235,7 @@ func (m *Menu)FindAllChildren(pid int)  []int {
 			ids = append(ids, menu.Id)
 		} else {
 			is_exist := arrays.Contains(ids, menu.ParentId)
-			if is_exist > 0 {
+			if is_exist != -1 {
 				ids = append(ids, menu.Id)
 			}
 		}
