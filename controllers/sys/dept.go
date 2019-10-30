@@ -191,7 +191,12 @@ func (c *DeptController) Delete() {
 		if err != nil||php2go.Empty(post) {
 			c.JsonResult(e.ERROR, "没找到数据")
 		}
-		
+
+		dept,_:=model.FindByParentId(model.Id)
+		if !php2go.Empty(dept){
+			c.JsonResult(e.ERROR, "部门下有子部门不能删除！")
+		}
+
 		if err := model.Delete(); err != nil {
 			c.JsonResult(e.ERROR, "删除失败")
 		}

@@ -195,7 +195,12 @@ func (c *MenuController) Delete() {
 		if err != nil||php2go.Empty(post) {
 			c.JsonResult(e.ERROR, "没找到数据")
 		}
-		
+
+		menu,_:=model.FindByParentId(model.Id)
+		if !php2go.Empty(menu){
+			c.JsonResult(e.ERROR, "菜单下有子菜单不能删除！")
+		}
+
 		if err := model.Delete(); err != nil {
 			c.JsonResult(e.ERROR, "删除失败")
 		}

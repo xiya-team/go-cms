@@ -2,7 +2,6 @@ package models
 
 import (
 	"errors"
-	"github.com/syyongx/php2go"
 	"github.com/wxnacy/wgo/arrays"
 	"time"
 )
@@ -76,13 +75,7 @@ func (m *Dept) Update() (newAttr Dept, err error) {
 func (m *Dept) Delete() (err error) {
     tx := Db.Begin()
 	if m.Id > 0 {
-		model := NewDept()
-		dept,_:=model.FindByParentId(m.Id)
-		if php2go.Empty(dept) {
-			err = tx.Model(&m).Delete(m).Error
-		} else {
-			err = errors.New("部门下有子部门不能删除！")
-		}
+		err = tx.Model(&m).Delete(m).Error
 	} else {
 		err = errors.New("id参数错误")
 	}
