@@ -24,6 +24,7 @@ type Article struct {
 	PostSource    string        `json:"post_source"   form:"post_source"   gorm:"default:''"`
 	Image         string        `json:"image"         form:"image"         gorm:"default:''"`
 	PostContent   string        `json:"post_content"  form:"post_content"  gorm:"default:''"`
+	Status        int           `json:"status"        form:"status"        gorm:"default:'1'"`
 	CreatedAt     time.Time     `json:"created_at"    form:"created_at"    gorm:"default:'0'"`
 	UpdatedAt     time.Time     `json:"updated_at"    form:"updated_at"    gorm:"default:'0'"`
 	

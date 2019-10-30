@@ -148,8 +148,6 @@ func (c *CategoryController) Update() {
 	}
 
 	if c.Ctx.Input.IsPut() {
-		
-		
 		post, err := model.FindById(model.Id)
 		if err != nil||php2go.Empty(post) {
 			c.JsonResult(e.ERROR, "没找到数据")

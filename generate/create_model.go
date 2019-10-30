@@ -18,7 +18,6 @@ type Config struct {
 	$attr$
 }
 
-
 func NewConfig() (config *Config) {
 	return &Config{}
 }
@@ -34,7 +33,6 @@ func (m *Config) Pagination(offset, limit int, key string) (res []Config, count 
 }
 
 func (m *Config) Create() (newAttr Config, err error) {
-
     tx := Db.Begin()
 	err = tx.Create(m).Error
 	
@@ -104,6 +102,7 @@ func (m *Config) FindByMap(offset, limit int64, dataMap map[string]interface{},o
 	if status,isExist:=dataMap["status"].(int);isExist{
 		query = query.Where("status = ?", status)
 	}
+
 	if name,ok:=dataMap["name"].(string);ok{
 		query = query.Where("name LIKE ?", "%"+name+"%")
 	}
