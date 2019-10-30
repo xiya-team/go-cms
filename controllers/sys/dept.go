@@ -5,6 +5,7 @@ import (
 	"github.com/astaxie/beego/validation"
 	"github.com/syyongx/php2go"
 	"github.com/wxnacy/wgo/arrays"
+	"go-cms/common"
 	"go-cms/controllers"
 	"go-cms/models"
 	"go-cms/pkg/e"
@@ -111,6 +112,7 @@ func (c *DeptController) Create() {
 		}
 
 		//3.插入数据
+		model.CreateBy = common.UserId
 		if _, err := model.Create(); err != nil {
 			c.JsonResult(e.ERROR, "创建失败")
 		}
@@ -155,7 +157,8 @@ func (c *DeptController) Update() {
 		if is_exist != -1 {
 			c.JsonResult(e.ERROR, "部门的父级不能是自己的子集！")
 		}
-		
+
+		model.UpdateBy = common.UserId
 		if _, err := model.Update(); err != nil {
 			c.JsonResult(e.ERROR, "修改失败")
 		}

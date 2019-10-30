@@ -3,6 +3,7 @@ package sys
 import (
 	"github.com/astaxie/beego/validation"
 	"github.com/syyongx/php2go"
+	"go-cms/common"
 	"go-cms/controllers"
 	"encoding/json"
 	"go-cms/models"
@@ -108,6 +109,7 @@ func (c *ConfigsController) Create() {
 		}
 
 		//3.插入数据
+		model.CreatedBy = common.UserId
 		if _, err := model.Create(); err != nil {
 			c.JsonResult(e.ERROR, "创建失败")
 		}
@@ -142,7 +144,8 @@ func (c *ConfigsController) Update() {
 			}
 			c.JsonResult(e.ERROR, "验证失败")
 		}
-		
+
+		model.UpdatedBy = common.UserId
 		if _, err := model.Update(); err != nil {
 			c.JsonResult(e.ERROR, "修改失败")
 		}
