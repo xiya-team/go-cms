@@ -172,7 +172,7 @@ func (m *Dept)FindAllChildren(pid int)  []int {
 			ids = append(ids, dept.Id)
 		} else {
 			is_exist := arrays.Contains(ids, dept.ParentId)
-			if is_exist != 0 {
+			if is_exist > 0 {
 				ids = append(ids, dept.Id)
 			}
 		}
