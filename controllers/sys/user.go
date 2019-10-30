@@ -328,6 +328,10 @@ func (c *UserController) Login() {
 			jsonData["userId"] = user.Id
 			jsonData["userName"] = user.UserName
 			jsonData["nickname"] = user.Nickname
+			//记录登录时间
+			user.LoginDate = time.Now()
+			user.LoginIp = c.Ctx.Input.IP()
+			user.Update()
 			c.JsonResult(e.SUCCESS, "登录成功!", jsonData)
 		}else {
 			c.JsonResult(e.ERROR, "用户名或密码错误!")
