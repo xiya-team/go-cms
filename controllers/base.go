@@ -15,6 +15,10 @@ type BaseController struct {
 	HandlerSeconds   float64
 }
 
+func init() {
+	// 中间件注册
+}
+
 func (c *BaseController) Prepare() {
 	// 启动时间
 	c.StartTime = time.Now().UnixNano()

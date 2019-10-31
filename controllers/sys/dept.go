@@ -5,6 +5,7 @@ import (
 	"github.com/astaxie/beego/validation"
 	"github.com/syyongx/php2go"
 	"github.com/wxnacy/wgo/arrays"
+	"go-cms/common"
 	"go-cms/controllers"
 	"go-cms/models"
 	"go-cms/pkg/e"
@@ -111,6 +112,7 @@ func (c *DeptController) Create() {
 		}
 
 		//3.插入数据
+		model.CreateBy = common.UserId
 		if _, err := model.Create(); err != nil {
 			c.JsonResult(e.ERROR, "创建失败")
 		}
@@ -152,10 +154,11 @@ func (c *DeptController) Update() {
 
 		ids := model.FindAllChildren(post.Id)
 		is_exist := arrays.Contains(ids, model.ParentId)
-		if is_exist != 0 {
+		if is_exist != -1 {
 			c.JsonResult(e.ERROR, "部门的父级不能是自己的子集！")
 		}
-		
+
+		model.UpdateBy = common.UserId
 		if _, err := model.Update(); err != nil {
 			c.JsonResult(e.ERROR, "修改失败")
 		}
@@ -191,7 +194,12 @@ func (c *DeptController) Delete() {
 		if err != nil||php2go.Empty(post) {
 			c.JsonResult(e.ERROR, "没找到数据")
 		}
-		
+
+		dept,_:=model.FindByParentId(model.Id)
+		if !php2go.Empty(dept){
+			c.JsonResult(e.ERROR, "部门下有子部门不能删除！")
+		}
+
 		if err := model.Delete(); err != nil {
 			c.JsonResult(e.ERROR, "删除失败")
 		}

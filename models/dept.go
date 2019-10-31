@@ -2,7 +2,6 @@ package models
 
 import (
 	"errors"
-	"github.com/syyongx/php2go"
 	"github.com/wxnacy/wgo/arrays"
 	"time"
 )
@@ -19,9 +18,9 @@ type Dept struct {
 	Email     string    `json:"email"     form:"email"     gorm:"default:''"`
 	Status    int       `json:"status"    form:"status"    gorm:"default:'0'"`
 	DelFlag   int       `json:"del_flag"  form:"del_flag"  gorm:"default:'0'"`
-	CreateBy  string    `json:"create_by" form:"create_by" gorm:"default:''"`
+	CreateBy  int       `json:"create_by" form:"create_by" gorm:"default:''"`
 	CreatedAt time.Time `json:"created_at"form:"created_at"gorm:"default:''"`
-	UpdateBy  string    `json:"update_by" form:"update_by" gorm:"default:''"`
+	UpdateBy  int       `json:"update_by" form:"update_by" gorm:"default:''"`
 	UpdatedAt time.Time `json:"updated_at"form:"updated_at"gorm:"default:''"`
 	Remark    string    `json:"remark"    form:"remark"    gorm:"default:''"`
 	
@@ -76,13 +75,7 @@ func (m *Dept) Update() (newAttr Dept, err error) {
 func (m *Dept) Delete() (err error) {
     tx := Db.Begin()
 	if m.Id > 0 {
-		model := NewDept()
-		dept,_:=model.FindByParentId(m.Id)
-		if php2go.Empty(dept) {
-			err = tx.Model(&m).Delete(m).Error
-		} else {
-			err = errors.New("部门下有子部门不能删除！")
-		}
+		err = tx.Model(&m).Delete(m).Error
 	} else {
 		err = errors.New("id参数错误")
 	}
@@ -165,15 +158,15 @@ func (m *Dept) FindAllByParentId(parentId int) (res []Dept, err error)   {
 
 func (m *Dept)FindAllChildren(pid int)  []int {
 	var ids []int;
-	menuData,_ := m.FindAll()
+	deptData,_ := m.FindAll()
 
-	for _, menu := range menuData {
-		if pid == menu.ParentId{
-			ids = append(ids, menu.Id)
+	for _, dept := range deptData {
+		if pid == dept.Id{
+			ids = append(ids, dept.Id)
 		} else {
-			is_exist := arrays.Contains(ids, menu.ParentId)
-			if is_exist != 0 {
-				ids = append(ids, menu.Id)
+			is_exist := arrays.Contains(ids, dept.ParentId)
+			if is_exist != -1 {
+				ids = append(ids, dept.Id)
 			}
 		}
 	}

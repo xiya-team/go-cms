@@ -5,6 +5,7 @@ import (
 	"github.com/astaxie/beego/validation"
 	"github.com/syyongx/php2go"
 	"github.com/wxnacy/wgo/arrays"
+	"go-cms/common"
 	"go-cms/controllers"
 	"go-cms/models"
 	"go-cms/pkg/e"
@@ -114,6 +115,7 @@ func (c *MenuController) Create() {
 		}
 
 		//3.插入数据
+		model.CreateBy = common.UserId
 		if _, err := model.Create(); err != nil {
 			c.JsonResult(e.ERROR, "创建失败")
 		}
@@ -156,10 +158,11 @@ func (c *MenuController) Update() {
 
 		ids := model.FindAllChildren(post.Id)
 		is_exist := arrays.Contains(ids, model.ParentId)
-		if is_exist != 0 {
+		if is_exist != -1 {
 			c.JsonResult(e.ERROR, "菜单的父级不能是自己的子集！")
 		}
 
+		model.UpdateBy = common.UserId
 		if _, err := model.Update(); err != nil {
 			c.JsonResult(e.ERROR, "修改失败")
 		}
@@ -195,7 +198,12 @@ func (c *MenuController) Delete() {
 		if err != nil||php2go.Empty(post) {
 			c.JsonResult(e.ERROR, "没找到数据")
 		}
-		
+
+		menu,_:=model.FindByParentId(model.Id)
+		if !php2go.Empty(menu){
+			c.JsonResult(e.ERROR, "菜单下有子菜单不能删除！")
+		}
+
 		if err := model.Delete(); err != nil {
 			c.JsonResult(e.ERROR, "删除失败")
 		}

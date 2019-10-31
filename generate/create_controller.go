@@ -126,6 +126,7 @@ func (c *CategoryController) Create() {
 		}
 
 		//3.插入数据
+		model.CreatedBy = common.UserId
 		if _, err := model.Create(); err != nil {
 			c.JsonResult(e.ERROR, "创建失败")
 		}
@@ -148,8 +149,6 @@ func (c *CategoryController) Update() {
 	}
 
 	if c.Ctx.Input.IsPut() {
-		
-		
 		post, err := model.FindById(model.Id)
 		if err != nil||php2go.Empty(post) {
 			c.JsonResult(e.ERROR, "没找到数据")
@@ -163,6 +162,7 @@ func (c *CategoryController) Update() {
 			c.JsonResult(e.ERROR, "验证失败")
 		}
 		
+		model.UpdatedBy = common.UserId
 		if _, err := model.Update(); err != nil {
 			c.JsonResult(e.ERROR, "修改失败")
 		}

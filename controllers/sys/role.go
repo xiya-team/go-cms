@@ -4,6 +4,7 @@ import (
 	"github.com/astaxie/beego/logs"
 	"github.com/astaxie/beego/validation"
 	"github.com/syyongx/php2go"
+	"go-cms/common"
 	"go-cms/controllers"
 	"encoding/json"
 	"go-cms/models"
@@ -110,6 +111,7 @@ func (c *RoleController) Create() {
 		}
 
 		//3.插入数据
+		model.CreateBy = common.UserId
 		if _, err := model.Create(); err != nil {
 			logs.Debug(err.Error())
 			c.JsonResult(e.ERROR, "创建失败")
@@ -146,6 +148,7 @@ func (c *RoleController) Update() {
 			c.JsonResult(e.ERROR, "验证失败:"+ err_msg)
 		}
 
+		model.UpdateBy = common.UserId
 		if _, err := model.Update(); err != nil {
 			c.JsonResult(e.ERROR, "修改失败")
 		}

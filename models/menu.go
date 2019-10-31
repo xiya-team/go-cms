@@ -2,7 +2,6 @@ package models
 
 import (
 	"errors"
-	"github.com/syyongx/php2go"
 	"github.com/wxnacy/wgo/arrays"
 	"go-cms/pkg/vo"
 	"time"
@@ -20,9 +19,9 @@ type Menu struct {
 	IsFrame   int       `json:"is_frame"  form:"is_frame"  gorm:"default:'0'"`
 	Perms     string    `json:"perms"     form:"perms"     gorm:"default:''"`
 	Icon      string    `json:"icon"      form:"icon"      gorm:"default:'#'"`
-	CreateBy  string    `json:"create_by" form:"create_by" gorm:"default:''"`
+	CreateBy  int       `json:"create_by" form:"create_by" gorm:"default:''"`
 	CreatedAt time.Time `json:"created_at"form:"created_at"gorm:"default:''"`
-	UpdateBy  string    `json:"update_by" form:"update_by" gorm:"default:''"`
+	UpdateBy  int       `json:"update_by" form:"update_by" gorm:"default:''"`
 	UpdatedAt time.Time `json:"updated_at"form:"updated_at"gorm:"default:''"`
 	Remark    string    `json:"remark"    form:"remark"    gorm:"default:''"`
 }
@@ -76,13 +75,7 @@ func (m *Menu) Update() (newAttr Menu, err error) {
 func (m *Menu) Delete() (err error) {
     tx := Db.Begin()
 	if m.Id > 0 {
-		model := NewMenu()
-		menu,_:=model.FindByParentId(m.Id)
-		if php2go.Empty(menu) {
-			err = tx.Model(&m).Delete(m).Error
-		} else {
-			err = errors.New("菜单下有子菜单不能删除！")
-		}
+		err = tx.Model(&m).Delete(m).Error
 	} else {
 		err = errors.New("id参数错误")
 	}
@@ -231,11 +224,11 @@ func (m *Menu)FindAllChildren(pid int)  []int {
 	menuData,_ := m.FindAll()
 
 	for _, menu := range menuData {
-		if pid == menu.ParentId{
+		if pid == menu.Id{
 			ids = append(ids, menu.Id)
 		} else {
 			is_exist := arrays.Contains(ids, menu.ParentId)
-			if is_exist != 0 {
+			if is_exist != -1 {
 				ids = append(ids, menu.Id)
 			}
 		}
