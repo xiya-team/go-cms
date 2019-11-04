@@ -11,29 +11,19 @@ type LogInfo struct {
 	Level      int        `json:"level"      form:"level"      gorm:"default:'6'"`
 	Path       string     `json:"path"       form:"path"       gorm:"default:''"`
 	Get        string     `json:"get"        form:"get"        gorm:"default:''"`
+	Method     string     `json:"method"     form:"method"     gorm:"default:''"`
 	Post       string     `json:"post"       form:"post"       gorm:"default:''"`
 	Message    string     `json:"message"    form:"message"    gorm:"default:''"`
 	Ip         string     `json:"ip"         form:"ip"         gorm:"default:''"`
 	UserAgent  string     `json:"user_agent" form:"user_agent" gorm:"default:''"`
 	Referer    string     `json:"referer"    form:"referer"    gorm:"default:''"`
 	CreatedBy  int        `json:"created_by" form:"created_by" gorm:"default:'0'"`
-	UpdatedBy   int       `json:"updated_by"  form:"updated_by"  gorm:"default:'0'"`
+	UpdatedBy   int       `json:"updated_by"  form:"updated_by" gorm:"default:'0'"`
 	Status     int        `json:"status"     form:"status"     gorm:"default:''"`
 	Username   string     `json:"username"   form:"username"   gorm:"default:''"`
 	CreateTime time.Time  `json:"create_time"form:"create_time"gorm:"default:''"`
 	
 }
-
-const (
-	Log_Level_Emegergency = iota
-	Log_Level_Alaert
-	Log_Level_Critical
-	Log_Level_Error
-	Log_Level_Warning
-	Log_Level_Notice
-	Log_Level_Info
-	Log_Level_Debug
-)
 
 func NewLogInfo() (logInfo *LogInfo) {
 	return &LogInfo{}

@@ -68,6 +68,20 @@ func (c *BaseController) JsonResult(code int, msg string, data ...interface{}) {
 	default:
 		c.Data["json"] = d.LayuiJson(code, msg, false, false,false,false)
 	}
+
+	is_log_record, _ := beego.AppConfig.Bool("is_log_record")
+
+	if  is_log_record {
+		switch code{
+		case 0:
+			c.InfoLog(msg)
+		case 1:
+			c.ErrorLog(msg)
+		default:
+			c.DebugLog(msg)
+		}
+	}
+
 	c.ServeJSON()
 	c.StopRun()
 }
@@ -132,9 +146,14 @@ func (c *BaseController) RecordLog(message string, level int) {
 	referer := c.Ctx.Request.Referer()
 	getParams := c.Ctx.Request.URL.String()
 	path := c.Ctx.Request.URL.Path
-	c.Ctx.Request.ParseForm()
 	postParamsMap := map[string][]string(c.Ctx.Request.PostForm)
-	postParams, _ := json.Marshal(postParamsMap)
+
+	var postParams []byte
+	if php2go.Empty(postParamsMap) {
+		postParams = c.Ctx.Input.RequestBody
+	}else {
+		postParams, _ = json.Marshal(postParamsMap)
+	}
 
 	var model = models.LogInfo{
 		Level:      level,
@@ -146,6 +165,7 @@ func (c *BaseController) RecordLog(message string, level int) {
 		UserAgent:  userAgent,
 		Referer:    referer,
 		CreatedBy:  common.UserId,
+		Method:  	c.Ctx.Request.Method,
 		UpdatedBy:  0,
 		Status:     0,
 		Username:   common.UserName,

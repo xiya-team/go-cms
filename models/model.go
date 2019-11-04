@@ -27,6 +27,17 @@ func NewModel() (model *Model) {
 }
 
 const (
+	Log_Level_Emegergency = iota
+	Log_Level_Alaert
+	Log_Level_Critical
+	Log_Level_Error
+	Log_Level_Warning
+	Log_Level_Notice
+	Log_Level_Info
+	Log_Level_Debug
+)
+
+const (
 	RECODE_OK         = "0"
 	RECODE_DBERR      = "4001"
 	RECODE_NODATA     = "4002"
