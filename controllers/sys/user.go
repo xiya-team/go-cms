@@ -3,6 +3,7 @@ package sys
 import (
 	"encoding/json"
 	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/logs"
 	"github.com/astaxie/beego/validation"
 	"github.com/syyongx/php2go"
 	"go-cms/common"
@@ -360,7 +361,10 @@ func (c *UserController) CheckToken() {
 	
 	jsonData := make(map[string]interface{}, 1)
 	jsonData["user_id"] = code
-	
+
+	logs.Debug(common.UserName)
+	logs.Debug(common.UserId)
+
 	c.JsonResult(e.SUCCESS, "success",jsonData)
 }
 

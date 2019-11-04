@@ -79,7 +79,7 @@ func RestfulHandler() func(ctx *context.Context) {
 		if is_pass == false {
 			token := ctx.Input.Header(beego.AppConfig.String("jwt::token_name"))
 			allow, message, code := util.CheckToken(token)
-			user_name := util.GetUserNameByToken(token)
+			//user_name := util.GetUserNameByToken(token)
 			if(allow == false){
 				ctx.Output.Header("Content-Type", "application/json")
 				resBody, err := json.Marshal(OutResponse(code, nil, message))
@@ -95,7 +95,7 @@ func RestfulHandler() func(ctx *context.Context) {
 				//}
 			}else{
 				common.UserId = code
-				common.UserName = user_name
+				//common.UserName = user_name
 			}
 		}
 	}
