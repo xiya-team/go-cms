@@ -69,8 +69,8 @@ func (c *BaseController) JsonResult(code int, msg string, data ...interface{}) {
 		c.Data["json"] = d.LayuiJson(code, msg, false, false,false,false)
 	}
 
+	//记录操作日志
 	is_log_record, _ := beego.AppConfig.Bool("is_log_record")
-
 	if  is_log_record {
 		switch code{
 		case 0:
