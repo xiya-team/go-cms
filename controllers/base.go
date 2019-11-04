@@ -1,9 +1,12 @@
 package controllers
 
 import (
+	"encoding/json"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/validation"
 	"github.com/syyongx/php2go"
+	"go-cms/common"
+	"go-cms/models"
 	"go-cms/pkg/d"
 	"go-cms/pkg/e"
 	"time"
@@ -121,4 +124,49 @@ func (c *BaseController) ValidatorAuto(frontendData interface{}) {
 func (c *BaseController) RedirectTo(url string) {
 	c.Redirect(url, 302)
 	c.StopRun()
+}
+
+// insert action log
+func (c *BaseController) RecordLog(message string, level int) {
+	userAgent := c.Ctx.Request.UserAgent()
+	referer := c.Ctx.Request.Referer()
+	getParams := c.Ctx.Request.URL.String()
+	path := c.Ctx.Request.URL.Path
+	c.Ctx.Request.ParseForm()
+	postParamsMap := map[string][]string(c.Ctx.Request.PostForm)
+	postParams, _ := json.Marshal(postParamsMap)
+
+	var model = models.LogInfo{
+		Level:      level,
+		Path:       path,
+		Get:        getParams,
+		Post:       string(postParams),
+		Message:    message,
+		Ip:         c.Ctx.Input.IP(),
+		UserAgent:  userAgent,
+		Referer:    referer,
+		CreatedBy:  common.UserId,
+		UpdatedBy:  0,
+		Status:     0,
+		Username:   common.UserName,
+		CreateTime: time.Now(),
+	}
+
+	model.Create()
+}
+
+func (c *BaseController) ErrorLog(message string) {
+	c.RecordLog(message, models.Log_Level_Error)
+}
+
+func (c *BaseController) WarningLog(message string) {
+	c.RecordLog(message, models.Log_Level_Warning)
+}
+
+func (c *BaseController) InfoLog(message string) {
+	c.RecordLog(message, models.Log_Level_Info)
+}
+
+func (c *BaseController) DebugLog(message string) {
+	c.RecordLog(message, models.Log_Level_Debug)
 }

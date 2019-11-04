@@ -11,7 +11,10 @@ import (
 
 var TplModel = `package models
 
-import "errors"
+import (
+	"errors"
+	"time"
+)
 
 type Config struct {
 	Model

@@ -1,14 +1,4 @@
-package generate
-
-import (
-	"fmt"
-	"io/ioutil"
-	"log"
-	"os"
-	"path"
-)
-
-var controllerTpl = `package $path$
+package commons
 
 import (
 	"github.com/astaxie/beego/validation"
@@ -22,20 +12,20 @@ import (
 	"strings"
 )
 
-type CategoryController struct {
+type LogInfoController struct {
 	controllers.BaseController
 }
 
-func (c *CategoryController) Prepare() {
+func (c *LogInfoController) Prepare() {
 
 }
 
 /**
 获取列表数据
  */
-func (c *CategoryController) Index() {
+func (c *LogInfoController) Index() {
 	if c.Ctx.Input.IsPost() {
-		model := models.NewCategory()
+		model := models.NewLogInfo()
 		
 		data := c.Ctx.Input.RequestBody
 		//json数据封装到user对象中
@@ -95,9 +85,9 @@ func (c *CategoryController) Index() {
 /**
 创建数据
 */
-func (c *CategoryController) Create() {
+func (c *LogInfoController) Create() {
 	if c.Ctx.Input.IsPost() {
-		model := models.NewCategory()
+		model := models.NewLogInfo()
         data := c.Ctx.Input.RequestBody
 		//1.压入数据 json数据封装到对象中
 		
@@ -131,8 +121,8 @@ func (c *CategoryController) Create() {
 /**
 更新数据
 */
-func (c *CategoryController) Update() {
-    model := models.NewCategory()
+func (c *LogInfoController) Update() {
+    model := models.NewLogInfo()
 	data := c.Ctx.Input.RequestBody
 	//json数据封装到对象中
 	
@@ -176,9 +166,9 @@ func (c *CategoryController) Update() {
 /**
 删除数据
 */
-func (c *CategoryController) Delete() {
+func (c *LogInfoController) Delete() {
     if c.Ctx.Input.IsDelete() {
-		model := models.NewCategory()
+		model := models.NewLogInfo()
 		data := c.Ctx.Input.RequestBody
 		//json数据封装到user对象中
 		
@@ -200,8 +190,8 @@ func (c *CategoryController) Delete() {
 	}
 }
 
-func (c *CategoryController) BatchDelete() {
-	model := models.NewCategory()
+func (c *LogInfoController) BatchDelete() {
+	model := models.NewLogInfo()
 
 	var ids []int
 	if err := c.Ctx.Input.Bind(&ids, "ids"); err != nil {
@@ -214,16 +204,3 @@ func (c *CategoryController) BatchDelete() {
 	c.JsonResult(e.SUCCESS, "删除成功")
 }
 
-`
-
-func CreateController(controllerPath, tableName string) {
-	controllerData := ReplaceStr(tableName, controllerPath,controllerTpl,"")
-
-	if err := os.MkdirAll(path.Clean(controllerPath), 777); err != nil {
-		log.Println("控制器文件创建失败")
-	}
-
-	if err := ioutil.WriteFile(path.Join(controllerPath, fmt.Sprintf("%s.go", tableName)), []byte(controllerData), os.ModeType); err != nil {
-		log.Println(err)
-	}
-}
