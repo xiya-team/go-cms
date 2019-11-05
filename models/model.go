@@ -14,8 +14,8 @@ import (
 var Db *gorm.DB
 
 type Model struct {
-	StartTime   string      `json:"start_time,omitempty" gorm:"-" form:"start_time"`   // 忽略这个字段
-	EndTime     string      `json:"end_time,omitempty" gorm:"-" form:"end_time"`   // 忽略这个字段
+	StartTime   string      `json:"start_time,omitempty" gorm:"-" form:"start_time" time_format:"2008-08-08 08:08:08"`   // 忽略这个字段
+	EndTime     string      `json:"end_time,omitempty" gorm:"-" form:"end_time" time_format:"2008-08-08 08:08:08"`   // 忽略这个字段
 	Page        int64       `json:"page,omitempty" gorm:"-" form:"page"`   // 忽略这个字段
 	PageSize    int64       `json:"page_size,omitempty" gorm:"-" form:"page_size"`   // 忽略这个字段
 	OrderColumnName  string `json:"order_column_name,omitempty" gorm:"-" form:"order_column_name"`   // 忽略这个字段
@@ -25,6 +25,17 @@ type Model struct {
 func NewModel() (model *Model) {
 	return &Model{}
 }
+
+const (
+	Log_Level_Emegergency = iota
+	Log_Level_Alaert
+	Log_Level_Critical
+	Log_Level_Error
+	Log_Level_Warning
+	Log_Level_Notice
+	Log_Level_Info
+	Log_Level_Debug
+)
 
 const (
 	RECODE_OK         = "0"

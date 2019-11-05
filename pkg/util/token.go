@@ -5,6 +5,7 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/syyongx/php2go"
+	"go-cms/common"
 	"go-cms/models"
 	"time"
 )
@@ -102,7 +103,8 @@ func CheckToken(tokenString string) (b bool, t string,code int) {
 	}
 	
 	userId := GetUserIdByToken(tokenString)
-	
+	user_name := GetUserNameByToken(tokenString)
+	common.UserName = user_name
 	return true, "验证通过",userId
 }
 

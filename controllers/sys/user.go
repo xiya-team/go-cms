@@ -360,7 +360,7 @@ func (c *UserController) CheckToken() {
 	
 	jsonData := make(map[string]interface{}, 1)
 	jsonData["user_id"] = code
-	
+
 	c.JsonResult(e.SUCCESS, "success",jsonData)
 }
 
