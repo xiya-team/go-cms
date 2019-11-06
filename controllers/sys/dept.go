@@ -233,12 +233,66 @@ func (c *DeptController) FindAll()  {
 		c.JsonResult(e.ERROR, err.Error())
 	}
 
-	if php2go.Empty(model.ParentId){
-		menuData,_ := model.FindAll()
-		c.JsonResult(e.SUCCESS, "获取成功",constructDeptTrees(menuData,0))
+
+	dataMap := make(map[string]interface{}, 0)
+
+	//开始时间
+	if !php2go.Empty(model.StartTime) {
+		dataMap["start_time"] = model.StartTime
+	}
+
+	//结束时间
+	if !php2go.Empty(model.EndTime) {
+		dataMap["end_time"] = model.EndTime
+	}
+
+	//状态
+	if !php2go.Empty(model.Status) {
+		dataMap["status"] = model.Status
+	}
+
+	//dept_name
+	if !php2go.Empty(model.DeptName) {
+		dataMap["dept_name"] = model.DeptName
+	}
+
+	if php2go.Empty(dataMap){
+		if php2go.Empty(model.ParentId){
+			menuData,_ := model.FindAll()
+			c.JsonResult(e.SUCCESS, "获取成功",constructDeptTrees(menuData,0))
+		}else {
+			menuData,_ := model.FindAllByParentId(model.ParentId)
+			c.JsonResult(e.SUCCESS, "获取成功",constructDeptTrees(menuData,0))
+		}
 	}else {
-		menuData,_ := model.FindAllByParentId(model.ParentId)
-		c.JsonResult(e.SUCCESS, "获取成功",constructDeptTrees(menuData,0))
+		if php2go.Empty(model.Page) {
+			model.Page = 1
+		}else{
+			if model.Page <= 0 {
+				model.Page = 1
+			}
+		}
+
+		if php2go.Empty(model.PageSize) {
+			model.PageSize = 10
+		}else {
+			if model.Page <= 0 {
+				model.Page = 10
+			}
+		}
+
+		var orderBy string
+		if !php2go.Empty(model.OrderColumnName) && !php2go.Empty(model.OrderType){
+			orderBy = strings.Join([]string{model.OrderColumnName,model.OrderType}," ")
+		}else {
+			orderBy = "created_at DESC"
+		}
+
+		result, count,err := models.NewDept().FindByMap((model.Page-1)*model.PageSize, model.PageSize, dataMap,orderBy)
+		if err != nil{
+			c.JsonResult(e.ERROR, "获取数据失败")
+		}
+		c.JsonResult(e.SUCCESS, "ok", result, count, model.Page, model.PageSize)
 	}
 }
 
