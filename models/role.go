@@ -200,8 +200,14 @@ func (m *Role) FindByMap(offset, limit int64, dataMap map[string]interface{},ord
 	if status,isExist:=dataMap["status"].(int);isExist{
 		query = query.Where("status = ?", status)
 	}
-	if name,ok:=dataMap["name"].(string);ok{
-		query = query.Where("name LIKE ?", "%"+name+"%")
+
+	if role_name,ok:=dataMap["role_name"].(string);ok{
+		query = query.Where("role_name LIKE ?", "%"+role_name+"%")
+	}
+
+	//role_key
+	if role_key,ok:=dataMap["role_key"].(string);ok{
+		query = query.Where("role_key LIKE ?", "%"+role_key+"%")
 	}
 
 	if startTime,ok:=dataMap["start_time"].(string);ok{

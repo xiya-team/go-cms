@@ -52,6 +52,15 @@ func (c *RoleController) Index() {
 			dataMap["status"] = model.Status
 		}
 
+		if !php2go.Empty(model.RoleName) {
+			dataMap["role_name"] = model.RoleName
+		}
+
+		//role_key
+		if !php2go.Empty(model.RoleKey) {
+			dataMap["role_key"] = model.RoleKey
+		}
+
 		if php2go.Empty(model.Page) {
 			model.Page = 1
 		}else{
