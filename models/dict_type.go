@@ -126,10 +126,7 @@ func (m *DictType) FindByMap(offset, limit int64, dataMap map[string]interface{}
 	}
 
 	// 获取取指page，指定pagesize的记录
-	err = query.Select("*").Offset(offset).Limit(limit).Find(&res).Error
-	if err == nil{
-		err = query.Model(&m).Count(&total).Error
-	}
+	err = query.Select("*").Offset(offset).Limit(limit).Find(&res).Count(&total).Error
 	return
 }
 
