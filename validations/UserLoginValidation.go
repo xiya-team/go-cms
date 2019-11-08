@@ -1,4 +1,4 @@
-package backend
+package validations
 
 type UserLoginValidation struct {
 	UserName string `form:"user_name" valid:"Required;"`

@@ -13,15 +13,15 @@ import (
 type User struct {
 	Model
 	Id          int         `json:"id"         form:"id"         gorm:"default:''"`
-	Nickname    string      `json:"nickname"   form:"nickname"   gorm:"default:''" valid:"Required;MaxSize(20);MinSize(2)"`
-	UserName    string      `json:"user_name"  form:"user_name"  gorm:"default:''" valid:"Required;MaxSize(20);MinSize(6)"`
-	UserType    int         `json:"user_type"  form:"user_type"  gorm:"default:'00'"`
-	Email       string      `json:"email"      form:"email"      gorm:"default:''" valid:"Email"`
+	Nickname    string      `json:"nickname"   form:"nickname"   gorm:"default:''" validate:"required"`
+	UserName    string      `json:"user_name"  form:"user_name"  gorm:"default:''" validate:"required"`
+	UserType    int         `json:"user_type"  form:"user_type"  gorm:"default:''"`
+	Email       string      `json:"email"      form:"email"      gorm:"default:''" validate:"required,email"`
 	Phone       string      `json:"phone"      form:"phone"      gorm:"default:''"`
 	Phonenumber string      `json:"phonenumber"form:"phonenumber"gorm:"default:''"`
 	Sex         int         `json:"sex"        form:"sex"        gorm:"default:'1'"`
 	Avatar      string      `json:"avatar"     form:"avatar"     gorm:"default:''"`
-	Password    string      `json:"password"   form:"password"   gorm:"default:''" valid:"Required;MaxSize(33);MinSize(6)"`
+	Password    string      `json:"password"   form:"password"   gorm:"default:''"`
 	Salt        string      `json:"salt"       form:"salt"       gorm:"default:''"`
 	Status      int         `json:"status"     form:"status"     gorm:"default:'1'"`
 	DelFlag     int         `json:"del_flag"   form:"del_flag"   gorm:"default:'1'"`

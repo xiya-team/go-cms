@@ -11,7 +11,7 @@ import (
 	"go-cms/pkg/e"
 	"go-cms/pkg/util"
 	"go-cms/services"
-	"go-cms/validations/backend"
+	"go-cms/validations"
 	"log"
 	"strings"
 	"time"
@@ -119,14 +119,12 @@ func (c *UserController) Create() {
 		if err := c.ParseForm(model); err != nil {
 			c.JsonResult(e.ERROR, "赋值失败")
 		}
-		
+
 		//2.验证
-		valid := validation.Validation{}
-		if b, _ := valid.Valid(model); !b {
-			for _, err := range valid.Errors {
-				log.Println(err.Key, err.Message)
-			}
-			c.JsonResult(e.ERROR, "验证失败")
+		UserValidations := validations.BaseValidations{}
+		message := UserValidations.Check(model)
+		if !php2go.Empty(message){
+			c.JsonResult(e.ERROR, message)
 		}
 		
 		if !php2go.Empty(model.Password) {
@@ -292,7 +290,7 @@ func (c *UserController) Login() {
 		}
 		
 		//数据校验
-		loginData := backend.UserLoginValidation{}
+		loginData := validations.UserLoginValidation{}
 		loginData.UserName = model.UserName
 		loginData.Password = model.Password
 		c.ValidatorAuto(&loginData)
