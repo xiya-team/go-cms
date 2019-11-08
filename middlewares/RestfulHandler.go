@@ -5,6 +5,7 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/context"
 	"github.com/astaxie/beego/logs"
+	"github.com/go-redis/redis_rate/v8"
 	"github.com/syyongx/php2go"
 	"go-cms/common"
 	"go-cms/pkg/e"
@@ -56,7 +57,10 @@ func RestfulHandler() func(ctx *context.Context) {
 				break
 			}
 		}
-		
+
+
+
+
 		// 方法请求
 		if flag == false {
 			ctx.Output.Header("Content-Type", "application/json")
@@ -67,7 +71,39 @@ func RestfulHandler() func(ctx *context.Context) {
 			}
 			return
 		}
-		
+
+		//Redis实现接口幂等
+		if strings.ToUpper(ctx.Request.Method) == strings.ToUpper("put"){
+			data := ctx.Input.RequestBody
+			Result := util.MD5(ctx.Input.IP() + string(data))
+
+			redisClient := util.NewRedisClient()
+			limiter := redis_rate.NewLimiter(redisClient, &redis_rate.Limit{
+				Burst:  10,
+				Rate:   10,
+				Period: time.Second,
+			})
+			res, err := limiter.Allow(Result)
+			if err != nil {
+				resBody, err := json.Marshal(OutResponse(e.ERROR, nil, "Method Not Allow"))
+				ctx.Output.Body(resBody)
+				if err != nil {
+					panic(err)
+				}
+				return
+			}
+
+			if res.Allowed == false {
+				resBody, err := json.Marshal(OutResponse(e.ERROR, nil, "网络繁忙请稍后再试！"))
+				if err != nil {
+					panic(err)
+				}
+				ctx.Output.Body(resBody)
+				return
+			}
+			logs.Error(res.Remaining)
+		}
+
 		// 伪造请求方式
 		if requestMethod != "" && ctx.Input.IsPost() {
 			ctx.Request.Method = requestMethod

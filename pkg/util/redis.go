@@ -3,7 +3,7 @@ package util
 import (
 	"fmt"
 	"github.com/astaxie/beego"
-	"github.com/go-redis/redis"
+	"github.com/go-redis/redis/v7"
 )
 
 func NewRedisClient() *redis.Client{

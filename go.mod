@@ -10,6 +10,8 @@ require (
 	github.com/bradfitz/gomemcache v0.0.0-20190913173617-a41fca850d0b // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-redis/redis v6.15.6+incompatible
+	github.com/go-redis/redis/v7 v7.0.0-beta.4
+	github.com/go-redis/redis_rate/v8 v8.0.0-beta
 	github.com/gorilla/websocket v1.4.1
 	github.com/jinzhu/gorm v1.9.11
 	github.com/kr/pretty v0.1.0 // indirect
