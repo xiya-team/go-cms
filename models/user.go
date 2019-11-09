@@ -233,7 +233,11 @@ func (m *User) FindByMap(offset, limit int64, dataMap map[string]interface{},ord
 	if phone,ok:=dataMap["phone"].(string);ok{
 		query = query.Where("phone LIKE ?", "%"+phone+"%")
 	}
-	
+
+	if fields,ok:=dataMap["fields"].(string);ok{
+		query = query.Select(fields)
+	}
+
 	if orderBy!=""{
 		query = query.Order(orderBy)
 	}

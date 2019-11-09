@@ -132,6 +132,10 @@ func (m *Article) FindByMap(offset, limit int64, dataMap map[string]interface{},
 		query = query.Where("created_at <= ?", endTime)
 	}
 
+	if fields,ok:=dataMap["fields"].(string);ok{
+		query = query.Select(fields)
+	}
+
     if orderBy!=""{
 		query = query.Order(orderBy)
 	}

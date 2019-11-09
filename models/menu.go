@@ -128,6 +128,10 @@ func (m *Menu) FindByMap(offset, limit int64, dataMap map[string]interface{},ord
 		query = query.Where("created_at <= ?", endTime)
 	}
 
+	if fields,ok:=dataMap["fields"].(string);ok{
+		query = query.Select(fields)
+	}
+
     if orderBy!=""{
 		query = query.Order(orderBy)
 	}
@@ -137,8 +141,11 @@ func (m *Menu) FindByMap(offset, limit int64, dataMap map[string]interface{},ord
 	return
 }
 
-func (m *Menu) FindAll() (res []Menu, err error) {
+func (m *Menu) FindAll(dataMap map[string]interface{}) (res []Menu, err error) {
 	query := Db
+	if fields,ok:=dataMap["fields"].(string);ok{
+		query = query.Select(fields)
+	}
 	err = query.Find(&res).Error
 	return
 }
@@ -218,7 +225,9 @@ func (m *Menu)FindMenus(pid int) []*vo.TreeList {
 
 func (m *Menu)FindAllChildren(pid int)  []int {
 	var ids []int;
-	menuData,_ := m.FindAll()
+
+	dataMap := make(map[string]interface{}, 0)
+	menuData,_ := m.FindAll(dataMap)
 
 	for _, menu := range menuData {
 		if pid == menu.Id{

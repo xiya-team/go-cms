@@ -113,7 +113,11 @@ func (m *Post) FindByMap(offset, limit int64, dataMap map[string]interface{},ord
 	if postCode,ok:=dataMap["post_code"].(string);ok{
 		query = query.Where("post_code LIKE ?", "%"+postCode+"%")
 	}
-	
+
+	if fields,ok:=dataMap["fields"].(string);ok{
+		query = query.Select(fields)
+	}
+
     if orderBy!=""{
 		query = query.Order(orderBy)
 	}

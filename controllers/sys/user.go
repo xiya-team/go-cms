@@ -71,6 +71,11 @@ func (c *UserController) Index() {
 			dataMap["status"] = model.Status
 		}
 
+		//查询字段
+		if !php2go.Empty(model.Fields) {
+			dataMap["fields"] = model.Fields
+		}
+
 		if php2go.Empty(model.Page) {
 			model.Page = 1
 		}else{

@@ -56,6 +56,11 @@ func (c *MenuController) Index() {
 			dataMap["end_time"] = model.EndTime
 		}
 
+		//查询字段
+		if !php2go.Empty(model.Fields) {
+			dataMap["fields"] = model.Fields
+		}
+
 		if php2go.Empty(model.Page) {
 			model.Page = 1
 		}else{
@@ -257,14 +262,24 @@ func (c *MenuController) Menus()  {
 	}
 
 	if php2go.Empty(dataMap) {
+		//查询字段
+		if !php2go.Empty(model.Fields) {
+			dataMap["fields"] = model.Fields
+		}
+
 		if php2go.Empty(model.ParentId){
-			menuData,_ := model.FindAll()
+			menuData,_ := model.FindAll(dataMap)
 			c.JsonResult(e.SUCCESS, "获取成功",constructMenuTrees(menuData,0))
 		}else {
 			menuData,_ := model.FindAllByParentId(model.ParentId)
 			c.JsonResult(e.SUCCESS, "获取成功",constructMenuTrees(menuData,0))
 		}
 	}else {
+		//查询字段
+		if !php2go.Empty(model.Fields) {
+			dataMap["fields"] = model.Fields
+		}
+
 		if php2go.Empty(model.Page) {
 			model.Page = 1
 		}else{
