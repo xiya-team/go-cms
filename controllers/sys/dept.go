@@ -88,7 +88,7 @@ func (c *DeptController) Index() {
 创建数据
 */
 func (c *DeptController) Create() {
-	if c.Ctx.Input.IsPost() {
+	if c.Ctx.Input.IsPut() {
 		model := models.NewDept()
         data := c.Ctx.Input.RequestBody
 		//1.压入数据 json数据封装到对象中

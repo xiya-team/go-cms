@@ -85,7 +85,7 @@ func (c *ConfigsController) Index() {
 创建数据
 */
 func (c *ConfigsController) Create() {
-	if c.Ctx.Input.IsPost() {
+	if c.Ctx.Input.IsPut() {
 		model := models.NewConfigs()
         data := c.Ctx.Input.RequestBody
 		//1.压入数据 json数据封装到对象中

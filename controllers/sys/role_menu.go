@@ -80,7 +80,7 @@ func (c *RoleMenuController) Index() {
 创建数据
 */
 func (c *RoleMenuController) Create() {
-	if c.Ctx.Input.IsPost() {
+	if c.Ctx.Input.IsPut() {
 		model := models.NewRoleMenu()
         data := c.Ctx.Input.RequestBody
 		//1.压入数据 json数据封装到对象中
