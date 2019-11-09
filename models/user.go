@@ -69,7 +69,7 @@ func (m *User) Create() (newAttr User, err error) {
 					UserId:m.Id,
 					PostId:post_id,
 				}
-				err = tx.Model(&up).Create(user_post).Error
+				_ = tx.Model(&up).Create(user_post).Error
 			}
 		}
 	}
@@ -85,7 +85,7 @@ func (m *User) Create() (newAttr User, err error) {
 					UserId:m.Id,
 					RoleId:role_id,
 				}
-				err = tx.Model(&ur).Create(user_role).Error
+				_ = tx.Model(&ur).Create(user_role).Error
 			}
 		}
 	}
@@ -115,7 +115,7 @@ func (m *User) Update() (newAttr User, err error) {
 						UserId:m.Id,
 						PostId:post_id,
 					}
-					err = tx.Model(&up).Create(user_post).Error
+					_ = tx.Model(&up).Create(user_post).Error
 				}
 			}
 		}
@@ -131,7 +131,7 @@ func (m *User) Update() (newAttr User, err error) {
 						UserId:m.Id,
 						RoleId:role_id,
 					}
-					err = tx.Model(&ur).Create(user_role).Error
+					_ = tx.Model(&ur).Create(user_role).Error
 				}
 			}
 		}
