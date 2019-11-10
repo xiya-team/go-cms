@@ -13,6 +13,7 @@ type MenuItem struct {
 	Perms     string    `json:"perms"     form:"perms"     gorm:"default:''"`
 	Icon      string    `json:"icon"      form:"icon"      gorm:"default:'#'"`
 	IsFrame   int       `json:"is_frame"  form:"is_frame"  gorm:"default:'0'"`
+	Component string    `json:"component" form:"component" gorm:"default:''"`
 	CreateBy  int       `json:"create_by" form:"create_by" gorm:"default:''"`
 	CreatedAt time.Time `json:"created_at"form:"created_at"gorm:"default:''"`
 	UpdateBy  int       `json:"update_by" form:"update_by" gorm:"default:''"`

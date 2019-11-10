@@ -354,6 +354,7 @@ func constructMenuTrees(menus []models.Menu, parentId int) []vo.MenuItem {
 				CreatedAt:menu.CreatedAt,
 				UpdateBy:menu.UpdateBy,
 				Icon:menu.Icon,
+				Component:menu.Component,
 				UpdatedAt:menu.UpdatedAt,
 				IsFrame:menu.IsFrame,
 				Perms:menu.Perms,

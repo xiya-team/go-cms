@@ -18,6 +18,7 @@ type Menu struct {
 	Visible   int       `json:"visible"   form:"visible"   gorm:"default:'0'"`
 	IsFrame   int       `json:"is_frame"  form:"is_frame"  gorm:"default:'0'"`
 	Perms     string    `json:"perms"     form:"perms"     gorm:"default:''"`
+	Component string    `json:"component" form:"component" gorm:"default:''"`
 	Icon      string    `json:"icon"      form:"icon"      gorm:"default:'#'"`
 	CreateBy  int       `json:"create_by" form:"create_by" gorm:"default:''"`
 	CreatedAt time.Time `json:"created_at"form:"created_at"gorm:"default:''"`
@@ -178,6 +179,7 @@ func (m *Menu) FindTopMenu() []*vo.TreeList {
 			UpdateBy:v.UpdateBy,
 			Icon:v.Icon,
 			IsFrame:v.IsFrame,
+			Component:v.Component,
 			UpdatedAt:v.UpdatedAt,
 			Perms:v.Perms,
 			Remark:v.Remark,
@@ -212,6 +214,7 @@ func (m *Menu)FindMenus(pid int) []*vo.TreeList {
 			UpdateBy:v.UpdateBy,
 			Icon:v.Icon,
 			IsFrame:v.IsFrame,
+			Component:v.Component,
 			UpdatedAt:v.UpdatedAt,
 			Perms:v.Perms,
 			Remark:v.Remark,
