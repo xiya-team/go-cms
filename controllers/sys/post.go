@@ -1,13 +1,13 @@
 package sys
 
 import (
+	"encoding/json"
 	"github.com/astaxie/beego/validation"
 	"github.com/syyongx/php2go"
 	"go-cms/common"
 	"go-cms/controllers"
-	"encoding/json"
 	"go-cms/models"
-    "go-cms/pkg/e"
+	"go-cms/pkg/e"
 	"log"
 	"strings"
 )
@@ -91,6 +91,26 @@ func (c *PostController) Index() {
 		if err != nil{
 			c.JsonResult(e.ERROR, "获取数据失败")
 		}
+
+		//if !php2go.Empty(model.Fields){
+		//	//fields_data := strings.Split(model.Fields, ",")
+		//	for _, value := range result {
+		//
+		//		t := reflect.TypeOf(value)
+		//		//v := reflect.ValueOf(value)
+		//		for k := 0; k < t.NumField(); k++ {
+		//			logs.Error(t.Field(k).Name)
+		//
+		//			c:= t.Field(k).Name
+		//			logs.Error(strings.ReplaceAll(c,"([a-z])([A-Z])","$1"+"_"+"$2"))
+		//
+		//
+		//			//logs.Error(v.Field(k).Interface())
+		//		}
+		//	}
+		//
+		//}
+
 		c.JsonResult(e.SUCCESS, "ok", result, count, model.Page, model.PageSize)
 	}
 }
