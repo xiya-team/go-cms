@@ -8,7 +8,9 @@ import (
 	"go-cms/controllers"
 	"go-cms/models"
 	"go-cms/pkg/e"
+	"go-cms/pkg/util"
 	"log"
+	"reflect"
 	"strings"
 )
 
@@ -92,26 +94,28 @@ func (c *PostController) Index() {
 			c.JsonResult(e.ERROR, "获取数据失败")
 		}
 
-		//if !php2go.Empty(model.Fields){
-		//	//fields_data := strings.Split(model.Fields, ",")
-		//	for _, value := range result {
-		//
-		//		t := reflect.TypeOf(value)
-		//		//v := reflect.ValueOf(value)
-		//		for k := 0; k < t.NumField(); k++ {
-		//			logs.Error(t.Field(k).Name)
-		//
-		//			c:= t.Field(k).Name
-		//			logs.Error(strings.ReplaceAll(c,"([a-z])([A-Z])","$1"+"_"+"$2"))
-		//
-		//
-		//			//logs.Error(v.Field(k).Interface())
-		//		}
-		//	}
-		//
-		//}
+		if !php2go.Empty(model.Fields){
+			lists := make(map[string]interface{}, 0)
+			fields := strings.Split(model.Fields, ",")
 
-		c.JsonResult(e.SUCCESS, "ok", result, count, model.Page, model.PageSize)
+			for key,item:=range fields {
+				fields[key] = util.ToFirstWordsUp(item)
+			}
+
+			for _, value := range result {
+				t := reflect.TypeOf(value)
+				v := reflect.ValueOf(value)
+				for k := 0; k < t.NumField(); k++ {
+					if php2go.InArray(t.Field(k).Name,fields){
+						lists[t.Field(k).Name] = v.Field(k).Interface()
+					}
+				}
+			}
+
+			c.JsonResult(e.SUCCESS, "ok", lists, count, model.Page, model.PageSize)
+		}else {
+			c.JsonResult(e.SUCCESS, "ok", result, count, model.Page, model.PageSize)
+		}
 	}
 }
 

@@ -7,7 +7,9 @@ import (
 	"encoding/json"
 	"go-cms/models"
     "go-cms/pkg/e"
+	"go-cms/pkg/util"
 	"log"
+	"reflect"
 	"strings"
 )
 
@@ -77,7 +79,29 @@ func (c *AdminLogController) Index() {
 		if err != nil{
 			c.JsonResult(e.ERROR, "获取数据失败")
 		}
-		c.JsonResult(e.SUCCESS, "ok", result, count, model.Page, model.PageSize)
+
+		if !php2go.Empty(model.Fields){
+			lists := make(map[string]interface{}, 0)
+			fields := strings.Split(model.Fields, ",")
+
+			for key,item:=range fields {
+				fields[key] = util.ToFirstWordsUp(item)
+			}
+
+			for _, value := range result {
+				t := reflect.TypeOf(value)
+				v := reflect.ValueOf(value)
+				for k := 0; k < t.NumField(); k++ {
+					if php2go.InArray(t.Field(k).Name,fields){
+						lists[t.Field(k).Name] = v.Field(k).Interface()
+					}
+				}
+			}
+
+			c.JsonResult(e.SUCCESS, "ok", lists, count, model.Page, model.PageSize)
+		}else {
+			c.JsonResult(e.SUCCESS, "ok", result, count, model.Page, model.PageSize)
+		}
 	}
 }
 

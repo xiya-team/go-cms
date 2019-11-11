@@ -24,6 +24,14 @@ const (
 	letterIdxMax  = 63 / letterIdxBits   // # of letter indices fitting in 63 bits
 )
 
+func ToFirstWordsUp(s string)  (str string){
+	words := strings.Split(s, "_")
+	for _,item:=range words {
+		str += php2go.Ucfirst(item)
+	}
+	return str
+}
+
 func JsonDecode(jsonStr string, structModel interface{}) error {
 	decode := json.NewDecoder(strings.NewReader(jsonStr))
 	err := decode.Decode(structModel)
