@@ -214,7 +214,11 @@ func (m *User) FindByMap(offset, limit int64, dataMap map[string]interface{},ord
 	}
 
 	if dept_id,isExist:=dataMap["dept_id"].(int);isExist == true{
-		query = query.Where("dept_id = ?", dept_id)
+		dept := NewDept()
+		dept_ids := dept.FindAllChildren(dept_id)
+		dept_ids = append(dept_ids,dept_id)
+		
+		query = query.Where("dept_id in (?)", dept_ids)
 	}
 
 	if nickname,ok:=dataMap["nickname"].(string);ok{
