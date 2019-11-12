@@ -386,19 +386,22 @@ func (c *UserController) UserInfo() {
 }
 
 func (c *UserController) FormatData(fields []string,result []models.User) (res interface{}) {
-	lists := make(map[string]interface{}, 0)
+	lists := make([]map[string]interface{},0)
+
 	for key,item:=range fields {
 		fields[key] = util.ToFirstWordsUp(item)
 	}
 
 	for _, value := range result {
+		tmp := make(map[string]interface{}, 0)
 		t := reflect.TypeOf(value)
 		v := reflect.ValueOf(value)
 		for k := 0; k < t.NumField(); k++ {
 			if php2go.InArray(t.Field(k).Name,fields){
-				lists[util.ToFirstWordsDown(t.Field(k).Name)] = v.Field(k).Interface()
+				tmp[util.ToFirstWordsDown(t.Field(k).Name)] = v.Field(k).Interface()
 			}
 		}
+		lists = append(lists,tmp)
 	}
 	return lists
 }

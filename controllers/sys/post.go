@@ -104,24 +104,6 @@ func (c *PostController) Index() {
 	}
 }
 
-func (c *PostController) FormatData(fields []string,result []models.Post) (res interface{}) {
-	lists := make(map[string]interface{}, 0)
-	for key,item:=range fields {
-		fields[key] = util.ToFirstWordsUp(item)
-	}
-
-	for _, value := range result {
-		t := reflect.TypeOf(value)
-		v := reflect.ValueOf(value)
-		for k := 0; k < t.NumField(); k++ {
-			if php2go.InArray(t.Field(k).Name,fields){
-				lists[util.ToFirstWordsDown(t.Field(k).Name)] = v.Field(k).Interface()
-			}
-		}
-	}
-	return lists
-}
-
 /**
 创建数据
 */
@@ -244,3 +226,23 @@ func (c *PostController) BatchDelete() {
 	c.JsonResult(e.SUCCESS, "删除成功")
 }
 
+func (c *PostController) FormatData(fields []string,result []models.Post) (res interface{}) {
+	lists := make([]map[string]interface{},0)
+
+	for key,item:=range fields {
+		fields[key] = util.ToFirstWordsUp(item)
+	}
+
+	for _, value := range result {
+		tmp := make(map[string]interface{}, 0)
+		t := reflect.TypeOf(value)
+		v := reflect.ValueOf(value)
+		for k := 0; k < t.NumField(); k++ {
+			if php2go.InArray(t.Field(k).Name,fields){
+				tmp[util.ToFirstWordsDown(t.Field(k).Name)] = v.Field(k).Interface()
+			}
+		}
+		lists = append(lists,tmp)
+	}
+	return lists
+}
