@@ -95,28 +95,31 @@ func (c *PostController) Index() {
 		}
 
 		if !php2go.Empty(model.Fields){
-			lists := make(map[string]interface{}, 0)
 			fields := strings.Split(model.Fields, ",")
-
-			for key,item:=range fields {
-				fields[key] = util.ToFirstWordsUp(item)
-			}
-
-			for _, value := range result {
-				t := reflect.TypeOf(value)
-				v := reflect.ValueOf(value)
-				for k := 0; k < t.NumField(); k++ {
-					if php2go.InArray(t.Field(k).Name,fields){
-						lists[t.Field(k).Name] = v.Field(k).Interface()
-					}
-				}
-			}
-
+			lists := c.FormatData(fields,result)
 			c.JsonResult(e.SUCCESS, "ok", lists, count, model.Page, model.PageSize)
 		}else {
 			c.JsonResult(e.SUCCESS, "ok", result, count, model.Page, model.PageSize)
 		}
 	}
+}
+
+func (c *PostController) FormatData(fields []string,result []models.Post) (res interface{}) {
+	lists := make(map[string]interface{}, 0)
+	for key,item:=range fields {
+		fields[key] = util.ToFirstWordsUp(item)
+	}
+
+	for _, value := range result {
+		t := reflect.TypeOf(value)
+		v := reflect.ValueOf(value)
+		for k := 0; k < t.NumField(); k++ {
+			if php2go.InArray(t.Field(k).Name,fields){
+				lists[util.ToFirstWordsDown(t.Field(k).Name)] = v.Field(k).Interface()
+			}
+		}
+	}
+	return lists
 }
 
 /**

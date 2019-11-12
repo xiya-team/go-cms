@@ -32,6 +32,28 @@ func ToFirstWordsUp(s string)  (str string){
 	return str
 }
 
+func ToFirstWordsDown(s string)(str string) {
+	var ss string
+	for i, ch := range s {
+		tmp := string(ch)
+		if i==0{
+			ss+= strings.ToLower(tmp)
+		} else {
+			if IsUpper(tmp){
+				ss+= "_"
+				ss+= strings.ToLower(tmp)
+			}else {
+				ss+= tmp
+			}
+		}
+	}
+	return ss
+}
+
+func IsUpper(code string) bool{
+	return code == strings.ToUpper(code)
+}
+
 func JsonDecode(jsonStr string, structModel interface{}) error {
 	decode := json.NewDecoder(strings.NewReader(jsonStr))
 	err := decode.Decode(structModel)

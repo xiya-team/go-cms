@@ -80,23 +80,8 @@ func (c *RoleMenuController) Index() {
 			c.JsonResult(e.ERROR, "获取数据失败")
 		}
 		if !php2go.Empty(model.Fields){
-			lists := make(map[string]interface{}, 0)
 			fields := strings.Split(model.Fields, ",")
-
-			for key,item:=range fields {
-				fields[key] = util.ToFirstWordsUp(item)
-			}
-
-			for _, value := range result {
-				t := reflect.TypeOf(value)
-				v := reflect.ValueOf(value)
-				for k := 0; k < t.NumField(); k++ {
-					if php2go.InArray(t.Field(k).Name,fields){
-						lists[t.Field(k).Name] = v.Field(k).Interface()
-					}
-				}
-			}
-
+			lists := c.FormatData(fields,result)
 			c.JsonResult(e.SUCCESS, "ok", lists, count, model.Page, model.PageSize)
 		}else {
 			c.JsonResult(e.SUCCESS, "ok", result, count, model.Page, model.PageSize)
@@ -224,3 +209,20 @@ func (c *RoleMenuController) BatchDelete() {
 	c.JsonResult(e.SUCCESS, "删除成功")
 }
 
+func (c *RoleMenuController) FormatData(fields []string,result []models.RoleMenu) (res interface{}) {
+	lists := make(map[string]interface{}, 0)
+	for key,item:=range fields {
+		fields[key] = util.ToFirstWordsUp(item)
+	}
+
+	for _, value := range result {
+		t := reflect.TypeOf(value)
+		v := reflect.ValueOf(value)
+		for k := 0; k < t.NumField(); k++ {
+			if php2go.InArray(t.Field(k).Name,fields){
+				lists[util.ToFirstWordsDown(t.Field(k).Name)] = v.Field(k).Interface()
+			}
+		}
+	}
+	return lists
+}
