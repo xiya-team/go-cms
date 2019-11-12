@@ -205,7 +205,7 @@ func (c *UserRoleController) BatchDelete() {
 	c.JsonResult(e.SUCCESS, "删除成功")
 }
 
-func (c *UserRoleController) FormatData(fields []string,result []models.UserPost) (res interface{}) {
+func (c *UserRoleController) FormatData(fields []string,result []models.UserRole) (res interface{}) {
 	lists := make(map[string]interface{}, 0)
 	for key,item:=range fields {
 		fields[key] = util.ToFirstWordsUp(item)
