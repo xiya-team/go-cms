@@ -1,13 +1,13 @@
 package sys
 
 import (
+	"encoding/json"
 	"github.com/astaxie/beego/validation"
 	"github.com/syyongx/php2go"
 	"go-cms/common"
 	"go-cms/controllers"
-	"encoding/json"
 	"go-cms/models"
-    "go-cms/pkg/e"
+	"go-cms/pkg/e"
 	"go-cms/pkg/util"
 	"log"
 	"reflect"
@@ -122,6 +122,11 @@ func (c *DictTypeController) Create() {
 			c.JsonResult(e.ERROR, "赋值失败")
 		}
 
+		user,_ := model.FindByDictType(model.DictType)
+		if !php2go.Empty(user) {
+			c.JsonResult(e.ERROR, "字典类型已存在!")
+		}
+
 		//2.验证
 		valid := validation.Validation{}
 		if b, _ := valid.Valid(model); !b {
@@ -166,6 +171,11 @@ func (c *DictTypeController) Update() {
 				log.Println(err.Key, err.Message)
 			}
 			c.JsonResult(e.ERROR, "验证失败")
+		}
+
+		dict_type,_ := model.FindByDictType(model.DictType)
+		if !php2go.Empty(dict_type) && dict_type.Id!=model.Id {
+			c.JsonResult(e.ERROR, "字典类型已存在!")
 		}
 
 		model.UpdateBy = common.UserId

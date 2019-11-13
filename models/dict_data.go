@@ -8,7 +8,7 @@ import (
 type DictData struct {
 	Model
 	Id        int       `json:"id"        form:"id"        gorm:"default:''"`
-	DictId    int       `json:"dict_id"   form:"dict_id"   gorm:"default:''"`
+	DictId    int       `json:"dict_id"   form:"dict_id"   gorm:"default:''" validate:"required"`
 	DictSort  int       `json:"dict_sort" form:"dict_sort" gorm:"default:'0'"`
 	DictLabel string    `json:"dict_label"form:"dict_label"gorm:"default:''"`
 	DictValue string    `json:"dict_value"form:"dict_value"gorm:"default:''"`

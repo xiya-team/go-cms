@@ -101,6 +101,11 @@ func (m *DictType) FindById(id int) (dictType DictType, err error) {
 	return
 }
 
+func (m *DictType) FindByDictType(dict_type string) (dictType DictType, err error) {
+	err = Db.Select("*").Where("dict_type=?", dict_type).First(&dictType).Error
+	return
+}
+
 func (m *DictType) FindByMap(offset, limit int64, dataMap map[string]interface{},orderBy string) (res []DictType, total int64, err error) {
 	query := Db
 	if status,isExist:=dataMap["status"].(int);isExist{
