@@ -20,6 +20,7 @@ type Model struct {
 	PageSize    int64       `json:"page_size,omitempty" gorm:"-" form:"page_size"`   // 忽略这个字段
 	OrderColumnName  string `json:"order_column_name,omitempty" gorm:"-" form:"order_column_name"`   // 忽略这个字段
 	OrderType     string    `json:"order_type,omitempty" gorm:"-" form:"order_type"`   // 忽略这个字段
+	Fields     string       `json:"fields,omitempty" gorm:"-" form:"fields"`   // 忽略这个字段
 }
 
 func NewModel() (model *Model) {

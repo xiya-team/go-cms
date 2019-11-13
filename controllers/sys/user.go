@@ -11,8 +11,9 @@ import (
 	"go-cms/pkg/e"
 	"go-cms/pkg/util"
 	"go-cms/services"
-	"go-cms/validations/backend"
+	"go-cms/validations"
 	"log"
+	"reflect"
 	"strings"
 	"time"
 )
@@ -71,6 +72,11 @@ func (c *UserController) Index() {
 			dataMap["status"] = model.Status
 		}
 
+		//查询字段
+		if !php2go.Empty(model.Fields) {
+			dataMap["fields"] = model.Fields
+		}
+
 		if php2go.Empty(model.Page) {
 			model.Page = 1
 		}else{
@@ -98,7 +104,14 @@ func (c *UserController) Index() {
 		if err != nil{
 			c.JsonResult(e.ERROR, "获取数据失败")
 		}
-		c.JsonResult(e.SUCCESS, "ok", result, count, model.Page, model.PageSize)
+
+		if !php2go.Empty(model.Fields){
+			fields := strings.Split(model.Fields, ",")
+			lists := c.FormatData(fields,result)
+			c.JsonResult(e.SUCCESS, "ok", lists, count, model.Page, model.PageSize)
+		}else {
+			c.JsonResult(e.SUCCESS, "ok", result, count, model.Page, model.PageSize)
+		}
 	}
 }
 
@@ -106,7 +119,7 @@ func (c *UserController) Index() {
 创建数据
 */
 func (c *UserController) Create() {
-	if c.Ctx.Input.IsPost() {
+	if c.Ctx.Input.IsPut() {
 		model := models.NewUser()
 		data := c.Ctx.Input.RequestBody
 		//1.压入数据 json数据封装到对象中
@@ -119,14 +132,12 @@ func (c *UserController) Create() {
 		if err := c.ParseForm(model); err != nil {
 			c.JsonResult(e.ERROR, "赋值失败")
 		}
-		
+
 		//2.验证
-		valid := validation.Validation{}
-		if b, _ := valid.Valid(model); !b {
-			for _, err := range valid.Errors {
-				log.Println(err.Key, err.Message)
-			}
-			c.JsonResult(e.ERROR, "验证失败")
+		UserValidations := validations.BaseValidations{}
+		message := UserValidations.Check(model)
+		if !php2go.Empty(message){
+			c.JsonResult(e.ERROR, message)
 		}
 		
 		if !php2go.Empty(model.Password) {
@@ -292,7 +303,7 @@ func (c *UserController) Login() {
 		}
 		
 		//数据校验
-		loginData := backend.UserLoginValidation{}
+		loginData := validations.UserLoginValidation{}
 		loginData.UserName = model.UserName
 		loginData.Password = model.Password
 		c.ValidatorAuto(&loginData)
@@ -372,4 +383,25 @@ func (c *UserController) UserInfo() {
 		c.JsonResult(e.ERROR, e.ResponseMap[e.ERROR])
 	}
 	c.JsonResult(e.SUCCESS, e.ResponseMap[e.SUCCESS], userInfo)
+}
+
+func (c *UserController) FormatData(fields []string,result []models.User) (res interface{}) {
+	lists := make([]map[string]interface{},0)
+
+	for key,item:=range fields {
+		fields[key] = util.ToFirstWordsUp(item)
+	}
+
+	for _, value := range result {
+		tmp := make(map[string]interface{}, 0)
+		t := reflect.TypeOf(value)
+		v := reflect.ValueOf(value)
+		for k := 0; k < t.NumField(); k++ {
+			if php2go.InArray(t.Field(k).Name,fields){
+				tmp[util.ToFirstWordsDown(t.Field(k).Name)] = v.Field(k).Interface()
+			}
+		}
+		lists = append(lists,tmp)
+	}
+	return lists
 }

@@ -1,14 +1,16 @@
 package sys
 
 import (
+	"encoding/json"
 	"github.com/astaxie/beego/validation"
 	"github.com/syyongx/php2go"
 	"go-cms/common"
 	"go-cms/controllers"
-	"encoding/json"
 	"go-cms/models"
-    "go-cms/pkg/e"
+	"go-cms/pkg/e"
+	"go-cms/pkg/util"
 	"log"
+	"reflect"
 	"strings"
 )
 
@@ -59,6 +61,11 @@ func (c *DictTypeController) Index() {
 			dataMap["status"] = model.Status
 		}
 
+		//查询字段
+		if !php2go.Empty(model.Fields) {
+			dataMap["fields"] = model.Fields
+		}
+
 		if php2go.Empty(model.Page) {
 			model.Page = 1
 		}else{
@@ -86,7 +93,14 @@ func (c *DictTypeController) Index() {
 		if err != nil{
 			c.JsonResult(e.ERROR, "获取数据失败")
 		}
-		c.JsonResult(e.SUCCESS, "ok", result, count, model.Page, model.PageSize)
+
+		if !php2go.Empty(model.Fields){
+			fields := strings.Split(model.Fields, ",")
+			lists := c.FormatData(fields,result)
+			c.JsonResult(e.SUCCESS, "ok", lists, count, model.Page, model.PageSize)
+		}else {
+			c.JsonResult(e.SUCCESS, "ok", result, count, model.Page, model.PageSize)
+		}
 	}
 }
 
@@ -94,7 +108,7 @@ func (c *DictTypeController) Index() {
 创建数据
 */
 func (c *DictTypeController) Create() {
-	if c.Ctx.Input.IsPost() {
+	if c.Ctx.Input.IsPut() {
 		model := models.NewDictType()
         data := c.Ctx.Input.RequestBody
 		//1.压入数据 json数据封装到对象中
@@ -106,6 +120,11 @@ func (c *DictTypeController) Create() {
 		
 		if err := c.ParseForm(model); err != nil {
 			c.JsonResult(e.ERROR, "赋值失败")
+		}
+
+		user,_ := model.FindByDictType(model.DictType)
+		if !php2go.Empty(user) {
+			c.JsonResult(e.ERROR, "字典类型已存在!")
 		}
 
 		//2.验证
@@ -152,6 +171,11 @@ func (c *DictTypeController) Update() {
 				log.Println(err.Key, err.Message)
 			}
 			c.JsonResult(e.ERROR, "验证失败")
+		}
+
+		dict_type,_ := model.FindByDictType(model.DictType)
+		if !php2go.Empty(dict_type) && dict_type.Id!=model.Id {
+			c.JsonResult(e.ERROR, "字典类型已存在!")
 		}
 
 		model.UpdateBy = common.UserId
@@ -212,3 +236,23 @@ func (c *DictTypeController) BatchDelete() {
 	c.JsonResult(e.SUCCESS, "删除成功")
 }
 
+func (c *DictTypeController) FormatData(fields []string,result []models.DictType) (res interface{}) {
+	lists := make([]map[string]interface{},0)
+
+	for key,item:=range fields {
+		fields[key] = util.ToFirstWordsUp(item)
+	}
+
+	for _, value := range result {
+		tmp := make(map[string]interface{}, 0)
+		t := reflect.TypeOf(value)
+		v := reflect.ValueOf(value)
+		for k := 0; k < t.NumField(); k++ {
+			if php2go.InArray(t.Field(k).Name,fields){
+				tmp[util.ToFirstWordsDown(t.Field(k).Name)] = v.Field(k).Interface()
+			}
+		}
+		lists = append(lists,tmp)
+	}
+	return lists
+}

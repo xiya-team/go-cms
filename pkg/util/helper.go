@@ -3,7 +3,9 @@ package util
 import (
 	"crypto"
 	"encoding/hex"
+	"encoding/json"
 	"fmt"
+	"github.com/syyongx/php2go"
 	"math/rand"
 	"net"
 	"os"
@@ -21,6 +23,47 @@ const (
 	letterIdxMask = 1<<letterIdxBits - 1 // All 1-bits, as many as letterIdxBits
 	letterIdxMax  = 63 / letterIdxBits   // # of letter indices fitting in 63 bits
 )
+
+func ToFirstWordsUp(s string)  (str string){
+	words := strings.Split(s, "_")
+	for _,item:=range words {
+		str += php2go.Ucfirst(item)
+	}
+	return str
+}
+
+func ToFirstWordsDown(s string)(str string) {
+	var ss string
+	for i, ch := range s {
+		tmp := string(ch)
+		if i==0{
+			ss+= strings.ToLower(tmp)
+		} else {
+			if IsUpper(tmp){
+				ss+= "_"
+				ss+= strings.ToLower(tmp)
+			}else {
+				ss+= tmp
+			}
+		}
+	}
+	return ss
+}
+
+func IsUpper(code string) bool{
+	return code == strings.ToUpper(code)
+}
+
+func JsonDecode(jsonStr string, structModel interface{}) error {
+	decode := json.NewDecoder(strings.NewReader(jsonStr))
+	err := decode.Decode(structModel)
+	return err
+}
+
+func JsonEncode(structModel interface{}) (string, error) {
+	jsonStr, err := json.Marshal(structModel)
+	return string(jsonStr), err
+}
 
 func SHA256Encode(s string) string {
 	sha256 := crypto.SHA256.New()
@@ -155,4 +198,20 @@ func RandString(n int) string {
 
 func RandNumString(n int) string {
 	return randString(n, numLetterBytes)
+}
+
+func ResultFilter(result []map[string]interface{},fields string) (data []map[string]interface{}){
+	fields_data := strings.Split(fields, ",")
+
+	for _, value := range result {
+		var items map[string]interface{}
+		for key, item := range value {
+			if php2go.InArray(fields_data,key){
+				items[key] = item
+			}
+		}
+		data = append(data, items)
+	}
+
+	return
 }

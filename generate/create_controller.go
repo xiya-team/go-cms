@@ -17,6 +17,7 @@ import (
 	"encoding/json"
 	"go-cms/models"
     "go-cms/common"
+    "go-cms/validations"
     "go-cms/pkg/e"
 	"log"
 	"strings"
@@ -111,12 +112,10 @@ func (c *CategoryController) Create() {
 		}
 
 		//2.验证
-		valid := validation.Validation{}
-		if b, _ := valid.Valid(model); !b {
-			for _, err := range valid.Errors {
-				log.Println(err.Key, err.Message)
-			}
-			c.JsonResult(e.ERROR, "验证失败")
+		UserValidations := validations.BaseValidations{}
+		message := UserValidations.Check(model)
+		if !php2go.Empty(message){
+			c.JsonResult(e.ERROR, message)
 		}
 
 		//3.插入数据

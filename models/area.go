@@ -113,16 +113,17 @@ func (m *Area) FindByMap(offset, limit int64, dataMap map[string]interface{},ord
 	if endTime,ok:=dataMap["end_time"].(string);ok{
 		query = query.Where("created_at <= ?", endTime)
 	}
-	
+
+	if fields,ok:=dataMap["fields"].(string);ok{
+		query = query.Select(fields)
+	}
+
 	if orderBy!=""{
 		query = query.Order(orderBy)
 	}
 	
 	// 获取取指page，指定pagesize的记录
-	err = query.Offset(offset).Limit(limit).Find(&res).Error
-	if err == nil{
-		err = query.Model(&m).Count(&total).Error
-	}
+	err = query.Offset(offset).Limit(limit).Find(&res).Count(&total).Error
 	return
 }
 

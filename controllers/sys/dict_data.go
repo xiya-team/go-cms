@@ -8,7 +8,9 @@ import (
 	"encoding/json"
 	"go-cms/models"
     "go-cms/pkg/e"
+	"go-cms/pkg/util"
 	"log"
+	"reflect"
 	"strings"
 )
 
@@ -35,7 +37,6 @@ func (c *DictDataController) Index() {
 		}
 		
 		dataMap := make(map[string]interface{}, 0)
-		
 		if !php2go.Empty(model.DictId) {
 			dataMap["dict_id"] = model.DictId
 		}
@@ -57,6 +58,11 @@ func (c *DictDataController) Index() {
 		//状态
 		if !php2go.Empty(model.Status) {
 			dataMap["status"] = model.Status
+		}
+
+		//查询字段
+		if !php2go.Empty(model.Fields) {
+			dataMap["fields"] = model.Fields
 		}
 
 		if php2go.Empty(model.Page) {
@@ -83,10 +89,28 @@ func (c *DictDataController) Index() {
 		}
 		
 		result, count,err := models.NewDictData().FindByMap((model.Page-1)*model.PageSize, model.PageSize, dataMap,orderBy)
+
 		if err != nil{
 			c.JsonResult(e.ERROR, "获取数据失败")
 		}
-		c.JsonResult(e.SUCCESS, "ok", result, count, model.Page, model.PageSize)
+
+		maps := make(map[string]interface{})
+		maps["page"] = util.Pages(count, model.Page, model.PageSize)
+
+		if !php2go.Empty(model.DictId){
+			dict_type_models := models.NewDictType()
+			dict_type,_ := dict_type_models.FindById(model.DictId)
+			maps["dict_value_type"] = dict_type.DictValueType
+		}
+		if !php2go.Empty(model.Fields){
+			fields := strings.Split(model.Fields, ",")
+			lists := c.FormatData(fields,result)
+			maps["list"] = lists
+			c.JsonResult(e.SUCCESS, "ok", maps)
+		}else {
+			maps["list"] = result
+			c.JsonResult(e.SUCCESS, "ok", maps)
+		}
 	}
 }
 
@@ -94,7 +118,7 @@ func (c *DictDataController) Index() {
 创建数据
 */
 func (c *DictDataController) Create() {
-	if c.Ctx.Input.IsPost() {
+	if c.Ctx.Input.IsPut() {
 		model := models.NewDictData()
         data := c.Ctx.Input.RequestBody
 		//1.压入数据 json数据封装到对象中
@@ -212,3 +236,23 @@ func (c *DictDataController) BatchDelete() {
 	c.JsonResult(e.SUCCESS, "删除成功")
 }
 
+func (c *DictDataController) FormatData(fields []string,result []models.DictData) (res interface{}) {
+	lists := make([]map[string]interface{},0)
+
+	for key,item:=range fields {
+		fields[key] = util.ToFirstWordsUp(item)
+	}
+
+	for _, value := range result {
+		tmp := make(map[string]interface{}, 0)
+		t := reflect.TypeOf(value)
+		v := reflect.ValueOf(value)
+		for k := 0; k < t.NumField(); k++ {
+			if php2go.InArray(t.Field(k).Name,fields){
+				tmp[util.ToFirstWordsDown(t.Field(k).Name)] = v.Field(k).Interface()
+			}
+		}
+		lists = append(lists,tmp)
+	}
+	return lists
+}

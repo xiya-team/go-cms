@@ -18,6 +18,7 @@ type Menu struct {
 	Visible   int       `json:"visible"   form:"visible"   gorm:"default:'0'"`
 	IsFrame   int       `json:"is_frame"  form:"is_frame"  gorm:"default:'0'"`
 	Perms     string    `json:"perms"     form:"perms"     gorm:"default:''"`
+	Component string    `json:"component" form:"component" gorm:"default:''"`
 	Icon      string    `json:"icon"      form:"icon"      gorm:"default:'#'"`
 	CreateBy  int       `json:"create_by" form:"create_by" gorm:"default:''"`
 	CreatedAt time.Time `json:"created_at"form:"created_at"gorm:"default:''"`
@@ -128,20 +129,24 @@ func (m *Menu) FindByMap(offset, limit int64, dataMap map[string]interface{},ord
 		query = query.Where("created_at <= ?", endTime)
 	}
 
+	if fields,ok:=dataMap["fields"].(string);ok{
+		query = query.Select(fields)
+	}
+
     if orderBy!=""{
 		query = query.Order(orderBy)
 	}
 
 	// 获取取指page，指定pagesize的记录
-	err = query.Offset(offset).Limit(limit).Find(&res).Error
-	if err == nil{
-		err = query.Model(&m).Count(&total).Error
-	}
+	err = query.Offset(offset).Limit(limit).Find(&res).Count(&total).Error
 	return
 }
 
-func (m *Menu) FindAll() (res []Menu, err error) {
+func (m *Menu) FindAll(dataMap map[string]interface{}) (res []Menu, err error) {
 	query := Db
+	if fields,ok:=dataMap["fields"].(string);ok{
+		query = query.Select(fields)
+	}
 	err = query.Find(&res).Error
 	return
 }
@@ -173,6 +178,8 @@ func (m *Menu) FindTopMenu() []*vo.TreeList {
 			CreatedAt:v.CreatedAt,
 			UpdateBy:v.UpdateBy,
 			Icon:v.Icon,
+			IsFrame:v.IsFrame,
+			Component:v.Component,
 			UpdatedAt:v.UpdatedAt,
 			Perms:v.Perms,
 			Remark:v.Remark,
@@ -206,6 +213,8 @@ func (m *Menu)FindMenus(pid int) []*vo.TreeList {
 			CreatedAt:v.CreatedAt,
 			UpdateBy:v.UpdateBy,
 			Icon:v.Icon,
+			IsFrame:v.IsFrame,
+			Component:v.Component,
 			UpdatedAt:v.UpdatedAt,
 			Perms:v.Perms,
 			Remark:v.Remark,
@@ -221,7 +230,9 @@ func (m *Menu)FindMenus(pid int) []*vo.TreeList {
 
 func (m *Menu)FindAllChildren(pid int)  []int {
 	var ids []int;
-	menuData,_ := m.FindAll()
+
+	dataMap := make(map[string]interface{}, 0)
+	menuData,_ := m.FindAll(dataMap)
 
 	for _, menu := range menuData {
 		if pid == menu.Id{

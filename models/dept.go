@@ -117,8 +117,8 @@ func (m *Dept) FindByMap(offset, limit int64, dataMap map[string]interface{},ord
 	if status,isExist:=dataMap["status"].(int);isExist{
 		query = query.Where("status = ?", status)
 	}
-	if name,ok:=dataMap["name"].(string);ok{
-		query = query.Where("name LIKE ?", "%"+name+"%")
+	if dept_name,ok:=dataMap["dept_name"].(string);ok{
+		query = query.Where("dept_name LIKE ?", "%"+dept_name+"%")
 	}
 
 	if startTime,ok:=dataMap["start_time"].(string);ok{
@@ -128,15 +128,16 @@ func (m *Dept) FindByMap(offset, limit int64, dataMap map[string]interface{},ord
 		query = query.Where("created_at <= ?", endTime)
 	}
 
+	if fields,ok:=dataMap["fields"].(string);ok{
+		query = query.Select(fields)
+	}
+
     if orderBy!=""{
 		query = query.Order(orderBy)
 	}
 
 	// 获取取指page，指定pagesize的记录
-	err = query.Offset(offset).Limit(limit).Find(&res).Error
-	if err == nil{
-		err = query.Model(&m).Count(&total).Error
-	}
+	err = query.Offset(offset).Limit(limit).Find(&res).Count(&total).Error
 	return
 }
 

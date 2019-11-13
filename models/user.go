@@ -13,15 +13,15 @@ import (
 type User struct {
 	Model
 	Id          int         `json:"id"         form:"id"         gorm:"default:''"`
-	Nickname    string      `json:"nickname"   form:"nickname"   gorm:"default:''" valid:"Required;MaxSize(20);MinSize(2)"`
-	UserName    string      `json:"user_name"  form:"user_name"  gorm:"default:''" valid:"Required;MaxSize(20);MinSize(6)"`
-	UserType    int         `json:"user_type"  form:"user_type"  gorm:"default:'00'"`
-	Email       string      `json:"email"      form:"email"      gorm:"default:''" valid:"Email"`
+	Nickname    string      `json:"nickname"   form:"nickname"   gorm:"default:''" validate:"required"`
+	UserName    string      `json:"user_name"  form:"user_name"  gorm:"default:''" validate:"required"`
+	UserType    int         `json:"user_type"  form:"user_type"  gorm:"default:''"`
+	Email       string      `json:"email"      form:"email"      gorm:"default:''" validate:"required,email"`
 	Phone       string      `json:"phone"      form:"phone"      gorm:"default:''"`
 	Phonenumber string      `json:"phonenumber"form:"phonenumber"gorm:"default:''"`
 	Sex         int         `json:"sex"        form:"sex"        gorm:"default:'1'"`
 	Avatar      string      `json:"avatar"     form:"avatar"     gorm:"default:''"`
-	Password    string      `json:"password"   form:"password"   gorm:"default:''" valid:"Required;MaxSize(33);MinSize(6)"`
+	Password    string      `json:"password"   form:"password"   gorm:"default:''"`
 	Salt        string      `json:"salt"       form:"salt"       gorm:"default:''"`
 	Status      int         `json:"status"     form:"status"     gorm:"default:'1'"`
 	DelFlag     int         `json:"del_flag"   form:"del_flag"   gorm:"default:'1'"`
@@ -69,7 +69,7 @@ func (m *User) Create() (newAttr User, err error) {
 					UserId:m.Id,
 					PostId:post_id,
 				}
-				err = tx.Model(&up).Create(user_post).Error
+				_ = tx.Model(&up).Create(user_post).Error
 			}
 		}
 	}
@@ -85,7 +85,7 @@ func (m *User) Create() (newAttr User, err error) {
 					UserId:m.Id,
 					RoleId:role_id,
 				}
-				err = tx.Model(&ur).Create(user_role).Error
+				_ = tx.Model(&ur).Create(user_role).Error
 			}
 		}
 	}
@@ -115,7 +115,7 @@ func (m *User) Update() (newAttr User, err error) {
 						UserId:m.Id,
 						PostId:post_id,
 					}
-					err = tx.Model(&up).Create(user_post).Error
+					_ = tx.Model(&up).Create(user_post).Error
 				}
 			}
 		}
@@ -131,7 +131,7 @@ func (m *User) Update() (newAttr User, err error) {
 						UserId:m.Id,
 						RoleId:role_id,
 					}
-					err = tx.Model(&ur).Create(user_role).Error
+					_ = tx.Model(&ur).Create(user_role).Error
 				}
 			}
 		}
@@ -214,7 +214,11 @@ func (m *User) FindByMap(offset, limit int64, dataMap map[string]interface{},ord
 	}
 
 	if dept_id,isExist:=dataMap["dept_id"].(int);isExist == true{
-		query = query.Where("dept_id = ?", dept_id)
+		dept := NewDept()
+		dept_ids := dept.FindAllChildren(dept_id)
+		dept_ids = append(dept_ids,dept_id)
+		
+		query = query.Where("dept_id in (?)", dept_ids)
 	}
 
 	if nickname,ok:=dataMap["nickname"].(string);ok{
@@ -233,16 +237,17 @@ func (m *User) FindByMap(offset, limit int64, dataMap map[string]interface{},ord
 	if phone,ok:=dataMap["phone"].(string);ok{
 		query = query.Where("phone LIKE ?", "%"+phone+"%")
 	}
-	
+
+	if fields,ok:=dataMap["fields"].(string);ok{
+		query = query.Select(fields)
+	}
+
 	if orderBy!=""{
 		query = query.Order(orderBy)
 	}
 	
 	// 获取取指page，指定pagesize的记录
-	err = query.Offset(offset).Limit(limit).Find(&user).Error
-	if err == nil{
-		err = query.Model(&m).Count(&total).Error
-	}
+	err = query.Offset(offset).Limit(limit).Find(&user).Count(&total).Error
 	return
 }
 

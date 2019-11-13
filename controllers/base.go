@@ -78,7 +78,7 @@ func (c *BaseController) JsonResult(code int, msg string, data ...interface{}) {
 		case 1:
 			c.ErrorLog(msg)
 		default:
-			c.DebugLog(msg)
+			c.RecordLog(msg,code)
 		}
 	}
 

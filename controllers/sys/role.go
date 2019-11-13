@@ -9,7 +9,9 @@ import (
 	"encoding/json"
 	"go-cms/models"
     "go-cms/pkg/e"
+	"go-cms/pkg/util"
 	"log"
+	"reflect"
 	"strings"
 )
 
@@ -52,6 +54,20 @@ func (c *RoleController) Index() {
 			dataMap["status"] = model.Status
 		}
 
+		if !php2go.Empty(model.RoleName) {
+			dataMap["role_name"] = model.RoleName
+		}
+
+		//role_key
+		if !php2go.Empty(model.RoleKey) {
+			dataMap["role_key"] = model.RoleKey
+		}
+
+		//查询字段
+		if !php2go.Empty(model.Fields) {
+			dataMap["fields"] = model.Fields
+		}
+
 		if php2go.Empty(model.Page) {
 			model.Page = 1
 		}else{
@@ -79,7 +95,13 @@ func (c *RoleController) Index() {
 		if err != nil{
 			c.JsonResult(e.ERROR, "获取数据失败")
 		}
-		c.JsonResult(e.SUCCESS, "ok", result, count, model.Page, model.PageSize)
+		if !php2go.Empty(model.Fields){
+			fields := strings.Split(model.Fields, ",")
+			lists := c.FormatData(fields,result)
+			c.JsonResult(e.SUCCESS, "ok", lists, count, model.Page, model.PageSize)
+		}else {
+			c.JsonResult(e.SUCCESS, "ok", result, count, model.Page, model.PageSize)
+		}
 	}
 }
 
@@ -87,7 +109,7 @@ func (c *RoleController) Index() {
 创建数据
 */
 func (c *RoleController) Create() {
-	if c.Ctx.Input.IsPost() {
+	if c.Ctx.Input.IsPut() {
 		model := models.NewRole()
         data := c.Ctx.Input.RequestBody
 		//1.压入数据 json数据封装到对象中
@@ -205,3 +227,23 @@ func (c *RoleController) BatchDelete() {
 	c.JsonResult(e.SUCCESS, "删除成功")
 }
 
+func (c *RoleController) FormatData(fields []string,result []models.Role) (res interface{}) {
+	lists := make([]map[string]interface{},0)
+
+	for key,item:=range fields {
+		fields[key] = util.ToFirstWordsUp(item)
+	}
+
+	for _, value := range result {
+		tmp := make(map[string]interface{}, 0)
+		t := reflect.TypeOf(value)
+		v := reflect.ValueOf(value)
+		for k := 0; k < t.NumField(); k++ {
+			if php2go.InArray(t.Field(k).Name,fields){
+				tmp[util.ToFirstWordsDown(t.Field(k).Name)] = v.Field(k).Interface()
+			}
+		}
+		lists = append(lists,tmp)
+	}
+	return lists
+}

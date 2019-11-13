@@ -10,6 +10,7 @@ type DictType struct {
 	Id        int       `json:"id"        form:"id"        gorm:"default:''"`
 	DictName  string    `json:"dict_name" form:"dict_name" gorm:"default:''"`
 	DictType  string    `json:"dict_type" form:"dict_type" gorm:"default:''"`
+	DictValueType  int  `json:"dict_value_type" form:"dict_value_type" gorm:"default:''"`
 	Status    int       `json:"status"    form:"status"    gorm:"default:'0'"`
 	CreateBy  int       `json:"create_by" form:"create_by" gorm:"default:''"`
 	CreatedAt time.Time `json:"created_at"form:"created_at"gorm:"default:''"`
@@ -100,6 +101,11 @@ func (m *DictType) FindById(id int) (dictType DictType, err error) {
 	return
 }
 
+func (m *DictType) FindByDictType(dict_type string) (dictType DictType, err error) {
+	err = Db.Select("*").Where("dict_type=?", dict_type).First(&dictType).Error
+	return
+}
+
 func (m *DictType) FindByMap(offset, limit int64, dataMap map[string]interface{},orderBy string) (res []DictType, total int64, err error) {
 	query := Db
 	if status,isExist:=dataMap["status"].(int);isExist{
@@ -121,15 +127,16 @@ func (m *DictType) FindByMap(offset, limit int64, dataMap map[string]interface{}
 		query = query.Where("created_at <= ?", endTime)
 	}
 
+	if fields,ok:=dataMap["fields"].(string);ok{
+		query = query.Select(fields)
+	}
+
     if orderBy!=""{
 		query = query.Order(orderBy)
 	}
 
 	// 获取取指page，指定pagesize的记录
-	err = query.Select("*").Offset(offset).Limit(limit).Find(&res).Error
-	if err == nil{
-		err = query.Model(&m).Count(&total).Error
-	}
+	err = query.Select("*").Offset(offset).Limit(limit).Find(&res).Count(&total).Error
 	return
 }
 

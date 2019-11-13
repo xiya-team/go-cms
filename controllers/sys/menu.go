@@ -9,8 +9,10 @@ import (
 	"go-cms/controllers"
 	"go-cms/models"
 	"go-cms/pkg/e"
+	"go-cms/pkg/util"
 	"go-cms/pkg/vo"
 	"log"
+	"reflect"
 	"strings"
 )
 
@@ -56,6 +58,11 @@ func (c *MenuController) Index() {
 			dataMap["end_time"] = model.EndTime
 		}
 
+		//查询字段
+		if !php2go.Empty(model.Fields) {
+			dataMap["fields"] = model.Fields
+		}
+
 		if php2go.Empty(model.Page) {
 			model.Page = 1
 		}else{
@@ -83,7 +90,14 @@ func (c *MenuController) Index() {
 		if err != nil{
 			c.JsonResult(e.ERROR, "获取数据失败")
 		}
-		c.JsonResult(e.SUCCESS, "ok", result, count, model.Page, model.PageSize)
+
+		if !php2go.Empty(model.Fields){
+			fields := strings.Split(model.Fields, ",")
+			lists := c.FormatData(fields,result)
+			c.JsonResult(e.SUCCESS, "ok", lists, count, model.Page, model.PageSize)
+		}else {
+			c.JsonResult(e.SUCCESS, "ok", result, count, model.Page, model.PageSize)
+		}
 	}
 }
 
@@ -91,7 +105,7 @@ func (c *MenuController) Index() {
 创建数据
 */
 func (c *MenuController) Create() {
-	if c.Ctx.Input.IsPost() {
+	if c.Ctx.Input.IsPut() {
 		model := models.NewMenu()
         data := c.Ctx.Input.RequestBody
 		//1.压入数据 json数据封装到对象中
@@ -236,13 +250,75 @@ func (c *MenuController) Menus()  {
 		c.JsonResult(e.ERROR, err.Error())
 	}
 
-	if php2go.Empty(model.ParentId){
-		menuData,_ := model.FindAll()
-		c.JsonResult(e.SUCCESS, "获取成功",constructMenuTrees(menuData,0))
-	}else {
-		menuData,_ := model.FindAllByParentId(model.ParentId)
-		c.JsonResult(e.SUCCESS, "获取成功",constructMenuTrees(menuData,0))
+	dataMap := make(map[string]interface{}, 0)
+
+	if !php2go.Empty(model.Visible) {
+		dataMap["visible"] = model.Visible
 	}
+
+	if !php2go.Empty(model.MenuName) {
+		dataMap["menu_name"] = model.MenuName
+	}
+
+	//开始时间
+	if !php2go.Empty(model.StartTime) {
+		dataMap["start_time"] = model.StartTime
+	}
+
+	//结束时间
+	if !php2go.Empty(model.EndTime) {
+		dataMap["end_time"] = model.EndTime
+	}
+
+	if php2go.Empty(dataMap) {
+		//查询字段
+		if !php2go.Empty(model.Fields) {
+			dataMap["fields"] = model.Fields
+		}
+
+		if php2go.Empty(model.ParentId){
+			menuData,_ := model.FindAll(dataMap)
+			c.JsonResult(e.SUCCESS, "获取成功",constructMenuTrees(menuData,0))
+		}else {
+			menuData,_ := model.FindAllByParentId(model.ParentId)
+			c.JsonResult(e.SUCCESS, "获取成功",constructMenuTrees(menuData,0))
+		}
+	}else {
+		//查询字段
+		if !php2go.Empty(model.Fields) {
+			dataMap["fields"] = model.Fields
+		}
+
+		if php2go.Empty(model.Page) {
+			model.Page = 1
+		}else{
+			if model.Page <= 0 {
+				model.Page = 1
+			}
+		}
+
+		if php2go.Empty(model.PageSize) {
+			model.PageSize = 10
+		}else {
+			if model.Page <= 0 {
+				model.Page = 10
+			}
+		}
+
+		var orderBy string
+		if !php2go.Empty(model.OrderColumnName) && !php2go.Empty(model.OrderType){
+			orderBy = strings.Join([]string{model.OrderColumnName,model.OrderType}," ")
+		}else {
+			orderBy = "created_at DESC"
+		}
+
+		result, count,err := models.NewMenu().FindByMap((model.Page-1)*model.PageSize, model.PageSize, dataMap,orderBy)
+		if err != nil{
+			c.JsonResult(e.ERROR, "获取数据失败")
+		}
+		c.JsonResult(e.SUCCESS, "ok", result, count, model.Page, model.PageSize)
+	}
+
 }
 
 func (c *MenuController) FindMenus()  {
@@ -287,7 +363,9 @@ func constructMenuTrees(menus []models.Menu, parentId int) []vo.MenuItem {
 				CreatedAt:menu.CreatedAt,
 				UpdateBy:menu.UpdateBy,
 				Icon:menu.Icon,
+				Component:menu.Component,
 				UpdatedAt:menu.UpdatedAt,
+				IsFrame:menu.IsFrame,
 				Perms:menu.Perms,
 				Remark:menu.Remark,
 				Url:menu.Url,
@@ -299,4 +377,25 @@ func constructMenuTrees(menus []models.Menu, parentId int) []vo.MenuItem {
 	}
 	
 	return branch
+}
+
+func (c *MenuController) FormatData(fields []string,result []models.Menu) (res interface{}) {
+	lists := make([]map[string]interface{},0)
+
+	for key,item:=range fields {
+		fields[key] = util.ToFirstWordsUp(item)
+	}
+
+	for _, value := range result {
+		tmp := make(map[string]interface{}, 0)
+		t := reflect.TypeOf(value)
+		v := reflect.ValueOf(value)
+		for k := 0; k < t.NumField(); k++ {
+			if php2go.InArray(t.Field(k).Name,fields){
+				tmp[util.ToFirstWordsDown(t.Field(k).Name)] = v.Field(k).Interface()
+			}
+		}
+		lists = append(lists,tmp)
+	}
+	return lists
 }
