@@ -37,7 +37,6 @@ func (c *DictDataController) Index() {
 		}
 		
 		dataMap := make(map[string]interface{}, 0)
-		
 		if !php2go.Empty(model.DictId) {
 			dataMap["dict_id"] = model.DictId
 		}
@@ -90,16 +89,27 @@ func (c *DictDataController) Index() {
 		}
 		
 		result, count,err := models.NewDictData().FindByMap((model.Page-1)*model.PageSize, model.PageSize, dataMap,orderBy)
+
 		if err != nil{
 			c.JsonResult(e.ERROR, "获取数据失败")
 		}
 
+		maps := make(map[string]interface{})
+		maps["page"] = util.Pages(count, model.Page, model.PageSize)
+
+		if !php2go.Empty(model.DictId){
+			dict_type_models := models.NewDictType()
+			dict_type,_ := dict_type_models.FindById(model.DictId)
+			maps["dict_type"] = dict_type
+		}
 		if !php2go.Empty(model.Fields){
 			fields := strings.Split(model.Fields, ",")
 			lists := c.FormatData(fields,result)
-			c.JsonResult(e.SUCCESS, "ok", lists, count, model.Page, model.PageSize)
+			maps["lists"] = lists
+			c.JsonResult(e.SUCCESS, "ok", maps)
 		}else {
-			c.JsonResult(e.SUCCESS, "ok", result, count, model.Page, model.PageSize)
+			maps["lists"] = result
+			c.JsonResult(e.SUCCESS, "ok", maps)
 		}
 	}
 }
