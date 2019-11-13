@@ -100,7 +100,7 @@ func (c *DictDataController) Index() {
 		if !php2go.Empty(model.DictId){
 			dict_type_models := models.NewDictType()
 			dict_type,_ := dict_type_models.FindById(model.DictId)
-			maps["dict_type"] = dict_type
+			maps["dict_value_type"] = dict_type.DictValueType
 		}
 		if !php2go.Empty(model.Fields){
 			fields := strings.Split(model.Fields, ",")
