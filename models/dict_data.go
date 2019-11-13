@@ -15,7 +15,7 @@ type DictData struct {
 	DictType  string    `json:"dict_type" form:"dict_type" gorm:"default:''"`
 	CssClass  string    `json:"css_class" form:"css_class" gorm:"default:''"`
 	ListClass string    `json:"list_class"form:"list_class"gorm:"default:''"`
-	IsDefault string    `json:"is_default"form:"is_default"gorm:"default:'N'"`
+	IsDefault int       `json:"is_default"form:"is_default"gorm:"default:'1'"`
 	Status    int       `json:"status"    form:"status"    gorm:"default:'0'"`
 	CreateBy  int       `json:"create_by" form:"create_by" gorm:"default:''"`
 	CreatedAt time.Time `json:"created_at"form:"created_at"gorm:"default:''"`
