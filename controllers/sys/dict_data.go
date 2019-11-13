@@ -105,10 +105,10 @@ func (c *DictDataController) Index() {
 		if !php2go.Empty(model.Fields){
 			fields := strings.Split(model.Fields, ",")
 			lists := c.FormatData(fields,result)
-			maps["lists"] = lists
+			maps["list"] = lists
 			c.JsonResult(e.SUCCESS, "ok", maps)
 		}else {
-			maps["lists"] = result
+			maps["list"] = result
 			c.JsonResult(e.SUCCESS, "ok", maps)
 		}
 	}
