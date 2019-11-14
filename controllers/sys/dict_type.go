@@ -9,6 +9,7 @@ import (
 	"go-cms/models"
 	"go-cms/pkg/e"
 	"go-cms/pkg/util"
+	"go-cms/validations"
 	"log"
 	"reflect"
 	"strings"
@@ -122,6 +123,13 @@ func (c *DictTypeController) Create() {
 			c.JsonResult(e.ERROR, "赋值失败")
 		}
 
+		//2.验证
+		UserValidations := validations.BaseValidations{}
+		message := UserValidations.Check(model)
+		if !php2go.Empty(message){
+			c.JsonResult(e.ERROR, message)
+		}
+
 		user,_ := model.FindByDictType(model.DictType)
 		if !php2go.Empty(user) {
 			c.JsonResult(e.ERROR, "字典类型已存在!")
@@ -164,13 +172,12 @@ func (c *DictTypeController) Update() {
 		if err != nil||php2go.Empty(post) {
 			c.JsonResult(e.ERROR, "没找到数据")
 		}
-		
-		valid := validation.Validation{}
-		if b, _ := valid.Valid(model); !b {
-			for _, err := range valid.Errors {
-				log.Println(err.Key, err.Message)
-			}
-			c.JsonResult(e.ERROR, "验证失败")
+
+		//2.验证
+		UserValidations := validations.BaseValidations{}
+		message := UserValidations.Check(model)
+		if !php2go.Empty(message){
+			c.JsonResult(e.ERROR, message)
 		}
 
 		dict_type,_ := model.FindByDictType(model.DictType)

@@ -9,7 +9,7 @@ type DictType struct {
 	Model
 	Id        int       `json:"id"        form:"id"        gorm:"default:''"`
 	DictName  string    `json:"dict_name" form:"dict_name" gorm:"default:''"`
-	DictType  string    `json:"dict_type" form:"dict_type" gorm:"default:''"`
+	DictType  string    `json:"dict_type" form:"dict_type" gorm:"default:''" validate:"required"`
 	DictValueType  int  `json:"dict_value_type" form:"dict_value_type" gorm:"default:''"`
 	Status    int       `json:"status"    form:"status"    gorm:"default:'0'"`
 	CreateBy  int       `json:"create_by" form:"create_by" gorm:"default:''"`

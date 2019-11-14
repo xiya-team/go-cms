@@ -13,7 +13,7 @@ type DictData struct {
 	DictLabel string    `json:"dict_label"form:"dict_label"gorm:"default:''"`
 	DictValue string    `json:"dict_value"form:"dict_value"gorm:"default:''"`
 	DictNumber int      `json:"dict_number"form:"dict_number"gorm:"default:''"`
-	DictType  int       `json:"dict_type" form:"dict_type" gorm:"default:''"`
+	DictType  int       `json:"dict_type" form:"dict_type" gorm:"default:''" validate:"required"`
 	CssClass  string    `json:"css_class" form:"css_class" gorm:"default:''"`
 	ListClass string    `json:"list_class"form:"list_class"gorm:"default:''"`
 	IsDefault int       `json:"is_default"form:"is_default"gorm:"default:'1'"`
@@ -103,6 +103,24 @@ func (m *DictData) DelBatch(ids []int) (err error) {
 
 func (m *DictData) FindById(id int) (dictData DictData, err error) {
 	err = Db.Where("id=?", id).First(&dictData).Error
+	return
+}
+
+func (m *DictData) FindWhere(dataMap map[string]interface{}) (dictData DictData, err error) {
+	query := Db
+	if dictId,isExist:=dataMap["dict_id"].(int);isExist{
+		query = query.Where("dict_id = ?", dictId)
+	}
+
+	if dictValue,isExist:=dataMap["dict_value"].(int);isExist{
+		query = query.Where("dict_value = ?", dictValue)
+	}
+
+	if dictNumber,isExist:=dataMap["dict_number"].(int);isExist{
+		query = query.Where("dict_number = ?", dictNumber)
+	}
+
+	err = query.First(&dictData).Error
 	return
 }
 
