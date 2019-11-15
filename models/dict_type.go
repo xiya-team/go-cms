@@ -129,6 +129,8 @@ func (m *DictType) FindByMap(offset, limit int64, dataMap map[string]interface{}
 
 	if fields,ok:=dataMap["fields"].(string);ok{
 		query = query.Select(fields)
+	}else {
+		query = query.Select("*")
 	}
 
     if orderBy!=""{
@@ -136,7 +138,7 @@ func (m *DictType) FindByMap(offset, limit int64, dataMap map[string]interface{}
 	}
 
 	// 获取取指page，指定pagesize的记录
-	err = query.Select("*").Offset(offset).Limit(limit).Find(&res).Count(&total).Error
+	err = query.Offset(offset).Limit(limit).Find(&res).Count(&total).Error
 	return
 }
 

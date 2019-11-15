@@ -118,6 +118,8 @@ func (m *AdminLog) FindByMap(offset, limit int64, dataMap map[string]interface{}
 
 	if fields,ok:=dataMap["fields"].(string);ok{
 		query = query.Select(fields)
+	}else {
+		query = query.Select("*")
 	}
 
     if orderBy!=""{
