@@ -146,7 +146,7 @@ func (c *DictDataController) Create() {
 
 		//数值类型 1 数值 2 字符串
 		if dictType.DictValueType == 1{
-			whereMap["dict_id"] = model.DictNumber
+			whereMap["dict_number"] = model.DictNumber
 		}else {
 			whereMap["dict_value"] = model.DictValue
 		}
@@ -198,7 +198,7 @@ func (c *DictDataController) Update() {
 
 		//数值类型 1 数值 2 字符串
 		if dictType.DictValueType == 1{
-			whereMap["dict_id"] = model.DictNumber
+			whereMap["dict_number"] = model.DictNumber
 		}else {
 			whereMap["dict_value"] = model.DictValue
 		}
