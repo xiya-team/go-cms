@@ -135,7 +135,7 @@ func (m *DictData) FindByMap(offset, limit int64, dataMap map[string]interface{}
 		query = query.Where("dict_id = ?", dictId)
 	}
 
-	if dictType,isExist:=dataMap["dict_type"].(int);isExist{
+	if dictType,isExist:=dataMap["dict_type"].(string);isExist{
 		query = query.Where("dict_type = ?", dictType)
 	}
 
@@ -156,6 +156,8 @@ func (m *DictData) FindByMap(offset, limit int64, dataMap map[string]interface{}
 
 	if fields,ok:=dataMap["fields"].(string);ok{
 		query = query.Select(fields)
+	}else {
+		query = query.Select("*")
 	}
 
     if orderBy!=""{
@@ -163,7 +165,7 @@ func (m *DictData) FindByMap(offset, limit int64, dataMap map[string]interface{}
 	}
 
 	// 获取取指page，指定pagesize的记录
-	err = query.Select("*").Offset(offset).Limit(limit).Find(&res).Count(&total).Error
+	err = query.Offset(offset).Limit(limit).Find(&res).Count(&total).Error
 	return
 }
 
