@@ -263,3 +263,34 @@ func (c *DictTypeController) FormatData(fields []string,result []models.DictType
 	}
 	return lists
 }
+
+func (c *DictTypeController) FindById() {
+	if c.Ctx.Input.IsPost() {
+		model := models.NewDictType()
+
+		data := c.Ctx.Input.RequestBody
+		//json数据封装到user对象中
+		err := json.Unmarshal(data, &model)
+		if err != nil {
+			c.JsonResult(e.ERROR, err.Error())
+		}
+
+		dataMap := make(map[string]interface{}, 0)
+
+		if !php2go.Empty(model.Id) {
+			dataMap["id"] = model.Id
+		}
+
+		//查询字段
+		if !php2go.Empty(model.Fields) {
+			dataMap["fields"] = model.Fields
+		}
+
+		result, err := models.NewDictType().FindById(model.Id)
+		if err != nil{
+			c.JsonResult(e.ERROR, "获取数据失败")
+		}
+
+		c.JsonResult(e.SUCCESS, "ok", result)
+	}
+}

@@ -55,6 +55,7 @@ func init() {
 
 	//字典管理
 	beego.Router("/api/dict/index", &sys.DictTypeController{}, "*:Index")
+	beego.Router("/api/dict/findbyid", &sys.DictTypeController{}, "*:FindById")
 	beego.Router("/api/dict/create", &sys.DictTypeController{}, "put:Create")
 	beego.Router("/api/dict/update", &sys.DictTypeController{}, "post,put:Update")
 	beego.Router("/api/dict/delete", &sys.DictTypeController{}, "delete:Delete")
