@@ -44,6 +44,10 @@ func (c *DictDataController) Index() {
 			dataMap["dict_label"] = model.DictLabel
 		}
 
+		if !php2go.Empty(model.DictValueType) {
+			dataMap["dict_value_type"] = model.DictValueType
+		}
+
 		//开始时间
 		if !php2go.Empty(model.StartTime) {
 			dataMap["start_time"] = model.StartTime
