@@ -134,6 +134,14 @@ func (m *DictData) FindByMap(offset, limit int64, dataMap map[string]interface{}
 	if dictId,isExist:=dataMap["dict_id"].(int);isExist{
 		query = query.Where("dict_id = ?", dictId)
 	}
+
+	if dictType,isExist:=dataMap["dict_type"].(int);isExist{
+		query = query.Where("dict_type = ?", dictType)
+	}
+
+	if dictValueType,isExist:=dataMap["dict_value_type"].(int);isExist{
+		query = query.Where("dict_value_type = ?", dictValueType)
+	}
 	
 	if dictLabel,ok:=dataMap["dict_label"].(string);ok{
 		query = query.Where("dict_label LIKE ?", "%"+dictLabel+"%")

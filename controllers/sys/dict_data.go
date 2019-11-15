@@ -44,6 +44,10 @@ func (c *DictDataController) Index() {
 			dataMap["dict_label"] = model.DictLabel
 		}
 
+		if !php2go.Empty(model.DictType) {
+			dataMap["dict_type"] = model.DictType
+		}
+
 		if !php2go.Empty(model.DictValueType) {
 			dataMap["dict_value_type"] = model.DictValueType
 		}
