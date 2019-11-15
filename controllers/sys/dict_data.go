@@ -140,17 +140,19 @@ func (c *DictDataController) Create() {
 
 		whereMap := make(map[string]interface{}, 0)
 		whereMap["dict_id"] = model.DictId
+
+		dictTypeModel := models.NewDictType()
+		dictType,_ := dictTypeModel.FindById(model.DictId)
+
 		//数值类型 1 数值 2 字符串
-		if model.DictType == 1{
+		if dictType.DictValueType == 1{
 			whereMap["dict_id"] = model.DictNumber
 		}else {
 			whereMap["dict_value"] = model.DictValue
 		}
 
-		tmp,_:= model.FindWhere(whereMap)
-		if !php2go.Empty(tmp) {
-			c.JsonResult(e.ERROR, "数据重复！")
-		}
+		model.DictValueType = dictType.DictValueType
+		model.DictType = dictType.DictType
 
 		//3.插入数据
 		model.CreateBy = common.UserId
@@ -190,12 +192,19 @@ func (c *DictDataController) Update() {
 
 		whereMap := make(map[string]interface{}, 0)
 		whereMap["dict_id"] = model.DictId
+
+		dictTypeModel := models.NewDictType()
+		dictType,_ := dictTypeModel.FindById(model.DictId)
+
 		//数值类型 1 数值 2 字符串
-		if model.DictType == 1{
+		if dictType.DictValueType == 1{
 			whereMap["dict_id"] = model.DictNumber
 		}else {
 			whereMap["dict_value"] = model.DictValue
 		}
+
+		model.DictValueType = dictType.DictValueType
+		model.DictType = dictType.DictType
 
 		tmp,_:= model.FindWhere(whereMap)
 		if !php2go.Empty(tmp) && tmp.Id!=dict_data.Id {

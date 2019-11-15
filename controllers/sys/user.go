@@ -309,7 +309,8 @@ func (c *UserController) Login() {
 		c.ValidatorAuto(&loginData)
 		
 		//通过service查询
-		user := services.FindByUserName(model.UserName)
+		userService := services.NewUserService()
+		user := userService.FindByUserName(model.UserName)
 		
 		jsonRes, err := json.Marshal(map[string]interface{}{"Id": user.Id, "UserName": user.UserName})
 		if err != nil {
@@ -362,15 +363,16 @@ func (c *UserController) Logout()  {
 
 func (c *UserController) CheckToken() {
 	token := c.Ctx.Input.Header("Authorization")
-	
+
 	b, message , code := util.CheckToken(token)
-	
+
 	if !b {
 		c.JsonResult(code, message)
 	}
 	
 	jsonData := make(map[string]interface{}, 1)
 	jsonData["user_id"] = code
+	jsonData["user_name"] = common.UserName
 
 	c.JsonResult(e.SUCCESS, "success",jsonData)
 }

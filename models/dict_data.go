@@ -13,7 +13,8 @@ type DictData struct {
 	DictLabel string    `json:"dict_label"form:"dict_label"gorm:"default:''"`
 	DictValue string    `json:"dict_value"form:"dict_value"gorm:"default:''"`
 	DictNumber int      `json:"dict_number"form:"dict_number"gorm:"default:''"`
-	DictType  int       `json:"dict_type" form:"dict_type" gorm:"default:''" validate:"required"`
+	DictType  string    `json:"dict_type" form:"dict_type" gorm:"default:''"`
+	DictValueType  int  `json:"dict_value_type" form:"dict_value_type" gorm:"default:''"`
 	CssClass  string    `json:"css_class" form:"css_class" gorm:"default:''"`
 	ListClass string    `json:"list_class"form:"list_class"gorm:"default:''"`
 	IsDefault int       `json:"is_default"form:"is_default"gorm:"default:'1'"`
