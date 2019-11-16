@@ -16,7 +16,6 @@ type DictType struct {
 	CreatedAt time.Time `json:"created_at"form:"created_at"gorm:"default:''"`
 	UpdateBy  int       `json:"update_by" form:"update_by" gorm:"default:''"`
 	UpdatedAt time.Time `json:"updated_at"form:"updated_at"gorm:"default:''"`
-	DeletedAt time.Time `json:"deleted_at"  form:"deleted_at"  gorm:"default:''"`
 	Remark    string    `json:"remark"    form:"remark"    gorm:"default:''"`
 }
 
