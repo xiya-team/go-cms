@@ -147,9 +147,9 @@ func (c *DictTypeController) Create() {
 		//3.插入数据
 		model.CreateBy = common.UserId
 		if _, err := model.Create(); err != nil {
-			c.JsonResult(e.ERROR, "创建失败")
+			c.JsonResult(e.ERROR, "字典类型已存在！")
 		}
-		c.JsonResult(e.SUCCESS, "添加成功")
+		c.JsonResult(e.SUCCESS, "添加成功！")
 	}
 }
 
