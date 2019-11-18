@@ -1,23 +1,22 @@
 package util
 
 import (
-	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/go-redis/redis/v7"
 )
 
-func NewRedisClient() *redis.Client{
+func NewRedisClient() (*redis.Client,error) {
 	index,_:=  beego.AppConfig.Int("redis::index")
 	redisClient := redis.NewClient(&redis.Options{
-		Addr:     beego.AppConfig.String("redis::addr"),
-		Password: beego.AppConfig.String("redis::password"), // no password set //foobared
-		DB:       index ,  // use default DB
+		Addr:     	beego.AppConfig.String("redis::addr"),
+		Password: 	beego.AppConfig.String("redis::password"),
+		DB:       	index,
+		PoolSize:	10,
 	})
-	
-	pong, err := redisClient.Ping().Result()
-	if err != nil {
-		fmt.Printf("ping error[%s]\n", err.Error())
+	_,err := redisClient.Ping().Result()
+	if err!=nil {
+		return nil,err
+	}else{
+		return redisClient,nil
 	}
-	fmt.Printf("ping result: %s\n", pong)
-	return redisClient
 }

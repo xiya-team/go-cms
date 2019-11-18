@@ -6,6 +6,7 @@ require (
 	github.com/aliyun/aliyun-oss-go-sdk v2.0.3+incompatible
 	github.com/astaxie/beego v1.12.0
 	github.com/axgle/mahonia v0.0.0-20180208002826-3358181d7394
+	github.com/baidubce/bce-sdk-go v0.9.5
 	github.com/baiyubin/aliyun-sts-go-sdk v0.0.0-20180326062324-cfa1a18b161f // indirect
 	github.com/bradfitz/gomemcache v0.0.0-20190913173617-a41fca850d0b // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
@@ -25,6 +26,7 @@ require (
 	github.com/satori/go.uuid v1.2.0 // indirect
 	github.com/shiena/ansicolor v0.0.0-20151119151921-a422bbe96644 // indirect
 	github.com/silenceper/wechat v2.0.0+incompatible
+	github.com/sirupsen/logrus v1.2.0
 	github.com/smartystreets/goconvey v0.0.0-20190731233626-505e41936337
 	github.com/syyongx/php2go v0.9.4
 	github.com/tidwall/gjson v1.3.2

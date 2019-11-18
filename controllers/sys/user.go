@@ -317,7 +317,8 @@ func (c *UserController) Login() {
 			panic(err)
 		}
 		
-		redisClient := util.NewRedisClient()
+		redisClient,err := util.NewRedisClient()
+
 		if err != nil{
 			c.JsonResult(e.ERROR, "用户名或密码错误!")
 		}
@@ -352,7 +353,10 @@ func (c *UserController) Login() {
 }
 
 func (c *UserController) Logout()  {
-	redisClient := util.NewRedisClient()
+	redisClient,err := util.NewRedisClient()
+	if err!=nil{
+		c.JsonResult(e.ERROR, "redis 连接错误！")
+	}
 	tokenString := c.Ctx.Input.Header(beego.AppConfig.String("jwt::token_name"))
 	username := util.GetUserNameByToken(tokenString)
 	

@@ -80,6 +80,7 @@ func init() {
 
 	//上传图片
 	beego.Router("/api/upload/image", &commons.UploadController{}, "post:Image")
+	beego.Router("/api/upload/BaiduOSS", &commons.UploadController{}, "post:BaiduOSS")
 
 	//微信
 	//beego.Router("/api/wechat/connect", &wx.WxConnectController{})

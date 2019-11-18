@@ -77,7 +77,12 @@ func RestfulHandler() func(ctx *context.Context) {
 			data := ctx.Input.RequestBody
 			Result := util.MD5(ctx.Input.IP() + string(data))
 
-			redisClient := util.NewRedisClient()
+			redisClient,err := util.NewRedisClient()
+
+			if err!=nil{
+				logs.Error("redis 连接错误！")
+			}
+
 			limiter := redis_rate.NewLimiter(redisClient, &redis_rate.Limit{
 				Burst:  10,
 				Rate:   10,

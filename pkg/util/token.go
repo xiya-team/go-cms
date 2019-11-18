@@ -87,11 +87,11 @@ func CheckToken(tokenString string) (b bool, t string,code int) {
 	}
 	//GetUserNameByToken(kv[1])
 	
-	redisClient := NewRedisClient()
+	redisClient,err := NewRedisClient()
 	
 	username := GetUserNameByToken(tokenString)
 	
-	jsonResToken ,err := redisClient.Get("token_"+username).Result()
+	jsonResToken,err := redisClient.Get("token_"+username).Result()
 	if err != nil || php2go.Empty(jsonResToken){
 		return false,"非法请求，请重新登录",50008
 	}
