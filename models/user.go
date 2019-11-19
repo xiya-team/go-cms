@@ -103,7 +103,6 @@ func (m *User) Create() (newAttr User, err error) {
 func (m *User) Update() (newAttr User, err error) {
 	tx := Db.Begin()
 	if m.Id > 0 {
-
 		up := NewUserPost()
 		if !php2go.Empty(m.UserPost) {
 			err = tx.Model(&up).Where("user_id=?", m.Id).Delete(up).Error
@@ -180,11 +179,11 @@ func (m *User) DelBatch(ids []int) (err error) {
 }
 
 func (m *User) FindById(id int) (user User, err error) {
-	err = Db.Where("id=?", id).First(&user).Error
+	err = Db.Where(&User{Id:id}).First(&user).Error
 
 	up := NewUserPost()
 	user_posts := []UserPost{}
-	err = Db.Model(&up).Where("user_id=?", m.Id).Find(&user_posts).Error
+	err = Db.Model(&up).Where(&UserRole{UserId:m.Id}).Find(&user_posts).Error
 	if err == nil {
 		var user_post []string
 		for _, value := range user_posts {
@@ -195,7 +194,7 @@ func (m *User) FindById(id int) (user User, err error) {
 
 	ur := NewUserRole()
 	user_roles := []UserRole{}
-	err = Db.Model(&ur).Where("user_id=?", m.Id).Find(&user_roles).Error
+	err = Db.Model(&ur).Where(&UserRole{UserId:m.Id}).Find(&user_roles).Error
 	if err == nil {
 		var user_role []string
 		for _, value := range user_roles {
