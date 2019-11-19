@@ -45,10 +45,12 @@ func (c *ConfigsController) Index() {
 		if !php2go.Empty(model.ConfigKey) {
 			dataMap["config_key"] = model.ConfigKey
 		}
+		
 		if !php2go.Empty(model.ConfigName) {
 			dataMap["config_name"] = model.ConfigName
 		}
-		if !php2go.Empty(model.ConfigName) {
+
+		if !php2go.Empty(model.ConfigValue) {
 			dataMap["config_value"] = model.ConfigValue
 		}
 
