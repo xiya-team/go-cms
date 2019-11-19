@@ -313,7 +313,7 @@ func (c *UserController) Login() {
 		user := userService.FindByUserName(model.UserName)
 
 		if php2go.Empty(user) {
-			c.JsonResult(e.ERROR, "用户名不存在或用户被禁用!")
+			c.JsonResult(e.ERROR, "用户名不存在或被禁用!")
 		}
 		
 		jsonRes, err := json.Marshal(map[string]interface{}{"Id": user.Id, "UserName": user.UserName})
