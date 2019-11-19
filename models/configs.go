@@ -107,8 +107,21 @@ func (m *Configs) FindByMap(offset, limit int64, dataMap map[string]interface{},
 	if config_type,isExist:=dataMap["config_type"].(int);isExist{
 		query = query.Where("config_type = ?", config_type)
 	}
-	if name,ok:=dataMap["name"].(string);ok{
-		query = query.Where("name LIKE ?", "%"+name+"%")
+
+	if config_name,ok:=dataMap["config_name"].(string);ok{
+		query = query.Where("config_name LIKE ?", "%"+config_name+"%")
+	}
+
+	if config_key,ok:=dataMap["config_key"].(string);ok{
+		query = query.Where("config_key LIKE ?", "%"+config_key+"%")
+	}
+
+	if config_name,ok:=dataMap["config_name"].(string);ok{
+		query = query.Where("config_name LIKE ?", "%"+config_name+"%")
+	}
+
+	if config_value,ok:=dataMap["config_value"].(string);ok{
+		query = query.Where("config_value LIKE ?", "%"+config_value+"%")
 	}
 
 	if startTime,ok:=dataMap["start_time"].(string);ok{
