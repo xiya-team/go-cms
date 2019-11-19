@@ -256,7 +256,7 @@ func (m *User) FindByMap(offset, limit int64, dataMap map[string]interface{},ord
 /*****************************************************************新增加的方法*****************************************************************/
 
 func (m *User) FindByUserName(user_name string) (user User, err error) {
-	err = Db.Select("id,nickname,user_name,password,salt").Where("user_name=?", user_name).First(&user).Error
+	err = Db.Select("id,nickname,user_name,password,salt").Where(&User{UserName: user_name, Status: 1}).First(&user).Error
 	return
 }
 
