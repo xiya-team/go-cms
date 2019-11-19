@@ -311,6 +311,10 @@ func (c *UserController) Login() {
 		//通过service查询
 		userService := services.NewUserService()
 		user := userService.FindByUserName(model.UserName)
+
+		if php2go.Empty(user) {
+			c.JsonResult(e.ERROR, "用户名不存在或用户被禁用!")
+		}
 		
 		jsonRes, err := json.Marshal(map[string]interface{}{"Id": user.Id, "UserName": user.UserName})
 		if err != nil {
@@ -326,10 +330,6 @@ func (c *UserController) Login() {
 		err = redisClient.Set("token_"+user.UserName,string(jsonRes),time.Hour*10).Err()
 		if err != nil {
 			c.JsonResult(e.ERROR, "用户名或密码错误!")
-		}
-		
-		if php2go.Empty(user) {
-			c.JsonResult(e.ERROR, "用户名不存在!")
 		}
 		
 		has := php2go.Md5(model.Password + user.Salt)
