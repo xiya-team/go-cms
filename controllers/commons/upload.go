@@ -11,6 +11,7 @@ import (
 	"go-cms/controllers"
 	"go-cms/pkg/e"
 	"math/rand"
+	"os"
 	"path"
 	"strings"
 	"time"
@@ -66,16 +67,19 @@ func (c *UploadController) BaiduOSS()  {
 	ACCESS_KEY_ID, SECRET_ACCESS_KEY := "a12ba926fe4748ea88f8ec575dd7fece", "6c84d9e8a21f4f5fb93c35655baa5347"
 
 	// BOS服务的Endpoint
-	ENDPOINT := "http://su.bcebos.com"
+	ENDPOINT := "http://bj.bcebos.com"
 
 	// 创建BOS服务的Client
 	bosClient, _ := bos.NewClient(ACCESS_KEY_ID, SECRET_ACCESS_KEY, ENDPOINT)
 
 	// 创建Bucket
-	if loc, err := bosClient.PutBucket("xiya-vip"); err != nil {
-		fmt.Println("create bucket failed:", err)
-	} else {
-		fmt.Println("create bucket success at location:", loc)
+	is_Exist,err := bosClient.DoesBucketExist("xiya");
+	if is_Exist ==false{
+		if loc, err := bosClient.PutBucket("xiya"); err != nil {
+			fmt.Println("create bucket failed:", err)
+		} else {
+			fmt.Println("create bucket success at location:", loc)
+		}
 	}
 
 	file, header, err := c.GetFile("file")
@@ -104,14 +108,26 @@ func (c *UploadController) BaiduOSS()  {
 	newFilename := fmt.Sprintf("%d+%d", time.Now().Unix(), rand.Intn(100))
 	newFilename = fmt.Sprintf("%x", md5.Sum([]byte(newFilename)))
 
+	path := path.Join("static/uploads/avatar", newFilename+"."+extension)
+	err = c.SaveToFile("file", path)
+
+
 	// 使用基本接口，提供必需参数从数据流上传
-	bodyStream, err := bce.NewBodyFromFile("file")
-	etag, err := bosClient.BasicPutObject("xiya-vip", newFilename+"."+extension, bodyStream)
+	bodyStream, err := bce.NewBodyFromFile(path)
+	etag, err := bosClient.BasicPutObject("xiya", newFilename+"."+extension, bodyStream)
 
 	// 上传对象
 	if err != nil {
 		fmt.Println("upload file to BOS failed:", err)
 	}
+
+	//删除文件
+	err =os.Remove(path)
+	if err!=nil{
+		fmt.Println(err)
+	}
+
 	fmt.Println("upload file to BOS success, etag = ", etag)
 	logrus.Debug("Useful debugging information.")
+	c.JsonResult(e.SUCCESS,"ok", path)
 }
