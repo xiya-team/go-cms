@@ -183,7 +183,7 @@ func (m *User) FindById(id int) (user User, err error) {
 
 	up := NewUserPost()
 	user_posts := []UserPost{}
-	err = Db.Model(&up).Where(&UserRole{UserId:m.Id}).Find(&user_posts).Error
+	err = Db.Model(&up).Where(&UserPost{UserId:m.Id}).Find(&user_posts).Error
 	if err == nil {
 		var user_post []string
 		for _, value := range user_posts {
