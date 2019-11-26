@@ -127,7 +127,8 @@ func (c *UploadController) BaiduOSS()  {
 		fmt.Println(err)
 	}
 
+	image := "http://image.xiya.vip/"+newFilename+"."+extension
 	fmt.Println("upload file to BOS success, etag = ", etag)
 	logrus.Debug("Useful debugging information.")
-	c.JsonResult(e.SUCCESS,"ok", path)
+	c.JsonResult(e.SUCCESS,"ok", image)
 }
