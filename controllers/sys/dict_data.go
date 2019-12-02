@@ -1,15 +1,14 @@
 package sys
 
 import (
-	"github.com/astaxie/beego/validation"
+	"encoding/json"
 	"github.com/syyongx/php2go"
 	"go-cms/common"
 	"go-cms/controllers"
-	"encoding/json"
 	"go-cms/models"
-    "go-cms/pkg/e"
+	"go-cms/pkg/e"
 	"go-cms/pkg/util"
-	"log"
+	"go-cms/validations"
 	"reflect"
 	"strings"
 )
@@ -43,6 +42,14 @@ func (c *DictDataController) Index() {
 		
 		if !php2go.Empty(model.DictLabel) {
 			dataMap["dict_label"] = model.DictLabel
+		}
+
+		if !php2go.Empty(model.DictType) {
+			dataMap["dict_type"] = model.DictType
+		}
+
+		if !php2go.Empty(model.DictValueType) {
+			dataMap["dict_value_type"] = model.DictValueType
 		}
 
 		//开始时间
@@ -133,13 +140,27 @@ func (c *DictDataController) Create() {
 		}
 
 		//2.验证
-		valid := validation.Validation{}
-		if b, _ := valid.Valid(model); !b {
-			for _, err := range valid.Errors {
-				log.Println(err.Key, err.Message)
-			}
-			c.JsonResult(e.ERROR, "验证失败")
+		UserValidations := validations.BaseValidations{}
+		message := UserValidations.Check(model)
+		if !php2go.Empty(message){
+			c.JsonResult(e.ERROR, message)
 		}
+
+		whereMap := make(map[string]interface{}, 0)
+		whereMap["dict_id"] = model.DictId
+
+		dictTypeModel := models.NewDictType()
+		dictType,_ := dictTypeModel.FindById(model.DictId)
+
+		//数值类型 1 数值 2 字符串
+		if dictType.DictValueType == 1{
+			whereMap["dict_number"] = model.DictNumber
+		}else {
+			whereMap["dict_value"] = model.DictValue
+		}
+
+		model.DictValueType = dictType.DictValueType
+		model.DictType = dictType.DictType
 
 		//3.插入数据
 		model.CreateBy = common.UserId
@@ -165,17 +186,37 @@ func (c *DictDataController) Update() {
 	}
 
 	if c.Ctx.Input.IsPut() {
-		post, err := models.NewDictData().FindById(model.Id)
-		if err != nil||php2go.Empty(post) {
+		dict_data, err := models.NewDictData().FindById(model.Id)
+		if err != nil||php2go.Empty(dict_data) {
 			c.JsonResult(e.ERROR, "没找到数据")
 		}
-		
-		valid := validation.Validation{}
-		if b, _ := valid.Valid(model); !b {
-			for _, err := range valid.Errors {
-				log.Println(err.Key, err.Message)
-			}
-			c.JsonResult(e.ERROR, "验证失败")
+
+		//2.验证
+		UserValidations := validations.BaseValidations{}
+		message := UserValidations.Check(model)
+		if !php2go.Empty(message){
+			c.JsonResult(e.ERROR, message)
+		}
+
+		whereMap := make(map[string]interface{}, 0)
+		whereMap["dict_id"] = model.DictId
+
+		dictTypeModel := models.NewDictType()
+		dictType,_ := dictTypeModel.FindById(model.DictId)
+
+		//数值类型 1 数值 2 字符串
+		if dictType.DictValueType == 1{
+			whereMap["dict_number"] = model.DictNumber
+		}else {
+			whereMap["dict_value"] = model.DictValue
+		}
+
+		model.DictValueType = dictType.DictValueType
+		model.DictType = dictType.DictType
+
+		tmp,_:= model.FindWhere(whereMap)
+		if !php2go.Empty(tmp) && tmp.Id!=dict_data.Id {
+			c.JsonResult(e.ERROR, "数据重复！")
 		}
 
 		model.UpdateBy = common.UserId

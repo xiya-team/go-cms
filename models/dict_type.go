@@ -9,14 +9,13 @@ type DictType struct {
 	Model
 	Id        int       `json:"id"        form:"id"        gorm:"default:''"`
 	DictName  string    `json:"dict_name" form:"dict_name" gorm:"default:''"`
-	DictType  string    `json:"dict_type" form:"dict_type" gorm:"default:''"`
+	DictType  string    `json:"dict_type" form:"dict_type" gorm:"default:''" validate:"required"`
 	DictValueType  int  `json:"dict_value_type" form:"dict_value_type" gorm:"default:''"`
 	Status    int       `json:"status"    form:"status"    gorm:"default:'0'"`
 	CreateBy  int       `json:"create_by" form:"create_by" gorm:"default:''"`
 	CreatedAt time.Time `json:"created_at"form:"created_at"gorm:"default:''"`
 	UpdateBy  int       `json:"update_by" form:"update_by" gorm:"default:''"`
 	UpdatedAt time.Time `json:"updated_at"form:"updated_at"gorm:"default:''"`
-	DeletedAt time.Time `json:"deleted_at"  form:"deleted_at"  gorm:"default:''"`
 	Remark    string    `json:"remark"    form:"remark"    gorm:"default:''"`
 }
 
@@ -129,6 +128,8 @@ func (m *DictType) FindByMap(offset, limit int64, dataMap map[string]interface{}
 
 	if fields,ok:=dataMap["fields"].(string);ok{
 		query = query.Select(fields)
+	}else {
+		query = query.Select("*")
 	}
 
     if orderBy!=""{
@@ -136,7 +137,7 @@ func (m *DictType) FindByMap(offset, limit int64, dataMap map[string]interface{}
 	}
 
 	// 获取取指page，指定pagesize的记录
-	err = query.Select("*").Offset(offset).Limit(limit).Find(&res).Count(&total).Error
+	err = query.Offset(offset).Limit(limit).Find(&res).Count(&total).Error
 	return
 }
 

@@ -309,14 +309,20 @@ func (c *UserController) Login() {
 		c.ValidatorAuto(&loginData)
 		
 		//通过service查询
-		user := services.FindByUserName(model.UserName)
+		userService := services.NewUserService()
+		user := userService.FindByUserName(model.UserName)
+
+		if php2go.Empty(user) {
+			c.JsonResult(e.ERROR, "用户名不存在或被禁用!")
+		}
 		
 		jsonRes, err := json.Marshal(map[string]interface{}{"Id": user.Id, "UserName": user.UserName})
 		if err != nil {
 			panic(err)
 		}
 		
-		redisClient := util.NewRedisClient()
+		redisClient,err := util.NewRedisClient()
+
 		if err != nil{
 			c.JsonResult(e.ERROR, "用户名或密码错误!")
 		}
@@ -324,10 +330,6 @@ func (c *UserController) Login() {
 		err = redisClient.Set("token_"+user.UserName,string(jsonRes),time.Hour*10).Err()
 		if err != nil {
 			c.JsonResult(e.ERROR, "用户名或密码错误!")
-		}
-		
-		if php2go.Empty(user) {
-			c.JsonResult(e.ERROR, "用户名不存在!")
 		}
 		
 		has := php2go.Md5(model.Password + user.Salt)
@@ -351,7 +353,10 @@ func (c *UserController) Login() {
 }
 
 func (c *UserController) Logout()  {
-	redisClient := util.NewRedisClient()
+	redisClient,err := util.NewRedisClient()
+	if err!=nil{
+		c.JsonResult(e.ERROR, "redis 连接错误！")
+	}
 	tokenString := c.Ctx.Input.Header(beego.AppConfig.String("jwt::token_name"))
 	username := util.GetUserNameByToken(tokenString)
 	
@@ -362,15 +367,16 @@ func (c *UserController) Logout()  {
 
 func (c *UserController) CheckToken() {
 	token := c.Ctx.Input.Header("Authorization")
-	
+
 	b, message , code := util.CheckToken(token)
-	
+
 	if !b {
 		c.JsonResult(code, message)
 	}
 	
 	jsonData := make(map[string]interface{}, 1)
 	jsonData["user_id"] = code
+	jsonData["user_name"] = common.UserName
 
 	c.JsonResult(e.SUCCESS, "success",jsonData)
 }

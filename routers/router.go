@@ -55,6 +55,7 @@ func init() {
 
 	//字典管理
 	beego.Router("/api/dict/index", &sys.DictTypeController{}, "*:Index")
+	beego.Router("/api/dict/findbyid", &sys.DictTypeController{}, "*:FindById")
 	beego.Router("/api/dict/create", &sys.DictTypeController{}, "put:Create")
 	beego.Router("/api/dict/update", &sys.DictTypeController{}, "post,put:Update")
 	beego.Router("/api/dict/delete", &sys.DictTypeController{}, "delete:Delete")
@@ -79,6 +80,7 @@ func init() {
 
 	//上传图片
 	beego.Router("/api/upload/image", &commons.UploadController{}, "post:Image")
+	beego.Router("/api/upload/BaiduOSS", &commons.UploadController{}, "post:BaiduOSS")
 
 	//微信
 	//beego.Router("/api/wechat/connect", &wx.WxConnectController{})

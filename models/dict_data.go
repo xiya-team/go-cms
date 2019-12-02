@@ -13,7 +13,8 @@ type DictData struct {
 	DictLabel string    `json:"dict_label"form:"dict_label"gorm:"default:''"`
 	DictValue string    `json:"dict_value"form:"dict_value"gorm:"default:''"`
 	DictNumber int      `json:"dict_number"form:"dict_number"gorm:"default:''"`
-	DictType  int       `json:"dict_type" form:"dict_type" gorm:"default:''"`
+	DictType  string    `json:"dict_type" form:"dict_type" gorm:"default:''"`
+	DictValueType  int  `json:"dict_value_type" form:"dict_value_type" gorm:"default:''"`
 	CssClass  string    `json:"css_class" form:"css_class" gorm:"default:''"`
 	ListClass string    `json:"list_class"form:"list_class"gorm:"default:''"`
 	IsDefault int       `json:"is_default"form:"is_default"gorm:"default:'1'"`
@@ -106,6 +107,24 @@ func (m *DictData) FindById(id int) (dictData DictData, err error) {
 	return
 }
 
+func (m *DictData) FindWhere(dataMap map[string]interface{}) (dictData DictData, err error) {
+	query := Db
+	if dictId,isExist:=dataMap["dict_id"].(int);isExist{
+		query = query.Where("dict_id = ?", dictId)
+	}
+
+	if dictValue,isExist:=dataMap["dict_value"].(int);isExist{
+		query = query.Where("dict_value = ?", dictValue)
+	}
+
+	if dictNumber,isExist:=dataMap["dict_number"].(int);isExist{
+		query = query.Where("dict_number = ?", dictNumber)
+	}
+
+	err = query.First(&dictData).Error
+	return
+}
+
 func (m *DictData) FindByMap(offset, limit int64, dataMap map[string]interface{},orderBy string) (res []DictData, total int64, err error) {
 	query := Db
 	if status,isExist:=dataMap["status"].(int);isExist{
@@ -114,6 +133,14 @@ func (m *DictData) FindByMap(offset, limit int64, dataMap map[string]interface{}
 	
 	if dictId,isExist:=dataMap["dict_id"].(int);isExist{
 		query = query.Where("dict_id = ?", dictId)
+	}
+
+	if dictType,isExist:=dataMap["dict_type"].(string);isExist{
+		query = query.Where("dict_type = ?", dictType)
+	}
+
+	if dictValueType,isExist:=dataMap["dict_value_type"].(int);isExist{
+		query = query.Where("dict_value_type = ?", dictValueType)
 	}
 	
 	if dictLabel,ok:=dataMap["dict_label"].(string);ok{
@@ -129,6 +156,8 @@ func (m *DictData) FindByMap(offset, limit int64, dataMap map[string]interface{}
 
 	if fields,ok:=dataMap["fields"].(string);ok{
 		query = query.Select(fields)
+	}else {
+		query = query.Select("*")
 	}
 
     if orderBy!=""{
@@ -136,7 +165,7 @@ func (m *DictData) FindByMap(offset, limit int64, dataMap map[string]interface{}
 	}
 
 	// 获取取指page，指定pagesize的记录
-	err = query.Select("*").Offset(offset).Limit(limit).Find(&res).Count(&total).Error
+	err = query.Offset(offset).Limit(limit).Find(&res).Count(&total).Error
 	return
 }
 

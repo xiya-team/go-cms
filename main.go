@@ -32,6 +32,7 @@ func init() {
 	// 中间件注册
 	middlewares.CorsHandler()
 	beego.InsertFilter("*", beego.BeforeRouter, middlewares.RestfulHandler())
+	//beego.InsertFilter("*", beego.BeforeRouter, middlewares.AuthMiddlewares())
 }
 
 func main() {
