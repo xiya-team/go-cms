@@ -248,3 +248,16 @@ func (m *Menu)FindAllChildren(pid int)  []int {
 	}
 	return ids
 }
+
+func (m *Menu) FindAllMenu(user_id int) (res []Menu) {
+	query := Db
+	// 获取取指page，指定pagesize的记录
+	//err = query.Select("role_id").Where(&UserRole{UserId: user_id}).Find(&res).Error
+
+	query.Table("sys_menu m").Select("m.*").
+		Joins("JOIN sys_role_menu rm ON m.id = rm.menu_id").
+		Joins("JOIN sys_user_role ur ON ur.role_id = rm.role_id").
+		Where("ur.user_id = ?", user_id).Find(&res)
+
+	return
+}

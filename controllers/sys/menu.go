@@ -345,6 +345,15 @@ func (c *MenuController) FindMenus()  {
 	c.JsonResult(e.SUCCESS, "获取成功",menus)
 }
 
+func (c *MenuController) FindAllMenu()  {
+	if c.Ctx.Input.IsPost() {
+		UserId := common.UserId
+		model := models.NewMenu()
+		menuData := model.FindAllMenu(UserId)
+		c.JsonResult(e.SUCCESS, e.ResponseMap[e.SUCCESS], constructMenuTrees(menuData,0))
+	}
+}
+
 func constructMenuTrees(menus []models.Menu, parentId int) []vo.MenuItem {
 
 	branch := make([]vo.MenuItem, 0)

@@ -52,6 +52,7 @@ func init() {
 
 	beego.Router("/api/menu/menus", &sys.MenuController{}, "*:Menus")
 	beego.Router("/api/menu/find_menus", &sys.MenuController{}, "post:FindMenus")
+	beego.Router("/api/menu/find_all_menu", &sys.MenuController{}, "post:FindAllMenu")
 
 	//字典管理
 	beego.Router("/api/dict/index", &sys.DictTypeController{}, "*:Index")
