@@ -278,10 +278,10 @@ func (c *MenuController) Menus()  {
 
 		if php2go.Empty(model.ParentId){
 			menuData,_ := model.FindAll(dataMap)
-			c.JsonResult(e.SUCCESS, "获取成功",constructMenuTrees(menuData,0))
+			c.JsonResult(e.SUCCESS, "获取成功",constructMenuTrees(menuData,0,false))
 		}else {
 			menuData,_ := model.FindAllByParentId(model.ParentId)
-			c.JsonResult(e.SUCCESS, "获取成功",constructMenuTrees(menuData,0))
+			c.JsonResult(e.SUCCESS, "获取成功",constructMenuTrees(menuData,0,false))
 		}
 	}else {
 		//查询字段
@@ -350,17 +350,49 @@ func (c *MenuController) FindAllMenu()  {
 		UserId := common.UserId
 		model := models.NewMenu()
 		menuData := model.FindAllMenu(UserId)
-		c.JsonResult(e.SUCCESS, e.ResponseMap[e.SUCCESS], constructMenuTrees(menuData,0))
+		dataMap := make(map[string]interface{}, 0)
+		dataMap["menu"] = constructMenuTrees(menuData,0,true)
+
+		branch := make([]vo.MenuItem, 0)
+		for  _,menu := range menuData {
+			if menu.MenuType==3 {
+				child := vo.MenuItem{
+					Id:menu.Id,
+					MenuName:menu.MenuName,
+					OrderNum:menu.OrderNum,
+					MenuType:menu.MenuType,
+					Visible:menu.Visible,
+					CreateBy:menu.CreateBy,
+					CreatedAt:menu.CreatedAt,
+					UpdateBy:menu.UpdateBy,
+					Icon:menu.Icon,
+					Component:menu.Component,
+					UpdatedAt:menu.UpdatedAt,
+					IsFrame:menu.IsFrame,
+					Perms:menu.Perms,
+					Remark:menu.Remark,
+					Url:menu.Url,
+					ParentId:menu.ParentId,
+				}
+				branch = append(branch, child)
+			}
+		}
+		dataMap["button"] = branch
+
+		c.JsonResult(e.SUCCESS, e.ResponseMap[e.SUCCESS], dataMap)
 	}
 }
 
-func constructMenuTrees(menus []models.Menu, parentId int) []vo.MenuItem {
+func constructMenuTrees(menus []models.Menu, parentId int,filters bool) []vo.MenuItem {
 
 	branch := make([]vo.MenuItem, 0)
 	
 	for  _,menu := range menus {
+		if(filters && menu.MenuType==3){
+			continue
+		}
 		if menu.ParentId == parentId{
-			childList := constructMenuTrees(menus, menu.Id)
+			childList := constructMenuTrees(menus, menu.Id,filters)
 
 			child := vo.MenuItem{
 				Id:menu.Id,
