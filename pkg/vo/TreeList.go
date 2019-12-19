@@ -19,5 +19,9 @@ type TreeList struct {
 	UpdateBy  int       `json:"update_by" form:"update_by" gorm:"default:''"`
 	UpdatedAt time.Time `json:"updated_at"form:"updated_at"gorm:"default:''"`
 	Remark    string    `json:"remark"    form:"remark"    gorm:"default:''"`
+	RouteName string    `json:"route_name"    form:"route_name"    gorm:"default:''"`
+	RoutePath string    `json:"route_path"    form:"route_path"    gorm:"default:''"`
+	RouteCache     int    `json:"route_cache"       form:"route_cache"        gorm:"default:''"`
+	RouteComponent string `json:"route_component"   form:"route_component"    gorm:"default:''"`
 	Children []*TreeList`json:"children"`
 }

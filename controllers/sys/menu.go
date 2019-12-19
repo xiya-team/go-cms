@@ -373,6 +373,10 @@ func (c *MenuController) FindAllMenu()  {
 					Remark:menu.Remark,
 					Url:menu.Url,
 					ParentId:menu.ParentId,
+					RoutePath:menu.RoutePath,
+					RouteName:menu.RouteName,
+					RouteComponent:menu.RouteComponent,
+					RouteCache:menu.RouteCache,
 				}
 				branch = append(branch, child)
 			}
@@ -411,6 +415,10 @@ func constructMenuTrees(menus []models.Menu, parentId int,filters bool) []vo.Men
 				Remark:menu.Remark,
 				Url:menu.Url,
 				ParentId:menu.ParentId,
+				RoutePath:menu.RoutePath,
+				RouteName:menu.RouteName,
+				RouteComponent:menu.RouteComponent,
+				RouteCache:menu.RouteCache,
 				ChildrenList: childList,
 			}
 			branch = append(branch, child)

@@ -25,6 +25,10 @@ type Menu struct {
 	UpdateBy  int       `json:"update_by" form:"update_by" gorm:"default:''"`
 	UpdatedAt time.Time `json:"updated_at"form:"updated_at"gorm:"default:''"`
 	Remark    string    `json:"remark"    form:"remark"    gorm:"default:''"`
+	RouteName string    `json:"route_name"    form:"route_name"    gorm:"default:''"`
+	RoutePath string    `json:"route_path"    form:"route_path"    gorm:"default:''"`
+		RouteCache     int    `json:"route_cache"       form:"route_cache"        gorm:"default:''"`
+	RouteComponent string `json:"route_component"   form:"route_component"    gorm:"default:''"`
 }
 
 
@@ -187,6 +191,10 @@ func (m *Menu) FindTopMenu() []*vo.TreeList {
 			Remark:v.Remark,
 			Url:v.Url,
 			ParentId:v.ParentId,
+			RoutePath:v.RoutePath,
+			RouteName:v.RouteName,
+			RouteComponent:v.RouteComponent,
+			RouteCache:v.RouteCache,
 		}
 		treeList = append(treeList, node)
 	}
@@ -222,6 +230,10 @@ func (m *Menu)FindMenus(pid int) []*vo.TreeList {
 			Remark:v.Remark,
 			Url:v.Url,
 			ParentId:v.ParentId,
+			RoutePath:v.RoutePath,
+			RouteName:v.RouteName,
+			RouteComponent:v.RouteComponent,
+			RouteCache:v.RouteCache,
 		}
 		node.Children = child
 		treeList = append(treeList, node)
