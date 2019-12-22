@@ -249,3 +249,9 @@ func (c *ConfigsController) FormatData(fields []string,result []models.Configs) 
 	}
 	return lists
 }
+
+func (c *ConfigsController) FindAll(){
+	model := models.NewConfigs()
+	lists := model.FindAll()
+	c.JsonResult(e.SUCCESS, "获取成功",lists)
+}

@@ -353,36 +353,6 @@ func (c *MenuController) FindAllMenu()  {
 		dataMap := make(map[string]interface{}, 0)
 		dataMap["menu"] = constructMenuTrees(menuData,0,true)
 
-		branch := make([]vo.MenuItem, 0)
-		for  _,menu := range menuData {
-			if menu.MenuType==3 {
-				child := vo.MenuItem{
-					Id:menu.Id,
-					MenuName:menu.MenuName,
-					OrderNum:menu.OrderNum,
-					MenuType:menu.MenuType,
-					Visible:menu.Visible,
-					CreateBy:menu.CreateBy,
-					CreatedAt:menu.CreatedAt,
-					UpdateBy:menu.UpdateBy,
-					Icon:menu.Icon,
-					Component:menu.Component,
-					UpdatedAt:menu.UpdatedAt,
-					IsFrame:menu.IsFrame,
-					Perms:menu.Perms,
-					Remark:menu.Remark,
-					Url:menu.Url,
-					ParentId:menu.ParentId,
-					RoutePath:menu.RoutePath,
-					RouteName:menu.RouteName,
-					RouteComponent:menu.RouteComponent,
-					RouteCache:menu.RouteCache,
-				}
-				branch = append(branch, child)
-			}
-		}
-		dataMap["button"] = branch
-
 		c.JsonResult(e.SUCCESS, e.ResponseMap[e.SUCCESS], dataMap)
 	}
 }
@@ -392,9 +362,6 @@ func constructMenuTrees(menus []models.Menu, parentId int,filters bool) []vo.Men
 	branch := make([]vo.MenuItem, 0)
 	
 	for  _,menu := range menus {
-		if(filters && menu.MenuType==3){
-			continue
-		}
 		if menu.ParentId == parentId{
 			childList := constructMenuTrees(menus, menu.Id,filters)
 

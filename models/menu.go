@@ -269,7 +269,7 @@ func (m *Menu) FindAllMenu(user_id int) (res []Menu) {
 	query.Table("sys_menu m").Select("m.*").
 		Joins("JOIN sys_role_menu rm ON m.id = rm.menu_id").
 		Joins("JOIN sys_user_role ur ON ur.role_id = rm.role_id").
-		Where("ur.user_id = ?", user_id).Find(&res)
+		Where("ur.user_id = ?", user_id).Group("m.id").Find(&res)
 
 	return
 }

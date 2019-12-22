@@ -37,6 +37,7 @@ func init() {
 	beego.Router("/api/configs/create", &sys.ConfigsController{}, "put:Create")
 	beego.Router("/api/configs/update", &sys.ConfigsController{}, "post,put:Update")
 	beego.Router("/api/configs/delete", &sys.ConfigsController{}, "delete:Delete")
+	beego.Router("/api/configs/find_all", &sys.ConfigsController{}, "post:FindAll")
 
 	//岗位管理
 	beego.Router("/api/post/index", &sys.PostController{}, "*:Index")
