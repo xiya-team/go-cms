@@ -252,6 +252,19 @@ func (c *ConfigsController) FormatData(fields []string,result []models.Configs) 
 
 func (c *ConfigsController) FindAll(){
 	model := models.NewConfigs()
-	lists := model.FindAll()
+	data := c.Ctx.Input.RequestBody
+	//json数据封装到user对象中
+	err := json.Unmarshal(data, &model)
+	if err != nil {
+		c.JsonResult(e.ERROR, err.Error())
+	}
+
+	dataMap := make(map[string]interface{}, 0)
+
+	if !php2go.Empty(model.ConfigType) {
+		dataMap["config_type"] = model.ConfigType
+	}
+
+	lists := model.FindAll(dataMap)
 	c.JsonResult(e.SUCCESS, "获取成功",lists)
 }

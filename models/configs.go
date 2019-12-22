@@ -147,8 +147,13 @@ func (m *Configs) FindByMap(offset, limit int64, dataMap map[string]interface{},
 	return
 }
 
-func (m *Configs) FindAll() (res []Configs) {
+func (m *Configs) FindAll(dataMap map[string]interface{}) (res []Configs) {
 	query := Db
+
+	if is_type,isExist:=dataMap["type"].(int);isExist{
+		query = query.Where(Configs{Type:is_type})
+	}
+
 	query.Find(&res)
 	return
 }

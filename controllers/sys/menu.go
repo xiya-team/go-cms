@@ -350,9 +350,7 @@ func (c *MenuController) FindAllMenu()  {
 		UserId := common.UserId
 		model := models.NewMenu()
 		menuData := model.FindAllMenu(UserId)
-		dataMap := make(map[string]interface{}, 0)
-		dataMap["menu"] = constructMenuTrees(menuData,0,true)
-
+		dataMap := constructMenuTrees(menuData,0,true)
 		c.JsonResult(e.SUCCESS, e.ResponseMap[e.SUCCESS], dataMap)
 	}
 }
