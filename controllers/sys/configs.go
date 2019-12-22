@@ -261,8 +261,8 @@ func (c *ConfigsController) FindAll(){
 
 	dataMap := make(map[string]interface{}, 0)
 
-	if !php2go.Empty(model.ConfigType) {
-		dataMap["config_type"] = model.ConfigType
+	if !php2go.Empty(model.Type) {
+		dataMap["type"] = model.Type
 	}
 
 	lists := model.FindAll(dataMap)
