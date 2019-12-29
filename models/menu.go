@@ -25,6 +25,10 @@ type Menu struct {
 	UpdateBy  int       `json:"update_by" form:"update_by" gorm:"default:''"`
 	UpdatedAt time.Time `json:"updated_at"form:"updated_at"gorm:"default:''"`
 	Remark    string    `json:"remark"    form:"remark"    gorm:"default:''"`
+	RouteName string    `json:"route_name"    form:"route_name"    gorm:"default:''"`
+	RoutePath string    `json:"route_path"    form:"route_path"    gorm:"default:''"`
+	RouteCache     int    `json:"route_cache"       form:"route_cache"        gorm:"default:''"`
+	RouteComponent string `json:"route_component"   form:"route_component"    gorm:"default:''"`
 }
 
 
@@ -149,7 +153,7 @@ func (m *Menu) FindAll(dataMap map[string]interface{}) (res []Menu, err error) {
 	if fields,ok:=dataMap["fields"].(string);ok{
 		query = query.Select(fields)
 	}
-	err = query.Find(&res).Error
+	err = query.Order("order_num asc").Find(&res).Error
 	return
 }
 
@@ -157,7 +161,7 @@ func (m *Menu) FindAllByParentId(parentId int) (res []Menu, err error)   {
 	query := Db
 	
 	query = query.Where("parent_id = ?", parentId)
-	err = query.Find(&res).Error
+	err = query.Order("order_num asc").Find(&res).Error
 
 	return
 }
@@ -187,6 +191,10 @@ func (m *Menu) FindTopMenu() []*vo.TreeList {
 			Remark:v.Remark,
 			Url:v.Url,
 			ParentId:v.ParentId,
+			RoutePath:v.RoutePath,
+			RouteName:v.RouteName,
+			RouteComponent:v.RouteComponent,
+			RouteCache:v.RouteCache,
 		}
 		treeList = append(treeList, node)
 	}
@@ -222,6 +230,10 @@ func (m *Menu)FindMenus(pid int) []*vo.TreeList {
 			Remark:v.Remark,
 			Url:v.Url,
 			ParentId:v.ParentId,
+			RoutePath:v.RoutePath,
+			RouteName:v.RouteName,
+			RouteComponent:v.RouteComponent,
+			RouteCache:v.RouteCache,
 		}
 		node.Children = child
 		treeList = append(treeList, node)
@@ -247,4 +259,17 @@ func (m *Menu)FindAllChildren(pid int)  []int {
 		}
 	}
 	return ids
+}
+
+func (m *Menu) FindAllMenu(user_id int) (res []Menu) {
+	query := Db
+	// 获取取指page，指定pagesize的记录
+	//err = query.Select("role_id").Where(&UserRole{UserId: user_id}).Find(&res).Error
+
+	query.Table("sys_menu m").Select("m.*").
+		Joins("JOIN sys_role_menu rm ON m.id = rm.menu_id").
+		Joins("JOIN sys_user_role ur ON ur.role_id = rm.role_id").
+		Where("ur.user_id = ?", user_id).Order("m.order_num asc").Group("m.id").Find(&res)
+
+	return
 }

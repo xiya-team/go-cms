@@ -37,6 +37,7 @@ func init() {
 	beego.Router("/api/configs/create", &sys.ConfigsController{}, "put:Create")
 	beego.Router("/api/configs/update", &sys.ConfigsController{}, "post,put:Update")
 	beego.Router("/api/configs/delete", &sys.ConfigsController{}, "delete:Delete")
+	beego.Router("/api/configs/find_all", &sys.ConfigsController{}, "post:FindAll")
 
 	//岗位管理
 	beego.Router("/api/post/index", &sys.PostController{}, "*:Index")
@@ -52,6 +53,7 @@ func init() {
 
 	beego.Router("/api/menu/menus", &sys.MenuController{}, "*:Menus")
 	beego.Router("/api/menu/find_menus", &sys.MenuController{}, "post:FindMenus")
+	beego.Router("/api/menu/find_all_menu", &sys.MenuController{}, "post:FindAllMenu")
 
 	//字典管理
 	beego.Router("/api/dict/index", &sys.DictTypeController{}, "*:Index")

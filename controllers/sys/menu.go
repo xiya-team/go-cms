@@ -278,10 +278,10 @@ func (c *MenuController) Menus()  {
 
 		if php2go.Empty(model.ParentId){
 			menuData,_ := model.FindAll(dataMap)
-			c.JsonResult(e.SUCCESS, "获取成功",constructMenuTrees(menuData,0))
+			c.JsonResult(e.SUCCESS, "获取成功",constructMenuTrees(menuData,0,false))
 		}else {
 			menuData,_ := model.FindAllByParentId(model.ParentId)
-			c.JsonResult(e.SUCCESS, "获取成功",constructMenuTrees(menuData,0))
+			c.JsonResult(e.SUCCESS, "获取成功",constructMenuTrees(menuData,0,false))
 		}
 	}else {
 		//查询字段
@@ -345,13 +345,23 @@ func (c *MenuController) FindMenus()  {
 	c.JsonResult(e.SUCCESS, "获取成功",menus)
 }
 
-func constructMenuTrees(menus []models.Menu, parentId int) []vo.MenuItem {
+func (c *MenuController) FindAllMenu()  {
+	if c.Ctx.Input.IsPost() {
+		UserId := common.UserId
+		model := models.NewMenu()
+		menuData := model.FindAllMenu(UserId)
+		dataMap := constructMenuTrees(menuData,0,true)
+		c.JsonResult(e.SUCCESS, e.ResponseMap[e.SUCCESS], dataMap)
+	}
+}
+
+func constructMenuTrees(menus []models.Menu, parentId int,filters bool) []vo.MenuItem {
 
 	branch := make([]vo.MenuItem, 0)
 	
 	for  _,menu := range menus {
 		if menu.ParentId == parentId{
-			childList := constructMenuTrees(menus, menu.Id)
+			childList := constructMenuTrees(menus, menu.Id,filters)
 
 			child := vo.MenuItem{
 				Id:menu.Id,
@@ -370,6 +380,10 @@ func constructMenuTrees(menus []models.Menu, parentId int) []vo.MenuItem {
 				Remark:menu.Remark,
 				Url:menu.Url,
 				ParentId:menu.ParentId,
+				RoutePath:menu.RoutePath,
+				RouteName:menu.RouteName,
+				RouteComponent:menu.RouteComponent,
+				RouteCache:menu.RouteCache,
 				ChildrenList: childList,
 			}
 			branch = append(branch, child)

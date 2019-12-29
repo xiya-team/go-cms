@@ -14,6 +14,7 @@ type Configs struct {
 	ConfigType  int         `json:"config_type" form:"config_type" gorm:"default:''"`
 	CreatedBy   int         `json:"created_by"  form:"created_by"  gorm:"default:''"`
 	UpdatedBy   int         `json:"updated_by"  form:"updated_by"  gorm:"default:''"`
+	Type   int         `json:"type"  form:"type"  gorm:"default:''"`
 	CreatedAt   time.Time   `json:"created_at"  form:"created_at"  gorm:"default:''"`
 	UpdatedAt   time.Time   `json:"updated_at"  form:"updated_at"  gorm:"default:''"`
 	DeletedAt   time.Time   `json:"deleted_at"  form:"deleted_at"  gorm:"default:''"`
@@ -146,3 +147,13 @@ func (m *Configs) FindByMap(offset, limit int64, dataMap map[string]interface{},
 	return
 }
 
+func (m *Configs) FindAll(dataMap map[string]interface{}) (res []Configs) {
+	query := Db
+
+	if is_type,isExist:=dataMap["type"].(int);isExist{
+		query = query.Where(Configs{Type:is_type})
+	}
+
+	query.Find(&res)
+	return
+}
