@@ -15,7 +15,7 @@
 
 ### 演示地址
 
-[https://fairyever.com/d2-admin-cms-go/preview/](https://fairyever.com/d2-admin-cms-go/preview/)
+[https://d2.pub/d2-admin-cms-go/preview](https://d2.pub/d2-admin-cms-go/preview)
 
 ### 安装&使用
 
