@@ -7,7 +7,7 @@
 
 ### 配套前端
 
-[d2-projects/d2-admin-cms-go](https://github.com/d2-projects/d2-admin-cms-go)
+[d2-projects/d2-admin-xiya-go-cms](https://github.com/d2-projects/d2-admin-xiya-go-cms)
 
 ### 项目介绍
 
@@ -15,7 +15,7 @@
 
 ### 演示地址
 
-[https://d2.pub/d2-admin-cms-go/preview](https://d2.pub/d2-admin-cms-go/preview)
+[https://d2.pub/d2-admin-xiya-go-cms/preview](https://d2.pub/d2-admin-xiya-go-cms/preview)
 
 ### 安装&使用
 
