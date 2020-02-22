@@ -127,7 +127,8 @@ func (m *AdminLog) FindByMap(offset, limit int64, dataMap map[string]interface{}
 	}
 
 	// 获取取指page，指定pagesize的记录
-	err = query.Offset(offset).Limit(limit).Find(&res).Count(&total).Error
+	query.Model(&AdminLog{}).Count(&total)
+	err = query.Offset(offset).Limit(limit).Find(&res).Error
 	return
 }
 

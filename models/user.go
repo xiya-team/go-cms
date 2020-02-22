@@ -248,7 +248,8 @@ func (m *User) FindByMap(offset, limit int64, dataMap map[string]interface{},ord
 	}
 	
 	// 获取取指page，指定pagesize的记录
-	err = query.Offset(offset).Limit(limit).Find(&user).Count(&total).Error
+	query.Model(&User{}).Count(&total)
+	err = query.Offset(offset).Limit(limit).Find(&user).Error
 	return
 }
 

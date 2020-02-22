@@ -72,6 +72,17 @@ func RestfulHandler() func(ctx *context.Context) {
 			return
 		}
 
+		if is_bool, _ := beego.AppConfig.Bool("is_presentation"); is_bool {
+			if strings.ToUpper(ctx.Request.Method) == strings.ToUpper("put") || strings.ToUpper(ctx.Request.Method) == strings.ToUpper("delete"){
+				resBody, err := json.Marshal(OutResponse(e.ERROR, nil, "演示环境不允许操作！"))
+				if err != nil {
+					panic(err)
+				}
+				ctx.Output.Body(resBody)
+				return
+			}
+		}
+
 		//Redis实现接口幂等
 		if strings.ToUpper(ctx.Request.Method) == strings.ToUpper("put"){
 			data := ctx.Input.RequestBody
