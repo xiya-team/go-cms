@@ -3,7 +3,7 @@ package sys
 import (
 	"github.com/astaxie/beego/logs"
 	"github.com/astaxie/beego/validation"
-	"github.com/syyongx/php2go"
+	"github.com/xiya-team/helpers"
 	"go-cms/common"
 	"go-cms/controllers"
 	"encoding/json"
@@ -40,35 +40,35 @@ func (c *RoleController) Index() {
 		dataMap := make(map[string]interface{}, 0)
 
 		//开始时间
-		if !php2go.Empty(model.StartTime) {
+		if !helpers.Empty(model.StartTime) {
 			dataMap["start_time"] = model.StartTime
 		}
 		
 		//结束时间
-		if !php2go.Empty(model.EndTime) {
+		if !helpers.Empty(model.EndTime) {
 			dataMap["end_time"] = model.EndTime
 		}
 		
 		//状态
-		if !php2go.Empty(model.Status) {
+		if !helpers.Empty(model.Status) {
 			dataMap["status"] = model.Status
 		}
 
-		if !php2go.Empty(model.RoleName) {
+		if !helpers.Empty(model.RoleName) {
 			dataMap["role_name"] = model.RoleName
 		}
 
 		//role_key
-		if !php2go.Empty(model.RoleKey) {
+		if !helpers.Empty(model.RoleKey) {
 			dataMap["role_key"] = model.RoleKey
 		}
 
 		//查询字段
-		if !php2go.Empty(model.Fields) {
+		if !helpers.Empty(model.Fields) {
 			dataMap["fields"] = model.Fields
 		}
 
-		if php2go.Empty(model.Page) {
+		if helpers.Empty(model.Page) {
 			model.Page = 1
 		}else{
 			if model.Page <= 0 {
@@ -76,7 +76,7 @@ func (c *RoleController) Index() {
 			}
 		}
 
-		if php2go.Empty(model.PageSize) {
+		if helpers.Empty(model.PageSize) {
 			model.PageSize = 10
 		}else {
 			if model.Page <= 0 {
@@ -85,7 +85,7 @@ func (c *RoleController) Index() {
 		}
 
 		var orderBy string
-		if !php2go.Empty(model.OrderColumnName) && !php2go.Empty(model.OrderType){
+		if !helpers.Empty(model.OrderColumnName) && !helpers.Empty(model.OrderType){
 			orderBy = strings.Join([]string{model.OrderColumnName,model.OrderType}," ")
 		}else {
 			orderBy = "created_at DESC"
@@ -95,7 +95,7 @@ func (c *RoleController) Index() {
 		if err != nil{
 			c.JsonResult(e.ERROR, "获取数据失败")
 		}
-		if !php2go.Empty(model.Fields){
+		if !helpers.Empty(model.Fields){
 			fields := strings.Split(model.Fields, ",")
 			lists := c.FormatData(fields,result)
 			c.JsonResult(e.SUCCESS, "ok", lists, count, model.Page, model.PageSize)
@@ -156,7 +156,7 @@ func (c *RoleController) Update() {
 	//save
 	if c.Ctx.Input.IsPut() {
 		post, err := models.NewRole().FindById(model.Id)
-		if err != nil||php2go.Empty(post) {
+		if err != nil||helpers.Empty(post) {
 			c.JsonResult(e.ERROR, "没找到数据")
 		}
 		
@@ -202,7 +202,7 @@ func (c *RoleController) Delete() {
 		}
 		
 		post, err := models.NewRole().FindById(model.Id)
-		if err != nil||php2go.Empty(post) {
+		if err != nil||helpers.Empty(post) {
 			c.JsonResult(e.ERROR, "没找到数据")
 		}
 		
@@ -239,7 +239,7 @@ func (c *RoleController) FormatData(fields []string,result []models.Role) (res i
 		t := reflect.TypeOf(value)
 		v := reflect.ValueOf(value)
 		for k := 0; k < t.NumField(); k++ {
-			if php2go.InArray(t.Field(k).Name,fields){
+			if helpers.InArray(t.Field(k).Name,fields){
 				tmp[util.ToFirstWordsDown(t.Field(k).Name)] = v.Field(k).Interface()
 			}
 		}

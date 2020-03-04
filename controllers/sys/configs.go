@@ -2,7 +2,7 @@ package sys
 
 import (
 	"github.com/astaxie/beego/validation"
-	"github.com/syyongx/php2go"
+	"github.com/xiya-team/helpers"
 	"go-cms/common"
 	"go-cms/controllers"
 	"encoding/json"
@@ -38,38 +38,38 @@ func (c *ConfigsController) Index() {
 		
 		dataMap := make(map[string]interface{}, 0)
 		
-		if !php2go.Empty(model.ConfigType) {
+		if !helpers.Empty(model.ConfigType) {
 			dataMap["config_type"] = model.ConfigType
 		}
 
-		if !php2go.Empty(model.ConfigKey) {
+		if !helpers.Empty(model.ConfigKey) {
 			dataMap["config_key"] = model.ConfigKey
 		}
 		
-		if !php2go.Empty(model.ConfigName) {
+		if !helpers.Empty(model.ConfigName) {
 			dataMap["config_name"] = model.ConfigName
 		}
 
-		if !php2go.Empty(model.ConfigValue) {
+		if !helpers.Empty(model.ConfigValue) {
 			dataMap["config_value"] = model.ConfigValue
 		}
 
 		//开始时间
-		if !php2go.Empty(model.StartTime) {
+		if !helpers.Empty(model.StartTime) {
 			dataMap["start_time"] = model.StartTime
 		}
 		
 		//结束时间
-		if !php2go.Empty(model.EndTime) {
+		if !helpers.Empty(model.EndTime) {
 			dataMap["end_time"] = model.EndTime
 		}
 
 		//查询字段
-		if !php2go.Empty(model.Fields) {
+		if !helpers.Empty(model.Fields) {
 			dataMap["fields"] = model.Fields
 		}
 
-		if php2go.Empty(model.Page) {
+		if helpers.Empty(model.Page) {
 			model.Page = 1
 		}else{
 			if model.Page <= 0 {
@@ -77,7 +77,7 @@ func (c *ConfigsController) Index() {
 			}
 		}
 
-		if php2go.Empty(model.PageSize) {
+		if helpers.Empty(model.PageSize) {
 			model.PageSize = 10
 		}else {
 			if model.Page <= 0 {
@@ -86,7 +86,7 @@ func (c *ConfigsController) Index() {
 		}
 
 		var orderBy string
-		if !php2go.Empty(model.OrderColumnName) && !php2go.Empty(model.OrderType){
+		if !helpers.Empty(model.OrderColumnName) && !helpers.Empty(model.OrderType){
 			orderBy = strings.Join([]string{model.OrderColumnName,model.OrderType}," ")
 		}else {
 			orderBy = "created_at DESC"
@@ -97,7 +97,7 @@ func (c *ConfigsController) Index() {
 			c.JsonResult(e.ERROR, "获取数据失败")
 		}
 
-		if !php2go.Empty(model.Fields){
+		if !helpers.Empty(model.Fields){
 			fields := strings.Split(model.Fields, ",")
 			lists := c.FormatData(fields,result)
 			c.JsonResult(e.SUCCESS, "ok", lists, count, model.Page, model.PageSize)
@@ -159,7 +159,7 @@ func (c *ConfigsController) Update() {
 
 	if c.Ctx.Input.IsPut() {
 		post, err := models.NewConfigs().FindById(model.Id)
-		if err != nil||php2go.Empty(post) {
+		if err != nil||helpers.Empty(post) {
 			c.JsonResult(e.ERROR, "没找到数据")
 		}
 		
@@ -204,7 +204,7 @@ func (c *ConfigsController) Delete() {
 		}
 		
 		post, err := models.NewConfigs().FindById(model.Id)
-		if err != nil||php2go.Empty(post) {
+		if err != nil||helpers.Empty(post) {
 			c.JsonResult(e.ERROR, "没找到数据")
 		}
 		
@@ -241,7 +241,7 @@ func (c *ConfigsController) FormatData(fields []string,result []models.Configs) 
 		t := reflect.TypeOf(value)
 		v := reflect.ValueOf(value)
 		for k := 0; k < t.NumField(); k++ {
-			if php2go.InArray(t.Field(k).Name,fields){
+			if helpers.InArray(t.Field(k).Name,fields){
 				tmp[util.ToFirstWordsDown(t.Field(k).Name)] = v.Field(k).Interface()
 			}
 		}
@@ -261,7 +261,7 @@ func (c *ConfigsController) FindAll(){
 
 	dataMap := make(map[string]interface{}, 0)
 
-	if !php2go.Empty(model.Type) {
+	if !helpers.Empty(model.Type) {
 		dataMap["type"] = model.Type
 	}
 

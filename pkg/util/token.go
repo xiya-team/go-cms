@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/dgrijalva/jwt-go"
-	"github.com/syyongx/php2go"
+	"github.com/xiya-team/helpers"
 	"go-cms/common"
 	"go-cms/models"
 	"time"
@@ -15,7 +15,7 @@ func CreateToken(user models.User) string {
 	claims["exp"] = time.Now().Add(time.Hour * time.Duration(72)).Unix()
 	claims["iat"] = time.Now().Unix()
 	claims["id"]=user.Id
-	claims["verification"]=php2go.Md5(user.UserName)
+	claims["verification"]=helpers.Md5(user.UserName)
 	claims["user_name"]=user.UserName
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	
@@ -92,13 +92,13 @@ func CheckToken(tokenString string) (b bool, t string,code int) {
 	username := GetUserNameByToken(tokenString)
 	
 	jsonResToken,err := redisClient.Get("token_"+username).Result()
-	if err != nil || php2go.Empty(jsonResToken){
+	if err != nil || helpers.Empty(jsonResToken){
 		return false,"非法请求，请重新登录",50008
 	}
 	
 	verification := GetVerificationByToken(tokenString)
 	
-	if(verification != php2go.Md5(username)){
+	if(verification != helpers.Md5(username)){
 		return false,"非法请求，请重新登录",50008
 	}
 	

@@ -12,7 +12,7 @@ var controllerTpl = `package $path$
 
 import (
 	"github.com/astaxie/beego/validation"
-	"github.com/syyongx/php2go"
+	"github.com/xiya-team/helpers"
 	"go-cms/controllers"
 	"encoding/json"
 	"go-cms/models"

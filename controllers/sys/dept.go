@@ -3,7 +3,7 @@ package sys
 import (
 	"encoding/json"
 	"github.com/astaxie/beego/validation"
-	"github.com/syyongx/php2go"
+	"github.com/xiya-team/helpers"
 	"github.com/wxnacy/wgo/arrays"
 	"go-cms/common"
 	"go-cms/controllers"
@@ -41,26 +41,26 @@ func (c *DeptController) Index() {
 		dataMap := make(map[string]interface{}, 0)
 
 		//开始时间
-		if !php2go.Empty(model.StartTime) {
+		if !helpers.Empty(model.StartTime) {
 			dataMap["start_time"] = model.StartTime
 		}
 		
 		//结束时间
-		if !php2go.Empty(model.EndTime) {
+		if !helpers.Empty(model.EndTime) {
 			dataMap["end_time"] = model.EndTime
 		}
 		
 		//状态
-		if !php2go.Empty(model.Status) {
+		if !helpers.Empty(model.Status) {
 			dataMap["status"] = model.Status
 		}
 
 		//查询字段
-		if !php2go.Empty(model.Fields) {
+		if !helpers.Empty(model.Fields) {
 			dataMap["fields"] = model.Fields
 		}
 
-		if php2go.Empty(model.Page) {
+		if helpers.Empty(model.Page) {
 			model.Page = 1
 		}else{
 			if model.Page <= 0 {
@@ -68,7 +68,7 @@ func (c *DeptController) Index() {
 			}
 		}
 
-		if php2go.Empty(model.PageSize) {
+		if helpers.Empty(model.PageSize) {
 			model.PageSize = 10
 		}else {
 			if model.Page <= 0 {
@@ -77,7 +77,7 @@ func (c *DeptController) Index() {
 		}
 
 		var orderBy string
-		if !php2go.Empty(model.OrderColumnName) && !php2go.Empty(model.OrderType){
+		if !helpers.Empty(model.OrderColumnName) && !helpers.Empty(model.OrderType){
 			orderBy = strings.Join([]string{model.OrderColumnName,model.OrderType}," ")
 		}else {
 			orderBy = "created_at DESC"
@@ -88,7 +88,7 @@ func (c *DeptController) Index() {
 			c.JsonResult(e.ERROR, "获取数据失败")
 		}
 
-		if !php2go.Empty(model.Fields){
+		if !helpers.Empty(model.Fields){
 			fields := strings.Split(model.Fields, ",")
 			lists := c.FormatData(fields,result)
 			c.JsonResult(e.SUCCESS, "ok", lists, count, model.Page, model.PageSize)
@@ -150,7 +150,7 @@ func (c *DeptController) Update() {
 
 	if c.Ctx.Input.IsPut() {
 		post, err := models.NewDept().FindById(model.Id)
-		if err != nil||php2go.Empty(post) {
+		if err != nil||helpers.Empty(post) {
 			c.JsonResult(e.ERROR, "没找到数据")
 		}
 		
@@ -205,12 +205,12 @@ func (c *DeptController) Delete() {
 		}
 		
 		post, err := models.NewDept().FindById(model.Id)
-		if err != nil||php2go.Empty(post) {
+		if err != nil||helpers.Empty(post) {
 			c.JsonResult(e.ERROR, "没找到数据")
 		}
 
 		dept,_:=model.FindByParentId(model.Id)
-		if !php2go.Empty(dept){
+		if !helpers.Empty(dept){
 			c.JsonResult(e.ERROR, "部门下有子部门不能删除！")
 		}
 
@@ -251,27 +251,27 @@ func (c *DeptController) FindAll()  {
 	dataMap := make(map[string]interface{}, 0)
 
 	//开始时间
-	if !php2go.Empty(model.StartTime) {
+	if !helpers.Empty(model.StartTime) {
 		dataMap["start_time"] = model.StartTime
 	}
 
 	//结束时间
-	if !php2go.Empty(model.EndTime) {
+	if !helpers.Empty(model.EndTime) {
 		dataMap["end_time"] = model.EndTime
 	}
 
 	//状态
-	if !php2go.Empty(model.Status) {
+	if !helpers.Empty(model.Status) {
 		dataMap["status"] = model.Status
 	}
 
 	//dept_name
-	if !php2go.Empty(model.DeptName) {
+	if !helpers.Empty(model.DeptName) {
 		dataMap["dept_name"] = model.DeptName
 	}
 
-	if php2go.Empty(dataMap){
-		if php2go.Empty(model.ParentId){
+	if helpers.Empty(dataMap){
+		if helpers.Empty(model.ParentId){
 			menuData,_ := model.FindAll()
 			c.JsonResult(e.SUCCESS, "获取成功",constructDeptTrees(menuData,0))
 		}else {
@@ -279,7 +279,7 @@ func (c *DeptController) FindAll()  {
 			c.JsonResult(e.SUCCESS, "获取成功",constructDeptTrees(menuData,0))
 		}
 	}else {
-		if php2go.Empty(model.Page) {
+		if helpers.Empty(model.Page) {
 			model.Page = 1
 		}else{
 			if model.Page <= 0 {
@@ -287,7 +287,7 @@ func (c *DeptController) FindAll()  {
 			}
 		}
 
-		if php2go.Empty(model.PageSize) {
+		if helpers.Empty(model.PageSize) {
 			model.PageSize = 10
 		}else {
 			if model.Page <= 0 {
@@ -296,7 +296,7 @@ func (c *DeptController) FindAll()  {
 		}
 
 		var orderBy string
-		if !php2go.Empty(model.OrderColumnName) && !php2go.Empty(model.OrderType){
+		if !helpers.Empty(model.OrderColumnName) && !helpers.Empty(model.OrderType){
 			orderBy = strings.Join([]string{model.OrderColumnName,model.OrderType}," ")
 		}else {
 			orderBy = "created_at DESC"
@@ -344,7 +344,7 @@ func (c *DeptController) FormatData(fields []string,result []models.Dept) (res i
 		t := reflect.TypeOf(value)
 		v := reflect.ValueOf(value)
 		for k := 0; k < t.NumField(); k++ {
-			if php2go.InArray(t.Field(k).Name,fields){
+			if helpers.InArray(t.Field(k).Name,fields){
 				tmp[util.ToFirstWordsDown(t.Field(k).Name)] = v.Field(k).Interface()
 			}
 		}

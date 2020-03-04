@@ -6,7 +6,7 @@ import (
 	"github.com/astaxie/beego/context"
 	"github.com/astaxie/beego/logs"
 	"github.com/go-redis/redis_rate/v8"
-	"github.com/syyongx/php2go"
+	"github.com/xiya-team/helpers"
 	"go-cms/common"
 	"go-cms/pkg/e"
 	"go-cms/pkg/util"
@@ -127,7 +127,7 @@ func RestfulHandler() func(ctx *context.Context) {
 
 		current_url := ctx.Request.URL.RequestURI()
 		controllerName, actionName := getControllerAndAction(current_url)
-		is_pass := php2go.InArray(php2go.Strtolower(controllerName+":"+actionName),urlMapping)
+		is_pass := helpers.InArray(helpers.Strtolower(controllerName+":"+actionName),urlMapping)
 		if is_pass == false {
 			token := ctx.Input.Header(beego.AppConfig.String("jwt::token_name"))
 			allow, message, code := util.CheckToken(token)

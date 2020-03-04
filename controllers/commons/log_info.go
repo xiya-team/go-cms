@@ -2,7 +2,7 @@ package commons
 
 import (
 	"github.com/astaxie/beego/validation"
-	"github.com/syyongx/php2go"
+	"github.com/xiya-team/helpers"
 	"go-cms/controllers"
 	"encoding/json"
 	"go-cms/models"
@@ -37,21 +37,21 @@ func (c *LogInfoController) Index() {
 		dataMap := make(map[string]interface{}, 0)
 
 		//开始时间
-		if !php2go.Empty(model.StartTime) {
+		if !helpers.Empty(model.StartTime) {
 			dataMap["start_time"] = model.StartTime
 		}
 		
 		//结束时间
-		if !php2go.Empty(model.EndTime) {
+		if !helpers.Empty(model.EndTime) {
 			dataMap["end_time"] = model.EndTime
 		}
 		
 		//状态
-		if !php2go.Empty(model.Status) {
+		if !helpers.Empty(model.Status) {
 			dataMap["status"] = model.Status
 		}
 		
-		if php2go.Empty(model.Page) {
+		if helpers.Empty(model.Page) {
 			model.Page = 1
 		}else{
 			if model.Page <= 0 {
@@ -59,7 +59,7 @@ func (c *LogInfoController) Index() {
 			}
 		}
 
-		if php2go.Empty(model.PageSize) {
+		if helpers.Empty(model.PageSize) {
 			model.PageSize = 10
 		}else {
 			if model.Page <= 0 {
@@ -68,7 +68,7 @@ func (c *LogInfoController) Index() {
 		}
 
 		var orderBy string
-		if !php2go.Empty(model.OrderColumnName) && !php2go.Empty(model.OrderType){
+		if !helpers.Empty(model.OrderColumnName) && !helpers.Empty(model.OrderType){
 			orderBy = strings.Join([]string{model.OrderColumnName,model.OrderType}," ")
 		}else {
 			orderBy = "created_at DESC"
@@ -134,7 +134,7 @@ func (c *LogInfoController) Update() {
 
 	if c.Ctx.Input.IsPut() {
 		post, err := model.FindById(model.Id)
-		if err != nil||php2go.Empty(post) {
+		if err != nil||helpers.Empty(post) {
 			c.JsonResult(e.ERROR, "没找到数据")
 		}
 		
@@ -179,7 +179,7 @@ func (c *LogInfoController) Delete() {
 		}
 		
 		post, err := model.FindById(model.Id)
-		if err != nil||php2go.Empty(post) {
+		if err != nil||helpers.Empty(post) {
 			c.JsonResult(e.ERROR, "没找到数据")
 		}
 		

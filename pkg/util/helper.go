@@ -5,7 +5,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"github.com/syyongx/php2go"
+	"github.com/xiya-team/helpers"
 	"math/rand"
 	"net"
 	"os"
@@ -27,7 +27,7 @@ const (
 func ToFirstWordsUp(s string)  (str string){
 	words := strings.Split(s, "_")
 	for _,item:=range words {
-		str += php2go.Ucfirst(item)
+		str += helpers.Ucfirst(item)
 	}
 	return str
 }
@@ -206,7 +206,7 @@ func ResultFilter(result []map[string]interface{},fields string) (data []map[str
 	for _, value := range result {
 		var items map[string]interface{}
 		for key, item := range value {
-			if php2go.InArray(fields_data,key){
+			if helpers.InArray(fields_data,key){
 				items[key] = item
 			}
 		}

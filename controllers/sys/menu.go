@@ -3,7 +3,7 @@ package sys
 import (
 	"encoding/json"
 	"github.com/astaxie/beego/validation"
-	"github.com/syyongx/php2go"
+	"github.com/xiya-team/helpers"
 	"github.com/wxnacy/wgo/arrays"
 	"go-cms/common"
 	"go-cms/controllers"
@@ -40,30 +40,30 @@ func (c *MenuController) Index() {
 		
 		dataMap := make(map[string]interface{}, 0)
 		
-		if !php2go.Empty(model.Visible) {
+		if !helpers.Empty(model.Visible) {
 			dataMap["visible"] = model.Visible
 		}
 		
-		if !php2go.Empty(model.MenuName) {
+		if !helpers.Empty(model.MenuName) {
 			dataMap["menu_name"] = model.MenuName
 		}
 
 		//开始时间
-		if !php2go.Empty(model.StartTime) {
+		if !helpers.Empty(model.StartTime) {
 			dataMap["start_time"] = model.StartTime
 		}
 
 		//结束时间
-		if !php2go.Empty(model.EndTime) {
+		if !helpers.Empty(model.EndTime) {
 			dataMap["end_time"] = model.EndTime
 		}
 
 		//查询字段
-		if !php2go.Empty(model.Fields) {
+		if !helpers.Empty(model.Fields) {
 			dataMap["fields"] = model.Fields
 		}
 
-		if php2go.Empty(model.Page) {
+		if helpers.Empty(model.Page) {
 			model.Page = 1
 		}else{
 			if model.Page <= 0 {
@@ -71,7 +71,7 @@ func (c *MenuController) Index() {
 			}
 		}
 
-		if php2go.Empty(model.PageSize) {
+		if helpers.Empty(model.PageSize) {
 			model.PageSize = 10
 		}else {
 			if model.Page <= 0 {
@@ -80,7 +80,7 @@ func (c *MenuController) Index() {
 		}
 
 		var orderBy string
-		if !php2go.Empty(model.OrderColumnName) && !php2go.Empty(model.OrderType){
+		if !helpers.Empty(model.OrderColumnName) && !helpers.Empty(model.OrderType){
 			orderBy = strings.Join([]string{model.OrderColumnName,model.OrderType}," ")
 		}else {
 			orderBy = "created_at DESC"
@@ -91,7 +91,7 @@ func (c *MenuController) Index() {
 			c.JsonResult(e.ERROR, "获取数据失败")
 		}
 
-		if !php2go.Empty(model.Fields){
+		if !helpers.Empty(model.Fields){
 			fields := strings.Split(model.Fields, ",")
 			lists := c.FormatData(fields,result)
 			c.JsonResult(e.SUCCESS, "ok", lists, count, model.Page, model.PageSize)
@@ -154,7 +154,7 @@ func (c *MenuController) Update() {
 	//save
 	if c.Ctx.Input.IsPut() {
 		post, err := models.NewMenu().FindById(model.Id)
-		if err != nil||php2go.Empty(post) {
+		if err != nil||helpers.Empty(post) {
 			c.JsonResult(e.ERROR, "没找到数据")
 		}
 		
@@ -209,12 +209,12 @@ func (c *MenuController) Delete() {
 		}
 		
 		post, err := models.NewMenu().FindById(model.Id)
-		if err != nil||php2go.Empty(post) {
+		if err != nil||helpers.Empty(post) {
 			c.JsonResult(e.ERROR, "没找到数据")
 		}
 
 		menu,_:=model.FindByParentId(model.Id)
-		if !php2go.Empty(menu){
+		if !helpers.Empty(menu){
 			c.JsonResult(e.ERROR, "菜单下有子菜单不能删除！")
 		}
 
@@ -252,31 +252,31 @@ func (c *MenuController) Menus()  {
 
 	dataMap := make(map[string]interface{}, 0)
 
-	if !php2go.Empty(model.Visible) {
+	if !helpers.Empty(model.Visible) {
 		dataMap["visible"] = model.Visible
 	}
 
-	if !php2go.Empty(model.MenuName) {
+	if !helpers.Empty(model.MenuName) {
 		dataMap["menu_name"] = model.MenuName
 	}
 
 	//开始时间
-	if !php2go.Empty(model.StartTime) {
+	if !helpers.Empty(model.StartTime) {
 		dataMap["start_time"] = model.StartTime
 	}
 
 	//结束时间
-	if !php2go.Empty(model.EndTime) {
+	if !helpers.Empty(model.EndTime) {
 		dataMap["end_time"] = model.EndTime
 	}
 
-	if php2go.Empty(dataMap) {
+	if helpers.Empty(dataMap) {
 		//查询字段
-		if !php2go.Empty(model.Fields) {
+		if !helpers.Empty(model.Fields) {
 			dataMap["fields"] = model.Fields
 		}
 
-		if php2go.Empty(model.ParentId){
+		if helpers.Empty(model.ParentId){
 			menuData,_ := model.FindAll(dataMap)
 			c.JsonResult(e.SUCCESS, "获取成功",constructMenuTrees(menuData,0,false))
 		}else {
@@ -285,11 +285,11 @@ func (c *MenuController) Menus()  {
 		}
 	}else {
 		//查询字段
-		if !php2go.Empty(model.Fields) {
+		if !helpers.Empty(model.Fields) {
 			dataMap["fields"] = model.Fields
 		}
 
-		if php2go.Empty(model.Page) {
+		if helpers.Empty(model.Page) {
 			model.Page = 1
 		}else{
 			if model.Page <= 0 {
@@ -297,7 +297,7 @@ func (c *MenuController) Menus()  {
 			}
 		}
 
-		if php2go.Empty(model.PageSize) {
+		if helpers.Empty(model.PageSize) {
 			model.PageSize = 10
 		}else {
 			if model.Page <= 0 {
@@ -306,7 +306,7 @@ func (c *MenuController) Menus()  {
 		}
 
 		var orderBy string
-		if !php2go.Empty(model.OrderColumnName) && !php2go.Empty(model.OrderType){
+		if !helpers.Empty(model.OrderColumnName) && !helpers.Empty(model.OrderType){
 			orderBy = strings.Join([]string{model.OrderColumnName,model.OrderType}," ")
 		}else {
 			orderBy = "created_at DESC"
@@ -333,7 +333,7 @@ func (c *MenuController) FindMenus()  {
 	}
 
 	var menus []*vo.TreeList
-	if php2go.Empty(model.ParentId) {
+	if helpers.Empty(model.ParentId) {
 		menus = model.FindTopMenu()
 	}else {
 		menus = model.FindMenus(model.ParentId)
@@ -405,7 +405,7 @@ func (c *MenuController) FormatData(fields []string,result []models.Menu) (res i
 		t := reflect.TypeOf(value)
 		v := reflect.ValueOf(value)
 		for k := 0; k < t.NumField(); k++ {
-			if php2go.InArray(t.Field(k).Name,fields){
+			if helpers.InArray(t.Field(k).Name,fields){
 				tmp[util.ToFirstWordsDown(t.Field(k).Name)] = v.Field(k).Interface()
 			}
 		}
