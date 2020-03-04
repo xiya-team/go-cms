@@ -2,7 +2,7 @@ package sys
 
 import (
 	"encoding/json"
-	"github.com/syyongx/php2go"
+	"github.com/xiya-team/helpers"
 	"go-cms/common"
 	"go-cms/controllers"
 	"go-cms/models"
@@ -36,43 +36,43 @@ func (c *DictDataController) Index() {
 		}
 		
 		dataMap := make(map[string]interface{}, 0)
-		if !php2go.Empty(model.DictId) {
+		if !helpers.Empty(model.DictId) {
 			dataMap["dict_id"] = model.DictId
 		}
 		
-		if !php2go.Empty(model.DictLabel) {
+		if !helpers.Empty(model.DictLabel) {
 			dataMap["dict_label"] = model.DictLabel
 		}
 
-		if !php2go.Empty(model.DictType) {
+		if !helpers.Empty(model.DictType) {
 			dataMap["dict_type"] = model.DictType
 		}
 
-		if !php2go.Empty(model.DictValueType) {
+		if !helpers.Empty(model.DictValueType) {
 			dataMap["dict_value_type"] = model.DictValueType
 		}
 
 		//开始时间
-		if !php2go.Empty(model.StartTime) {
+		if !helpers.Empty(model.StartTime) {
 			dataMap["start_time"] = model.StartTime
 		}
 		
 		//结束时间
-		if !php2go.Empty(model.EndTime) {
+		if !helpers.Empty(model.EndTime) {
 			dataMap["end_time"] = model.EndTime
 		}
 		
 		//状态
-		if !php2go.Empty(model.Status) {
+		if !helpers.Empty(model.Status) {
 			dataMap["status"] = model.Status
 		}
 
 		//查询字段
-		if !php2go.Empty(model.Fields) {
+		if !helpers.Empty(model.Fields) {
 			dataMap["fields"] = model.Fields
 		}
 
-		if php2go.Empty(model.Page) {
+		if helpers.Empty(model.Page) {
 			model.Page = 1
 		}else{
 			if model.Page <= 0 {
@@ -80,7 +80,7 @@ func (c *DictDataController) Index() {
 			}
 		}
 
-		if php2go.Empty(model.PageSize) {
+		if helpers.Empty(model.PageSize) {
 			model.PageSize = 10
 		}else {
 			if model.Page <= 0 {
@@ -89,7 +89,7 @@ func (c *DictDataController) Index() {
 		}
 
 		var orderBy string
-		if !php2go.Empty(model.OrderColumnName) && !php2go.Empty(model.OrderType){
+		if !helpers.Empty(model.OrderColumnName) && !helpers.Empty(model.OrderType){
 			orderBy = strings.Join([]string{model.OrderColumnName,model.OrderType}," ")
 		}else {
 			orderBy = "created_at DESC"
@@ -104,12 +104,12 @@ func (c *DictDataController) Index() {
 		maps := make(map[string]interface{})
 		maps["page"] = util.Pages(count, model.Page, model.PageSize)
 
-		if !php2go.Empty(model.DictId){
+		if !helpers.Empty(model.DictId){
 			dict_type_models := models.NewDictType()
 			dict_type,_ := dict_type_models.FindById(model.DictId)
 			maps["dict_value_type"] = dict_type.DictValueType
 		}
-		if !php2go.Empty(model.Fields){
+		if !helpers.Empty(model.Fields){
 			fields := strings.Split(model.Fields, ",")
 			lists := c.FormatData(fields,result)
 			maps["list"] = lists
@@ -142,7 +142,7 @@ func (c *DictDataController) Create() {
 		//2.验证
 		UserValidations := validations.BaseValidations{}
 		message := UserValidations.Check(model)
-		if !php2go.Empty(message){
+		if !helpers.Empty(message){
 			c.JsonResult(e.ERROR, message)
 		}
 
@@ -187,14 +187,14 @@ func (c *DictDataController) Update() {
 
 	if c.Ctx.Input.IsPut() {
 		dict_data, err := models.NewDictData().FindById(model.Id)
-		if err != nil||php2go.Empty(dict_data) {
+		if err != nil||helpers.Empty(dict_data) {
 			c.JsonResult(e.ERROR, "没找到数据")
 		}
 
 		//2.验证
 		UserValidations := validations.BaseValidations{}
 		message := UserValidations.Check(model)
-		if !php2go.Empty(message){
+		if !helpers.Empty(message){
 			c.JsonResult(e.ERROR, message)
 		}
 
@@ -215,7 +215,7 @@ func (c *DictDataController) Update() {
 		model.DictType = dictType.DictType
 
 		tmp,_:= model.FindWhere(whereMap)
-		if !php2go.Empty(tmp) && tmp.Id!=dict_data.Id {
+		if !helpers.Empty(tmp) && tmp.Id!=dict_data.Id {
 			c.JsonResult(e.ERROR, "数据重复！")
 		}
 
@@ -252,7 +252,7 @@ func (c *DictDataController) Delete() {
 		}
 		
 		post, err := models.NewDictData().FindById(model.Id)
-		if err != nil||php2go.Empty(post) {
+		if err != nil||helpers.Empty(post) {
 			c.JsonResult(e.ERROR, "没找到数据")
 		}
 		
@@ -289,7 +289,7 @@ func (c *DictDataController) FormatData(fields []string,result []models.DictData
 		t := reflect.TypeOf(value)
 		v := reflect.ValueOf(value)
 		for k := 0; k < t.NumField(); k++ {
-			if php2go.InArray(t.Field(k).Name,fields){
+			if helpers.InArray(t.Field(k).Name,fields){
 				tmp[util.ToFirstWordsDown(t.Field(k).Name)] = v.Field(k).Interface()
 			}
 		}

@@ -2,7 +2,7 @@ package models
 
 import (
 	"errors"
-	"github.com/syyongx/php2go"
+	"github.com/xiya-team/helpers"
 	"strconv"
 	"strings"
 	"time"
@@ -48,7 +48,7 @@ func (m *Role) Create() (newAttr Role, err error) {
 	err = tx.Create(m).Error
 
 	rm := NewRoleMenu()
-	if !php2go.Empty(m.RoleMenu) {
+	if !helpers.Empty(m.RoleMenu) {
 		err = tx.Model(&rm).Where("role_id=?", m.Id).Delete(rm).Error
 		if err == nil{
 			rms := strings.Split(m.RoleMenu, ",")
@@ -64,7 +64,7 @@ func (m *Role) Create() (newAttr Role, err error) {
 	}
 
 	rd := NewRoleDept()
-	if !php2go.Empty(m.RoleDept) {
+	if !helpers.Empty(m.RoleDept) {
 		err = tx.Model(&rd).Where("role_id=?", m.Id).Delete(rd).Error
 		if err == nil{
 			rds := strings.Split(m.RoleDept, ",")
@@ -93,7 +93,7 @@ func (m *Role) Update() (newAttr Role, err error) {
     tx := Db.Begin()
 	if m.Id > 0 {
 		rm := NewRoleMenu()
-		if !php2go.Empty(m.RoleMenu) {
+		if !helpers.Empty(m.RoleMenu) {
 			err = tx.Model(&rm).Where("role_id=?", m.Id).Delete(rm).Error
 			if err == nil{
 				rms := strings.Split(m.RoleMenu, ",")
@@ -109,7 +109,7 @@ func (m *Role) Update() (newAttr Role, err error) {
 		}
 
 		rd := NewRoleDept()
-		if !php2go.Empty(m.RoleDept) {
+		if !helpers.Empty(m.RoleDept) {
 			err = tx.Model(&rd).Where("role_id=?", m.Id).Delete(rd).Error
 			if err == nil{
 				rds := strings.Split(m.RoleDept, ",")

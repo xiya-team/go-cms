@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/validation"
-	"github.com/syyongx/php2go"
+	"github.com/xiya-team/helpers"
 	"go-cms/common"
 	"go-cms/controllers"
 	"go-cms/models"
@@ -42,42 +42,42 @@ func (c *UserController) Index() {
 		
 		dataMap := make(map[string]interface{}, 0)
 		
-		if !php2go.Empty(model.Nickname) {
+		if !helpers.Empty(model.Nickname) {
 			dataMap["nickname"] = model.Nickname
 		}
-		if !php2go.Empty(model.UserName) {
+		if !helpers.Empty(model.UserName) {
 			dataMap["user_name"] = model.UserName
 		}
 		
-		if !php2go.Empty(model.Phone) {
+		if !helpers.Empty(model.Phone) {
 			dataMap["phone"] = model.Phone
 		}
 
-		if !php2go.Empty(model.DeptId) {
+		if !helpers.Empty(model.DeptId) {
 			dataMap["dept_id"] = model.DeptId
 		}
 		
 		//开始时间
-		if !php2go.Empty(model.StartTime) {
+		if !helpers.Empty(model.StartTime) {
 			dataMap["start_time"] = model.StartTime
 		}
 		
 		//结束时间
-		if !php2go.Empty(model.EndTime) {
+		if !helpers.Empty(model.EndTime) {
 			dataMap["end_time"] = model.EndTime
 		}
 		
 		//状态
-		if !php2go.Empty(model.Status) {
+		if !helpers.Empty(model.Status) {
 			dataMap["status"] = model.Status
 		}
 
 		//查询字段
-		if !php2go.Empty(model.Fields) {
+		if !helpers.Empty(model.Fields) {
 			dataMap["fields"] = model.Fields
 		}
 
-		if php2go.Empty(model.Page) {
+		if helpers.Empty(model.Page) {
 			model.Page = 1
 		}else{
 			if model.Page <= 0 {
@@ -85,7 +85,7 @@ func (c *UserController) Index() {
 			}
 		}
 
-		if php2go.Empty(model.PageSize) {
+		if helpers.Empty(model.PageSize) {
 			model.PageSize = 10
 		}else {
 			if model.Page <= 0 {
@@ -94,7 +94,7 @@ func (c *UserController) Index() {
 		}
 
 		var orderBy string
-		if !php2go.Empty(model.OrderColumnName) && !php2go.Empty(model.OrderType){
+		if !helpers.Empty(model.OrderColumnName) && !helpers.Empty(model.OrderType){
 			orderBy = strings.Join([]string{model.OrderColumnName,model.OrderType}," ")
 		}else {
 			orderBy = "created_at DESC"
@@ -105,7 +105,7 @@ func (c *UserController) Index() {
 			c.JsonResult(e.ERROR, "获取数据失败")
 		}
 
-		if !php2go.Empty(model.Fields){
+		if !helpers.Empty(model.Fields){
 			fields := strings.Split(model.Fields, ",")
 			lists := c.FormatData(fields,result)
 			c.JsonResult(e.SUCCESS, "ok", lists, count, model.Page, model.PageSize)
@@ -136,14 +136,14 @@ func (c *UserController) Create() {
 		//2.验证
 		UserValidations := validations.BaseValidations{}
 		message := UserValidations.Check(model)
-		if !php2go.Empty(message){
+		if !helpers.Empty(message){
 			c.JsonResult(e.ERROR, message)
 		}
 		
-		if !php2go.Empty(model.Password) {
+		if !helpers.Empty(model.Password) {
 			salt := util.Krand(5, 2)
 			model.Salt = salt
-			model.Password = php2go.Md5(model.Password + salt)
+			model.Password = helpers.Md5(model.Password + salt)
 		}
 		
 		//3.插入数据
@@ -168,7 +168,7 @@ func (c *UserController) Password()  {
 
 	if c.Ctx.Input.IsPut() {
 		post, err := model.FindById(model.Id)
-		if err != nil||php2go.Empty(post) {
+		if err != nil||helpers.Empty(post) {
 			c.JsonResult(e.ERROR, "没找到数据")
 		}
 
@@ -180,14 +180,14 @@ func (c *UserController) Password()  {
 			c.JsonResult(e.ERROR, "验证失败")
 		}
 
-		if php2go.Md5(model.Password + post.Salt) != post.Password{
+		if helpers.Md5(model.Password + post.Salt) != post.Password{
 			c.JsonResult(e.ERROR, "验证失败，原密码错误。")
 		}
 
-		if !php2go.Empty(model.NewPassword) {
+		if !helpers.Empty(model.NewPassword) {
 			salt := util.Krand(5, 2)
 			model.Salt = salt
-			model.Password = php2go.Md5(model.NewPassword + salt)
+			model.Password = helpers.Md5(model.NewPassword + salt)
 		}
 
 		model.UpdateBy = common.UserId
@@ -214,7 +214,7 @@ func (c *UserController) Update() {
 
 	if c.Ctx.Input.IsPut() {
 		post, err := model.FindById(model.Id)
-		if err != nil||php2go.Empty(post) {
+		if err != nil||helpers.Empty(post) {
 			c.JsonResult(e.ERROR, "没找到数据")
 		}
 		
@@ -226,10 +226,10 @@ func (c *UserController) Update() {
 			c.JsonResult(e.ERROR, "验证失败")
 		}
 		
-		if !php2go.Empty(model.Password) {
+		if !helpers.Empty(model.Password) {
 			salt := util.Krand(5, 2)
 			model.Salt = salt
-			model.Password = php2go.Md5(model.Password + salt)
+			model.Password = helpers.Md5(model.Password + salt)
 		}
 		
 		if _, err := model.Update(); err != nil {
@@ -264,7 +264,7 @@ func (c *UserController) Delete() {
 		}
 		
 		post, err := model.FindById(model.Id)
-		if err != nil||php2go.Empty(post) {
+		if err != nil||helpers.Empty(post) {
 			c.JsonResult(e.ERROR, "没找到数据")
 		}
 		
@@ -312,7 +312,7 @@ func (c *UserController) Login() {
 		userService := services.NewUserService()
 		user := userService.FindByUserName(model.UserName)
 
-		if php2go.Empty(user) {
+		if helpers.Empty(user) {
 			c.JsonResult(e.ERROR, "用户名不存在或被禁用!")
 		}
 		
@@ -332,7 +332,7 @@ func (c *UserController) Login() {
 			c.JsonResult(e.ERROR, "用户名或密码错误!")
 		}
 		
-		has := php2go.Md5(model.Password + user.Salt)
+		has := helpers.Md5(model.Password + user.Salt)
 		
 		if (user.Password == has) {
 			token := util.CreateToken(user)
@@ -403,7 +403,7 @@ func (c *UserController) FormatData(fields []string,result []models.User) (res i
 		t := reflect.TypeOf(value)
 		v := reflect.ValueOf(value)
 		for k := 0; k < t.NumField(); k++ {
-			if php2go.InArray(t.Field(k).Name,fields){
+			if helpers.InArray(t.Field(k).Name,fields){
 				tmp[util.ToFirstWordsDown(t.Field(k).Name)] = v.Field(k).Interface()
 			}
 		}

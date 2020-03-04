@@ -2,7 +2,7 @@ package article
 
 import (
 	"encoding/json"
-	"github.com/syyongx/php2go"
+	"github.com/xiya-team/helpers"
 	"go-cms/controllers"
 	"go-cms/models"
 	"github.com/astaxie/beego/validation"
@@ -33,26 +33,26 @@ func (c *CategoryController) Index() {
 		
 		dataMap := make(map[string]interface{}, 0)
 		
-		if !php2go.Empty(model.Name) {
+		if !helpers.Empty(model.Name) {
 			dataMap["name"] = model.Name
 		}
 		
-		if !php2go.Empty(model.Keywords) {
+		if !helpers.Empty(model.Keywords) {
 			dataMap["keywords"] = model.Keywords
 		}
 
 		//开始时间
-		if !php2go.Empty(model.StartTime) {
+		if !helpers.Empty(model.StartTime) {
 			dataMap["start_time"] = model.StartTime
 		}
 		
 		//结束时间
-		if !php2go.Empty(model.EndTime) {
+		if !helpers.Empty(model.EndTime) {
 			dataMap["end_time"] = model.EndTime
 		}
 		
 		//状态
-		if !php2go.Empty(model.Status) {
+		if !helpers.Empty(model.Status) {
 			dataMap["status"] = model.Status
 		}
 		
@@ -117,7 +117,7 @@ func (c *CategoryController) Update() {
 		}
 		
 		post, err := models.NewCategory().FindById(model.Id)
-		if err != nil||php2go.Empty(post) {
+		if err != nil||helpers.Empty(post) {
 			c.JsonResult(e.ERROR, "没找到数据")
 		}
 		
@@ -152,7 +152,7 @@ func (c *CategoryController) Delete() {
 		}
 		
 		post, err := models.NewCategory().FindById(model.Id)
-		if err != nil||php2go.Empty(post) {
+		if err != nil||helpers.Empty(post) {
 			c.JsonResult(e.ERROR, "没找到数据")
 		}
 		

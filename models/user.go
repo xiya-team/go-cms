@@ -3,7 +3,7 @@ package models
 import (
 	"errors"
 	"github.com/astaxie/beego/validation"
-	"github.com/syyongx/php2go"
+	"github.com/xiya-team/helpers"
 	"log"
 	"strconv"
 	"strings"
@@ -59,7 +59,7 @@ func (m *User) Create() (newAttr User, err error) {
 	err = Db.Create(m).Error
 
 	up := NewUserPost()
-	if !php2go.Empty(m.UserPost) {
+	if !helpers.Empty(m.UserPost) {
 		err = tx.Model(&up).Where("user_id=?", m.Id).Delete(up).Error
 		if err == nil{
 			s := strings.Split(m.UserPost, ",")
@@ -75,7 +75,7 @@ func (m *User) Create() (newAttr User, err error) {
 	}
 
 	ur := NewUserRole()
-	if !php2go.Empty(m.UserRole) {
+	if !helpers.Empty(m.UserRole) {
 		err = tx.Model(&ur).Where("role_id=?", m.Id).Delete(ur).Error
 		if err == nil{
 			s := strings.Split(m.UserRole, ",")
@@ -104,7 +104,7 @@ func (m *User) Update() (newAttr User, err error) {
 	tx := Db.Begin()
 	if m.Id > 0 {
 		up := NewUserPost()
-		if !php2go.Empty(m.UserPost) {
+		if !helpers.Empty(m.UserPost) {
 			err = tx.Model(&up).Where("user_id=?", m.Id).Delete(up).Error
 			if err == nil{
 				s := strings.Split(m.UserPost, ",")
@@ -120,7 +120,7 @@ func (m *User) Update() (newAttr User, err error) {
 		}
 
 		ur := NewUserRole()
-		if !php2go.Empty(m.UserRole) {
+		if !helpers.Empty(m.UserRole) {
 			err = tx.Model(&ur).Where("user_id=?", m.Id).Delete(ur).Error
 			if err == nil{
 				s := strings.Split(m.UserRole, ",")

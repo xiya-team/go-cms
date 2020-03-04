@@ -28,9 +28,9 @@ require (
 	github.com/silenceper/wechat v2.0.0+incompatible
 	github.com/sirupsen/logrus v1.2.0
 	github.com/smartystreets/goconvey v0.0.0-20190731233626-505e41936337
-	github.com/syyongx/php2go v0.9.4
 	github.com/tidwall/gjson v1.3.2
 	github.com/wxnacy/wgo v1.0.4
+	github.com/xiya-team/helpers v1.0.2
 	golang.org/x/crypto v0.0.0-20191011191535-87dc89f01550 // indirect
 	golang.org/x/net v0.0.0-20191014212845-da9a3fd4c582 // indirect
 	golang.org/x/sync v0.0.0-20190423024810-112230192c58 // indirect

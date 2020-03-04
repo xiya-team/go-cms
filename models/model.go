@@ -158,7 +158,7 @@ func CreateAdminLogCallback(scope *gorm.Scope) {
 	//	adminLogModel := NewAdminLog()
 	//	adminLogModel.CreatedAt = time.Now()
 	//	adminLogModel.UpdatedAt = time.Now()
-	//	//if php2go.Empty(common.Ctx.Input.IP()) {
+	//	//if helpers.Empty(common.Ctx.Input.IP()) {
 	//		adminLogModel.Ip = "127.0.0.1"
 	//	//}else {
 	//	//	adminLogModel.Ip = common.Ctx.Input.IP()

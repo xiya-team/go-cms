@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/validation"
-	"github.com/syyongx/php2go"
+	"github.com/xiya-team/helpers"
 	"go-cms/common"
 	"go-cms/models"
 	"go-cms/pkg/d"
@@ -89,7 +89,7 @@ func (c *BaseController) JsonResult(code int, msg string, data ...interface{}) {
 
 //获取当前url
 func (c *BaseController) CurrentUrl() string {
-	return php2go.Strtolower(c.Ctx.Request.URL.String())
+	return helpers.Strtolower(c.Ctx.Request.URL.String())
 }
 
 // 自动化的表单验证器
@@ -149,7 +149,7 @@ func (c *BaseController) RecordLog(message string, level int) {
 	postParamsMap := map[string][]string(c.Ctx.Request.PostForm)
 
 	var postParams []byte
-	if php2go.Empty(postParamsMap) {
+	if helpers.Empty(postParamsMap) {
 		postParams = c.Ctx.Input.RequestBody
 	}else {
 		postParams, _ = json.Marshal(postParamsMap)
