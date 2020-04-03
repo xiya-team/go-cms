@@ -204,5 +204,4 @@ go run main.go // go 命令
 <a href="https://github.com/d2-projects/d2-admin" target="_blank"><img src="https://raw.githubusercontent.com/FairyEver/d2-admin/master/doc/image/d2-admin@2x.png" width="200"></a>
 
 需要进微信群 (入群验证信息: `加入go-cms群`)
-
 <img src="public/Wechat.jpeg" width="300px"/>
